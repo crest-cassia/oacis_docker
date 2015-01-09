@@ -1,5 +1,8 @@
 # oacis_docker
 
+[![release](https://img.shields.io/github/release/crest-cassia/oacis.svg)](https://github.com/crest-cassia/oacis/releases/latest)
+[![docker image](http://img.shields.io/badge/docker_image-ready-brightgreen.svg)](https://registry.hub.docker.com/u/takeshiuchitane/oacis/)
+
 You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 ## Getting Started
@@ -10,14 +13,14 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 2. Run start script like,
 
-    ```sh:run-docker-oacis.sh
-./run-docker-oacis.sh {YOUR PROJECT NAME} {PORT}
+    ```sh:run_oacis_docker.sh
+./run_oacis_docker.sh {YOUR PROJECT NAME} {PORT}
     ```
 
   - ex.
 
     ```sh:example
-./run-docker-oacis test 3000
+./run_oacis_docker.sh test 3000
 # Create project directory ./test, ./test/db, ./test/Result_development and ./test/.ssh
 # You can access oacis via webbrowser like http://localhost:3000.
     ```
