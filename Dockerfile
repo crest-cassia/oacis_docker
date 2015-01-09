@@ -57,4 +57,4 @@ RUN echo "[program:mongod]" > /etc/supervisor/conf.d/mongod.conf && echo "comman
 
 #Start OACIS
 #When you logout from bash (type exit), OACIS daemons are going to stop automatically
-ENTRYPOINT /usr/bin/supervisord; su - -c "cd ~/oacis; bundle exec rake daemon:restart; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis
+ENTRYPOINT /usr/bin/supervisord; su - -c "cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis
