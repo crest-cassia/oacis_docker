@@ -45,6 +45,8 @@ EXPOSE 3000
 VOLUME ["/data/db"]
 VOLUME ["/home/oacis/oacis/public/Result_development"]
 RUN chown oacis:oacis /home/oacis/oacis/public/Result_development
+VOLUME ["/home/oacis/work"]
+RUN chown oacis:oacis /home/oacis/work
 VOLUME ["/home/oacis/.ssh"]
 RUN chown oacis:oacis /home/oacis/.ssh
 RUN chmod 700 /home/oacis/.ssh
