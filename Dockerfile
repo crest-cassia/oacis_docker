@@ -42,7 +42,8 @@ RUN apt-get clean
 EXPOSE 3000
 
 #Create data volumes for OAICS
-VOLUME ["/data/db"]
+VOLUME ["/home/oacis/db"]
+RUN chown oacis:oacis /home/oacis/db
 VOLUME ["/home/oacis/oacis/public/Result_development"]
 RUN chown oacis:oacis /home/oacis/oacis/public/Result_development
 VOLUME ["/home/oacis/work"]
@@ -53,8 +54,7 @@ RUN chmod 700 /home/oacis/.ssh
 
 #Add config files for supervised to start up daemons
 RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; fi; echo "[program:sshd]" > /etc/supervisor/conf.d/sshd.conf && echo "command=/usr/sbin/sshd -D" >> /etc/supervisor/conf.d/sshd.conf && echo "autostart=true" >> /etc/supervisor/conf.d/sshd.conf && echo "autorestart=true" >> /etc/supervisor/conf.d/sshd.conf
-RUN echo "[program:mongod]" > /etc/supervisor/conf.d/mongod.conf && echo "command=/usr/bin/mongod --fork --logpath /var/log/mongodb.log" >> /etc/supervisor/conf.d/mongod.conf && echo "autostart=true" >> /etc/supervisor/conf.d/mongod.conf && echo "autorestart=true" >> /etc/supervisor/conf.d/mongod.conf
 
 #Start OACIS
 #When you logout from bash (type exit), OACIS daemons are going to stop automatically
-ENTRYPOINT /usr/bin/supervisord; su - -c "cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis
+ENTRYPOINT /usr/bin/supervisord; su - -c "/usr/bin/mongod --fork --logpath /hom /oacis/db/mongodb.log --dbpath /home/oacis/db; cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis
