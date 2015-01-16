@@ -57,4 +57,4 @@ RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; fi; echo "[program:sshd
 
 #Start OACIS
 #When you logout from bash (type exit), OACIS daemons are going to stop automatically
-ENTRYPOINT /usr/bin/supervisord; su - -c "/usr/bin/mongod --fork --logpath /home/oaics/db/mongodb.log --dbpath /home/oacis/db; cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis
+ENTRYPOINT /usr/bin/supervisord; su - -c "/usr/bin/mongod --fork --logpath /home/oacis/db/mongodb.log --dbpath /home/oacis/db; cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis
