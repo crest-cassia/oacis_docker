@@ -34,6 +34,6 @@ See [wiki](https://github.com/crest-cassia/oacis_docker/wiki) for usage and tips
 
 ## License
 
-  - Files in this repositories are a part of [OACIS](https://github.com/crest-cassia/oacis).
+  - [oacis_docker](https://github.com/crest-cassia/oacis_docker) is a part of [OACIS](https://github.com/crest-cassia/oacis).
   - OACIS are published under the term of the MIT License (MIT).
   - Copyright (c) 2014,2015 RIKEN, AICS
