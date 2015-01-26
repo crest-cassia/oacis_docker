@@ -26,9 +26,9 @@ RUN /bin/bash -l -c "gem install bundler"
 WORKDIR /home/oacis
 RUN git clone https://github.com/crest-cassia/oacis.git
 WORKDIR /home/oacis/oacis
-RUN git checkout master
-RUN git pull origin master
-RUN git pull origin master --tags
+#RUN git checkout master
+#RUN git pull origin master
+#RUN git pull origin master --tags
 RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 
 USER root
