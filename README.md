@@ -17,6 +17,8 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 ./bin/run_oacis_docker.sh {YOUR PROJECT NAME} {PORT}
     ```
 
+  - You can access OACIS web interface via a web browser.(`http://localhost:{PORT}`)
+
 3. Stop the container
 
   - Run `exit` in the container.
