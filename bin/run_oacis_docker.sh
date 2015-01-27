@@ -7,7 +7,7 @@ then
 fi
 PROJECT_NAME=$1
 PORT=${2-3000}
-OACIS_IMAGE="takeshiuchitane/oacis:latest"
+OACIS_IMAGE="takeshiuchitane/oacis:Development"
 
 dockerps=`docker ps -a | grep OACIS-${PROJECT_NAME}-DATA`
 if [ ! -n "$dockerps" ]
