@@ -1,6 +1,6 @@
-#############################
-# OACIS Dockfile for Ubuntu #
-#############################
+###################################
+# OACIS Dockfile for Ubuntu Image #
+###################################
 FROM ubuntu
 MAINTAINER "Takeshi Uchitane" <t.uchitane@gmail.com>
 
@@ -18,7 +18,7 @@ ENV HOME /home/oacis
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 RUN \curl -sSL https://get.rvm.io | bash -s stable
 RUN /bin/bash -l -c "rvm requirements"
-RUN /bin/bash -l -c "rvm install 2.0.0"
+RUN /bin/bash -l -c "rvm install 2.1"
 RUN echo "source $HOME/.rvm/scripts/rvm" >> $HOME/.bashrc
 RUN /bin/bash -l -c "gem install bundler"
 
@@ -52,5 +52,6 @@ RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; fi; echo "[program:sshd
 
 #Start OACIS
 ENV HOME /home/oacis
-#When you logout from bash (run exit), OACIS daemons are going to stop automatically
-ENTRYPOINT chown -R oacis:oacis /home/oacis/db; chown -R oacis:oacis /home/oacis/oacis/public/Result_development; chown -R oacis:oacis /home/oacis/work; chown oacis:oacis /home/oacis/.ssh; chmod 700 /home/oacis/.ssh; /usr/bin/supervisord; su - -c "/usr/bin/mongod --fork --logpath /home/oacis/db/mongodb.log --dbpath /home/oacis/db; cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop; pkill mongod" oacis; su - -c "if [ -d /home/oacis/db_backup  ]; then rsync -a /home/oacis/db/* /home/oacis/db_backup/; fi" oacis
+#Start mongodb daemon and OACIS daemons.
+#When you stop the container (run exit), OACIS daemons and mongodb process are going to stop automatically
+ENTRYPOINT chown -R oacis:oacis /home/oacis/db; chown -R oacis:oacis /home/oacis/oacis/public/Result_development; chown -R oacis:oacis /home/oacis/work; chown oacis:oacis /home/oacis/.ssh; chmod 700 /home/oacis/.ssh; if [ -d /home/oacis/db_backup ]; then chown -R oacis:oacis /home/oacis/db_backup; fi; /usr/bin/supervisord; su - -c "/usr/bin/mongod --fork --logpath /home/oacis/db/mongodb.log --dbpath /home/oacis/db; cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop; pkill mongod" oacis; su - -c "if [ -d /home/oacis/db_backup  ]; then rsync -a /home/oacis/db/* /home/oacis/db_backup/; fi" oacis
