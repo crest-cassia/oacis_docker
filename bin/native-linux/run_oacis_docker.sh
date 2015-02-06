@@ -14,7 +14,8 @@ docker pull ${OACIS_IMAGE}
 dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
 if [ -n "$dockerps" ]
 then
-  echo "A container named ${PROJECT_NAME} exists."
+  echo "================================================================"
+  echo "A container named OACIS-${PROJECT_NAME} exists."
   exit -1
 fi
 
@@ -27,10 +28,12 @@ then
   mkdir ${WORKDIR}/work
   mkdir ${WORKDIR}/.ssh
   chmod 700 ${WORKDIR}/.ssh
+  echo "================================================================"
   echo "create new data container for ${PROJECT_NAME}"
 fi
 
 #run container
+echo "================================================================"
 docker run -it -p $PORT:3000 --name OACIS-${PROJECT_NAME} -v ${WORKDIR}/db:/home/oacis/db -v ${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v ${WORKDIR}/work:/home/oacis/work -v ${WORKDIR}/.ssh:/home/oacis/.ssh ${OACIS_IMAGE}
-docker rm OACIS-${PROJECT_NAME}
+docker rm OACIS-${PROJECT_NAME} > /dev/null
 exit 0
