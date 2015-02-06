@@ -11,8 +11,8 @@ OACIS_IMAGE="takeshiuchitane/oacis:latest"
 #check latest image
 docker pull ${OACIS_IMAGE}
 
-dockerps=`docker ps -a | grep OACIS-${PROJECT_NAME}`
-if [ ! -n "$dockerps" ]
+dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
+if [ -n "$dockerps" ]
 then
   echo "A container named ${PROJECT_NAME} exists."
   exit -1

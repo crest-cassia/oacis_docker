@@ -11,7 +11,7 @@ OACIS_IMAGE="takeshiuchitane/oacis:latest"
 #check latest image
 docker pull ${OACIS_IMAGE}
 
-dockerps=`docker ps -a | grep OACIS-${PROJECT_NAME}`
+dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
 if [ -n "$dockerps" ]
 then
   echo "A container named ${PROJECT_NAME} exists."
@@ -31,14 +31,14 @@ then
 fi
 
 #create data container for boot2docker
-dockerps=`docker ps -a | grep OACIS-${PROJECT_NAME}-DATA`
-if [ -n "$dockerps" ]
+dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-DATA[\ ]*$"`
+if [ -z "$dockerps" ]
 then
   echo "create new data container for ${PROJECT_NAME}"
-  docker create --name OACIS-${PROJECT_NAME}-DATA $OACIS_IMAGE
+  docker run -it --entrypoint="/bin/bash" --name OACIS-${PROJECT_NAME}-DATA -v ${WORKDIR}/db:/home/oacis/db_backup -v ${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v ${WORKDIR}/work:/home/oacis/work -v ${WORKDIR}/.ssh:/home/oacis/.ssh -v ${WORKDIR}/db:/home/oacis/db_backup takeshiuchitane/oacis -c "/usr/bin/rsync -a /home/oacis/db_backup/ /home/oacis/db/; chown -R oacis:oacis /home/oacis/db"
 fi
 
 #run container
-docker run -it -p $PORT:3000 --name OACIS-${PROJECT_NAME} --volumes-from OACIS-${PROJECT_NAME}-DATA -v ${WORKDIR}/db:/home/oacis/db_backup -v ${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v ${WORKDIR}/work:/home/oacis/work -v ${WORKDIR}/.ssh:/home/oacis/.ssh ${OACIS_IMAGE}
+docker run -it -p $PORT:3000 --name OACIS-${PROJECT_NAME} --volumes-from OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
 docker rm OACIS-${PROJECT_NAME}
 exit 0
