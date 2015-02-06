@@ -25,8 +25,7 @@ then
   mkdir ${WORKDIR}/db
   mkdir ${WORKDIR}/Result_development
   mkdir ${WORKDIR}/work
-  mkdir ${WORKDIR}/.ssh
-  chmod 700 ${WORKDIR}/.ssh
+  mkdir ${WORKDIR}/.ssh # file permission is modified in vboxsf
   echo "create new data directories for ${PROJECT_NAME}"
 fi
 
@@ -35,7 +34,7 @@ dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-DATA[\ ]*$"`
 if [ -z "$dockerps" ]
 then
   echo "create new data container for ${PROJECT_NAME}"
-  docker run -it --entrypoint="/bin/bash" --name OACIS-${PROJECT_NAME}-DATA -v ${WORKDIR}/db:/home/oacis/db_backup -v ${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v ${WORKDIR}/work:/home/oacis/work -v ${WORKDIR}/.ssh:/home/oacis/.ssh -v ${WORKDIR}/db:/home/oacis/db_backup takeshiuchitane/oacis -c "/usr/bin/rsync -a /home/oacis/db_backup/ /home/oacis/db/; chown -R oacis:oacis /home/oacis/db"
+  docker run -it --entrypoint="/bin/bash" --name OACIS-${PROJECT_NAME}-DATA -v ${WORKDIR}/db:/home/oacis/db_backup -v ${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v ${WORKDIR}/work:/home/oacis/work -v ${WORKDIR}/.ssh:/home/oacis/.ssh_backup takeshiuchitane/oacis -c "/usr/bin/rsync -a /home/oacis/db_backup/ /home/oacis/db/; chown -R oacis:oacis /home/oacis/db; /usr/bin/rsync -a /home/oacis/.ssh_backup/ /home/oacis/.ssh/; chown -R oacis:oacis /home/oacis/.ssh; chmod 600 /home/oacis/.ssh/authorized_keys; chmod 600 /home/oacis/.ssh/id_rsa"
 fi
 
 #run container
