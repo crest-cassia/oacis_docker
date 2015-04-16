@@ -13,9 +13,16 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 2. Start a new OACIS container by running the start script.
 
-    ```sh:run_oacis_docker.sh
-./bin/run_oacis_docker.sh {YOUR PROJECT NAME} {PORT}
-    ```
+  - for Linux users
+
+      ```sh:run_oacis_docker.sh
+./bin/native-linux/run_oacis_docker.sh {YOUR_PROJECT_NAME} {PORT}
+      ```
+  - for Mac and Windows users
+
+      ```sh:run_oacis_docker.sh
+./bin/boot2docker/run_oacis_docker.sh {YOUR_PROJECT_NAME} {PORT}
+      ```
 
   - You can access OACIS web interface via a web browser.(`http://localhost:{PORT}`)
 
@@ -26,7 +33,7 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 4. Restart a container for an existing project
 
-  - Run the start script with an existing project name to restart your project.
+  - Run the start script again with an existing project name.
 
 ## More infomation
 
