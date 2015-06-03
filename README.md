@@ -11,24 +11,29 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
   - See [Docker home page](https://www.docker.com/).
 
-2. Run start script like,
+2. Start a new OACIS container by running the start script.
 
-    ```sh:run_oacis_docker.sh
-./run_oacis_docker.sh {YOUR PROJECT NAME} {PORT}
-    ```
+  - for Linux users
 
-  - ex.
+      ```sh:run_oacis_docker.sh
+./bin/native-linux/run_oacis_docker.sh {YOUR_PROJECT_NAME} {PORT}
+      ```
+  - for Mac and Windows users
 
-    ```sh:example
-./run_oacis_docker.sh test 3000
-# Create project directory ./test, ./test/db, ./test/Result_development and ./test/.ssh
-# You can access oacis via webbrowser like http://localhost:3000.
-    ```
+      ```sh:run_oacis_docker.sh
+./bin/boot2docker/run_oacis_docker.sh {YOUR_PROJECT_NAME} {PORT}
+      ```
 
-3. Stop and restart your project
+  - You can access OACIS web interface via a web browser.(`http://localhost:{PORT}`)
 
-  - When you exit form your project, oacis process will be going to stop automatically.
-  - Just run `run-docker-oacis` to restart your project
+3. Stop the container
+
+  - Run `exit` in the container.
+  - When you exit the container, oacis process is going to be stoped automatically.
+
+4. Restart a container for an existing project
+
+  - Run the start script again with an existing project name.
 
 ## More infomation
 
@@ -36,5 +41,6 @@ See [wiki](https://github.com/crest-cassia/oacis_docker/wiki) for usage and tips
 
 ## License
 
-  - TBA
-  - Copyright (c) 2014 RIKEN, AICS
+  - [oacis_docker](https://github.com/crest-cassia/oacis_docker) is a part of [OACIS](https://github.com/crest-cassia/oacis).
+  - OACIS are published under the term of the MIT License (MIT).
+  - Copyright (c) 2014,2015 RIKEN, AICS

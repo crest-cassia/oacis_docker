@@ -1,7 +1,6 @@
 ###################################
 # OACIS Dockfile for Ubuntu Image #
 ###################################
-
 #FROM ubuntu:14.04
 #libpam with --disable-audit option
 FROM sequenceiq/pam:ubuntu-14.04
