@@ -43,8 +43,8 @@ fi
 echo "================================================================"
 echo "================================================================"
 docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo -v ${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v ${WORKDIR}/work:/home/oacis/work -v ${WORKDIR}/.ssh:/home/oacis/.ssh ${OACIS_IMAGE}
-docker stop OACIS-${PROJECT_NAME}-MONGODB
-docker rm OACIS-${PROJECT_NAME}-MONGODB
+docker stop OACIS-${PROJECT_NAME}-MONGODB > /dev/null
+docker rm OACIS-${PROJECT_NAME}-MONGODB > /dev/null
 dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
 if [ -n "$dockerps" ]
 then
