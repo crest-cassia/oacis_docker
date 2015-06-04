@@ -34,7 +34,7 @@ fi
 dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-MONGODB$"`
 if [ ! -n "$dockerps" ]
 then
-  docker run -v ${WORKDIR}/db:/data/db -d -name OACIS-${PROJECT_NAME}-MONGODB mongo:2.6.10
+  docker run -v ${WORKDIR}/db:/data/db -d -name OACIS-${PROJECT_NAME}-MONGODB mongo:3.0.3
   echo "================================================================"
   echo "run mongo container for ${PROJECT_NAME}"
 fi
