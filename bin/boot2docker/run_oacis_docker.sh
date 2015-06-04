@@ -30,6 +30,13 @@ then
   echo "================================================================"
   echo "create new data directories for ${PROJECT_NAME}"
 fi
+dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-MONGODB$"`
+if [ ! -n "$dockerps" ]
+then
+  docker run -v ${WORKDIR}/db:/data/db -d -name OACIS-${PROJECT_NAME}-MONGODB mongo:3.0.3
+  echo "================================================================"
+  echo "run mongo container for ${PROJECT_NAME}"
+fi
 
 #create data container for boot2docker
 dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-DATA[\ ]*$"`
@@ -41,20 +48,7 @@ then
   read ans
   if [ $ans="y" -o $ans="Y" -o $ans="yes" -o $ans="Yes" ]
   then
-    docker run --entrypoint="echo" --name OACIS-${PROJECT_NAME}-DATA -v ${WORKDIR}/db:/home/oacis/db_backup -v ${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v ${WORKDIR}/work:/home/oacis/work -v ${WORKDIR}/.ssh:/home/oacis/.ssh_backup ${OACIS_IMAGE} "data container is created"
-  fi
-
-  if [ -f ${WORKDIR}/db/oacis_development.ns ]
-  then
-    echo "================================================================"
-    echo "Old mongodb files exist in ./db/"
-    echo "Would you restor mongodb files? [y/n]"
-    read ans
-    if [ $ans="y" -o $ans="Y" -o $ans="yes" -o $ans="Yes" ]
-    then
-      docker run -it --entrypoint="/bin/bash" --name OACIS-${PROJECT_NAME} --volumes-from OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE} -c "/usr/bin/rsync -a /home/oacis/db_backup/ /home/oacis/db/; chown -R oacis:oacis /home/oacis/db;"
-      docker rm OACIS-${PROJECT_NAME} > /dev/null
-    fi
+    docker run --entrypoint="echo" --name OACIS-${PROJECT_NAME}-DATA -v ${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v ${WORKDIR}/work:/home/oacis/work -v ${WORKDIR}/.ssh:/home/oacis/.ssh_backup ${OACIS_IMAGE} "data container is created"
   fi
 
   if [ -f ${WORKDIR}/.ssh/id_rsa -o -f ${WORKDIR}/.ssh/authorized_keys ]
@@ -73,6 +67,13 @@ fi
 
 #run container
 echo "================================================================"
-docker run -it -p $PORT:3000 --name OACIS-${PROJECT_NAME} --volumes-from OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
+docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo --volumes-from OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
+docker stop OACIS-${PROJECT_NAME}-MONGODB > /dev/null
+docker rm OACIS-${PROJECT_NAME}-MONGODB > /dev/null
+dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
+if [ -n "$dockerps" ]
+then
+  docker rm OACIS-${PROJECT_NAME}
+fi
 docker rm OACIS-${PROJECT_NAME} > /dev/null
 exit 0
