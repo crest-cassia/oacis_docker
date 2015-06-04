@@ -7,7 +7,7 @@ then
 fi
 PROJECT_NAME=$1
 PORT=${2-3000}
-OACIS_IMAGE="takeshiuchitane/oacis:mongoless2"
+OACIS_IMAGE="takeshiuchitane/oacis:latest"
 #check latest image
 docker pull ${OACIS_IMAGE}
 
