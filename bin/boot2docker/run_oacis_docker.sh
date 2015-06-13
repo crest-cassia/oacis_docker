@@ -38,7 +38,7 @@ if [ -z "$dockerps" ]
 then
   if [ -z "$dockerps_stop" ]
   then
-    docker run -d -name OACIS-${PROJECT_NAME}-MONGODB ${MONGO_IMAGE}
+    docker run -d --name OACIS-${PROJECT_NAME}-MONGODB ${MONGO_IMAGE}
     echo "================================================================"
     echo "run mongo container for ${PROJECT_NAME}"
 

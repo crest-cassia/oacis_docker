@@ -7,7 +7,7 @@ then
 fi
 PROJECT_NAME=$1
 PORT=${2-3000}
-OACIS_IMAGE="takeshiuchitane/oacis:latest"
+OACIS_IMAGE="takeshiuchitane/oacis:Development"
 MONGO_IMAGE="mongo:3.0.3"
 #check latest image
 docker pull ${OACIS_IMAGE}
@@ -39,7 +39,7 @@ if [ -z "$dockerps" ]
 then
   if [ -z "$dockerps_stop" ]
   then
-    docker run -v ${WORKDIR}/db:/data/db -d -name OACIS-${PROJECT_NAME}-MONGODB ${MONGO_IMAGE}
+    docker run -v ${WORKDIR}/db:/data/db -d --name OACIS-${PROJECT_NAME}-MONGODB ${MONGO_IMAGE}
     echo "================================================================"
     echo "run mongo container for ${PROJECT_NAME}"
   else
