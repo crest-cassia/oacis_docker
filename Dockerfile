@@ -2,8 +2,6 @@
 # OACIS Dockfile for Ubuntu Image #
 ###################################
 FROM ubuntu:14.04
-#libpam with --disable-audit option
-#FROM sequenceiq/pam:ubuntu-14.04
 MAINTAINER "Takeshi Uchitane" <t.uchitane@gmail.com>
 
 #Setup packages for oacis and its analyzers
@@ -17,7 +15,7 @@ ENV HOME /home/oacis
 
 #Install rvm, ruby, bundler on oacia home directory
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3; \curl -sSL https://get.rvm.io | bash -s stable
-RUN /bin/bash -l -c "rvm requirements"; /bin/bash -l -c "rvm install 2.1"; echo "source $HOME/.rvm/scripts/rvm" >> $HOME/.bashrc; /bin/bash -l -c "gem install bundler"
+RUN /bin/bash -l -c "rvm requirements"; /bin/bash -l -c "rvm install 2.2"; echo "source $HOME/.rvm/scripts/rvm" >> $HOME/.bashrc; /bin/bash -l -c "gem install bundler"
 
 #Install OACIS
 WORKDIR /home/oacis
@@ -27,9 +25,6 @@ RUN git checkout master; git pull origin master; git pull origin master --tags; 
 
 USER root
 ENV HOME /root
-#Setting up packages for analyzers
-#You can add any packages.
-#RUN echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/apt/sources.list;gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9; gpg -a --export E084DAB9 | sudo apt-key add - ; apt-get update && apt-get install -y r-base gnuplot vim python-matplotlib; apt-get clean
 
 #Expose ports
 EXPOSE 3000
@@ -46,4 +41,4 @@ RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; fi; echo "[program:sshd
 ENV HOME /home/oacis
 #Start mongodb daemon and OACIS daemons.
 #When you stop the container (run exit), OACIS daemons and mongodb process are going to stop automatically
-ENTRYPOINT chown -R oacis:oacis /home/oacis/oacis/public/Result_development; chown -R oacis:oacis /home/oacis/work; chown oacis:oacis /home/oacis/.ssh; chmod 700 /home/oacis/.ssh; /usr/bin/supervisord; mv /home/oacis/oacis/config/mongoid.yml /home/oacis/oacis/config/mongoid.yml.orig; sed -e s/localhost:27017/${MONGO_PORT_27017_TCP_ADDR}:27017/g /home/oacis/oacis/config/mongoid.yml.orig > /home/oacis/oacis/config/mongoid.yml; chown oacis:oacis /home/oacis/oacis/config/mongoid.yml; su - -c "cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis; su - -c "if [ -d /home/oacis/.ssh_backup ]; then rsync -a /home/oacis/.ssh/* /home/oacis/.ssh_backup/; fi" oacis
+ENTRYPOINT chown -R oacis:oacis /home/oacis/oacis/public/Result_development; chown -R oacis:oacis /home/oacis/work; chown oacis:oacis /home/oacis/.ssh; chmod 700 /home/oacis/.ssh; /usr/bin/supervisord; mv /home/oacis/oacis/config/mongoid.yml /home/oacis/oacis/config/mongoid.yml.orig; sed -e s/localhost:27017/mongo:27017/g /home/oacis/oacis/config/mongoid.yml.orig > /home/oacis/oacis/config/mongoid.yml; chown oacis:oacis /home/oacis/oacis/config/mongoid.yml; su - -c "cd ~/oacis; bundle exec rake daemon:start; if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" oacis; su - oacis; su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis; su - -c "if [ -d /home/oacis/.ssh_backup ]; then rsync -a /home/oacis/.ssh/* /home/oacis/.ssh_backup/; fi" oacis
