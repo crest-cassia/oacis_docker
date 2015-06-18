@@ -25,10 +25,12 @@ RUN /bin/bash -l -c "rvm requirements"; /bin/bash -l -c "rvm install 2.2"; echo 
 WORKDIR /home/oacis
 RUN git clone https://github.com/crest-cassia/oacis.git
 WORKDIR /home/oacis/oacis
-#ruby 2.2 is not suported on master branch oacis v1.15.1
 #RUN git checkout master; git pull origin master; git pull origin master --tags; /bin/bash -l -c "bundle install --path=vendor/bundle"
-RUN git checkout -b update_bootstrap3 origin/update_bootstrap3; /bin/bash -l -c "bundle install --path=vendor/bundle"
+RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 
+#install xsub
+ADD xsub-20150618 /home/oacis/xsub
+RUN echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc; echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile
 
 #Start OACIS
 USER root
