@@ -29,8 +29,7 @@ WORKDIR /home/oacis/oacis
 RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 
 #install xsub
-ADD xsub-20150618 /home/oacis/xsub
-RUN echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc; echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile
+RUN git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub; echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc; echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile
 
 #Start OACIS
 USER root
