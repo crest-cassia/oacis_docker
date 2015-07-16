@@ -63,7 +63,7 @@ function find_and_crate_mongo_data_container {
         read ans
         if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
         then
-          docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE -v /${WORKDIR}/db:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${OACIS_IMAGE} -c "cd /; tar jxf /db_backup/db.tar.bz2"
+          docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE -v /${WORKDIR}/db:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${OACIS_IMAGE} -c "cd /data; tar jxf /db_backup/db.tar.bz2"
           break
         elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
         then
@@ -111,7 +111,7 @@ function find_and_create_oacis_data_container() {
   fi
 }
 
-function star_oacis() {
+function start_oacis() {
   echo "================================================================"
   docker run -d --name OACIS-${PROJECT_NAME}-MONGODB --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
   docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo --volumes-from OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
@@ -147,7 +147,7 @@ function make_backup() {
     if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
     then
       echo "start to make a backup of mongodb data files."
-      docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGO_BACKUP -v /${WORKDIR}/db:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${OACIS_IMAGE} -c "if [ -f /db_backup/db.tar.bz2 ]; then rm /db_backup/db.tar.bz2; fi; tar jcf /db_backup/db.tar.bz2 /data/db > /dev/null 2>&1; chmod 777 /db_backup/db.tar.bz2"
+      docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGO_BACKUP -v /${WORKDIR}/db:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${OACIS_IMAGE} -c "if [ -f /db_backup/db.tar.bz2 ]; then rm /db_backup/db.tar.bz2; fi; cd /data; tar jcf /db_backup/db.tar.bz2 ./db > /dev/null 2>&1; chmod 777 /db_backup/db.tar.bz2"
       break
     elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
     then
@@ -166,7 +166,7 @@ check_old_container
 find_and_create_data_folders
 find_and_crate_mongo_data_container
 find_and_create_oacis_data_container
-star_oacis
+start_oacis
 make_backup
 
 exit 0
