@@ -21,4 +21,4 @@ su - -c "cd ~/oacis; \
   oacis; su - oacis
 
 #post-processes
-su - -c "cd ~/oacis; bundle exec rake daemon:stop" oacis
+su - -c "cd ~/oacis; bundle exec rake daemon:stop RAILS_ENV=production" oacis
