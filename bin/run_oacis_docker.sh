@@ -127,7 +127,7 @@ function make_backup() {
     read ans
     if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
     then
-      echo "start to make a backup of ssh setting files."
+      echo "making a backup of ssh setting files..."
       docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-DATA_BACKUP -v /${WORKDIR}/.ssh:/home/oacis/.ssh_backup --volumes-from OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE} -c "rsync -a --delete /home/oacis/.ssh/ /home/oacis/.ssh_backup/"
       break
     elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
@@ -146,7 +146,7 @@ function make_backup() {
     read ans
     if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
     then
-      echo "start to make a backup of mongodb data files."
+      echo "making a backup of mongodb data files..."
       docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGO_BACKUP -v /${WORKDIR}/db:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${OACIS_IMAGE} -c "if [ -f /db_backup/db.tar.bz2 ]; then rm /db_backup/db.tar.bz2; fi; cd /data; tar jcf /db_backup/db.tar.bz2 ./db > /dev/null 2>&1; chmod 777 /db_backup/db.tar.bz2"
       break
     elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
