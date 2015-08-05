@@ -11,7 +11,7 @@ function initialize() {
   PORT=${2-3000}
 
   #pull images
-  OACIS_IMAGE="takeshiuchitane/oacis:latest"
+  OACIS_IMAGE=${OACIS_IMAGE-"takeshiuchitane/oacis:latest"}
   MONGO_IMAGE="mongo:3.0.3"
   #check latest image
   docker pull ${OACIS_IMAGE}
