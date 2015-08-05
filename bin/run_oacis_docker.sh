@@ -132,7 +132,7 @@ function make_backup() {
       break
     elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
     then
-      echo "skip to make a backup of ssh setting files."
+      echo "skip making a backup of ssh setting files."
       break
     else
       echo "your input is $ans"
@@ -151,7 +151,7 @@ function make_backup() {
       break
     elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
     then
-      echo "skip to make a backup of mongodb data files."
+      echo "skip making a backup of mongodb data files."
       break
     else
       echo "your input is $ans"
