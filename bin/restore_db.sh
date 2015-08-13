@@ -14,6 +14,11 @@ function initialize() {
     echo "No such directory exists \'$db_dump_dir\'"
     exit 0
   fi
+  if [ "$(basename ${db_dump_dir})" != "oacis_development" ]
+  then
+    echo "Dirname $(basename ${db_dump_dir}) is not much to \`oacis_development\`. exit"
+    exit 0
+  fi
   backup_dir=$(cd ${db_dump_dir}; pwd)
 
   MONGO_IMAGE="mongo:3.0.3"

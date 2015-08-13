@@ -90,7 +90,7 @@ function find_and_create_oacis_data_container() {
       read ans
       if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
       then
-        docker run --entrypoint="echo" --name OACIS-${PROJECT_NAME}-DATA -v /${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v /${WORKDIR}/work:/home/oacis/work ${OACIS_IMAGE} "data container is created"
+        docker run --entrypoint="echo" --name OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE} "data container is created"
         echo "================================================================"
         echo "A new oacis data container named OACIS-${PROJECT_NAME}-DATA is created."
         break
@@ -110,7 +110,7 @@ function find_and_create_oacis_data_container() {
 function start_oacis() {
   echo "================================================================"
   docker run -d --name OACIS-${PROJECT_NAME}-MONGODB --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
-  docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo --volumes-from OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
+  docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo --volumes-from OACIS-${PROJECT_NAME}-DATA -v /${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v /${WORKDIR}/work:/home/oacis/work ${OACIS_IMAGE}
   docker stop OACIS-${PROJECT_NAME}-MONGODB > /dev/null
   docker rm OACIS-${PROJECT_NAME}-MONGODB > /dev/null
 }
