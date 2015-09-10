@@ -11,7 +11,7 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
     - See [Docker home page](https://www.docker.com/).
 
-2. Get and run scripts.
+2. Get and run a start script
 
     ```sh
     git clone https://github.com/crest-cassia/oacis_docker.git
@@ -21,12 +21,13 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 3. Access OACISS web interface
 
     - You can access OACIS web interface via a web browser.(`http://localhost:{PORT}`)
-    - if you are Mac OS or Microsoft Windows users, access `192.168.59.103` instead of `localhost`.
+    - if you are Mac OS or Microsoft Windows users, access `192.168.99.100` instead of `localhost`.
+        - ![docket_tool_ip](https://github.com/crest-cassia/oacis_docker/wiki/images/docker_tool_ip.png)
 
 4. Stop the container
 
   - Run `exit` command in the container.
-  - When you exit the container, oacis process is going to be stoped automatically.
+  - You can see OACIS process is going to be stoped automatically and then you can see two questions about making backups of data in the container.
 
 4. Restart a container for an existing project
 
