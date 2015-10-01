@@ -20,7 +20,6 @@ function initialize() {
     exit 0
   fi
   backup_dir=$(cd ${db_dump_dir}; pwd)
-
   MONGO_IMAGE="mongo:3.0.3"
 }
 

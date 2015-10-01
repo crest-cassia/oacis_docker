@@ -15,7 +15,6 @@ function initialize() {
     exit 0
   fi
   backup_dir=$(cd ${ssh_dump_dir}; pwd)
-
   OACIS_IMAGE=${OACIS_IMAGE-"takeshiuchitane/oacis:latest"}
 }
 

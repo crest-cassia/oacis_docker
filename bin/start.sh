@@ -9,8 +9,6 @@ function initialize() {
   fi
   PROJECT_NAME=$1
   PORT=${2-3000}
-
-  #pull images
   OACIS_IMAGE=${OACIS_IMAGE-"takeshiuchitane/oacis:latest"}
   MONGO_IMAGE="mongo:3.0.3"
   #check latest image
@@ -38,12 +36,12 @@ function check_old_container() {
 }
 
 function find_and_create_data_folders() {
-  WORKDIR=`pwd`/${PROJECT_NAME}
-  if [ ! -d ${WORKDIR} ]
+  WORK_DIR=`pwd`/${PROJECT_NAME}
+  if [ ! -d ${WORK_DIR} ]
   then
-    mkdir ${WORKDIR}
-    mkdir ${WORKDIR}/Result_development
-    mkdir ${WORKDIR}/work
+    mkdir ${WORK_DIR}
+    mkdir ${WORK_DIR}/Result_development
+    mkdir ${WORK_DIR}/work
     echo "================================================================"
     echo "New data directories are created for ${PROJECT_NAME}"
   fi
@@ -110,7 +108,7 @@ function find_and_create_oacis_data_container() {
 function start_oacis() {
   echo "================================================================"
   docker run -d --name OACIS-${PROJECT_NAME}-MONGODB --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
-  docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo --volumes-from OACIS-${PROJECT_NAME}-DATA -v /${WORKDIR}/Result_development:/home/oacis/oacis/public/Result_development -v /${WORKDIR}/work:/home/oacis/work ${OACIS_IMAGE}
+  docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo --volumes-from OACIS-${PROJECT_NAME}-DATA -v /${WORK_DIR}/Result_development:/home/oacis/oacis/public/Result_development -v /${WORK_DIR}/work:/home/oacis/work ${OACIS_IMAGE}
   docker stop OACIS-${PROJECT_NAME}-MONGODB > /dev/null
   docker rm OACIS-${PROJECT_NAME}-MONGODB > /dev/null
 }
