@@ -13,18 +13,33 @@ function initialize() {
   MONGO_IMAGE="mongo:3.0.3"
   #check latest image
   docker pull ${OACIS_IMAGE}
+  WORK_DIR=`pwd`/${PROJECT_NAME}
+  if [ -d ${WORK_DIR} ]
+  then
+    MODE="restart"
+  else
+    MODE="create"
+    echo "Would you create a new project [${PROJECT_NAME}]? [Y/n]"
+    while :
+    do
+      read ans
+      if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
+      then
+        break
+      elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
+      then
+        echo "Give up to create a new project. exit."
+        exit -1
+      else
+        echo "your input is $ans"
+        echo "Would you create a new project [${PROJECT_NAME}]? [Y/n]"
+      fi
+    done
+  fi
 }
 
 function check_old_container() {
-  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
-  if [ -n "$dockerps" ]
-  then
-    echo "================================================================"
-    echo "A container named OACIS-${PROJECT_NAME} exists."
-    echo "try: \"docker rm OACIS-${PROJECT_NAME}\"."
-    exit -1
-  fi
-  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
+  dockerps=`docker ps | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
   then
     echo "================================================================"
@@ -33,75 +48,110 @@ function check_old_container() {
     echo "try: \"docker rm OACIS-${PROJECT_NAME}\"."
     exit -1
   fi
+  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
+  if [ -n "$dockerps" ]
+  then
+    echo "================================================================"
+    echo "A container named OACIS-${PROJECT_NAME} exists."
+    echo "try: \"docker rm OACIS-${PROJECT_NAME}\"."
+    exit -1
+  fi
+}
+
+function find_and_crate_mongo_data_container {
+  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-MONGODB-DATA[\ ]*$"`
+  if [ "$MODE" = "create" ]
+  then
+    if [ ! -z "$dockerps" ]
+    then
+      echo "================================================================"
+      echo "Mongodb data container exists though project directories do not exist."
+      echo "Check project name or try: \"docker rm OACIS-${PROJECT_NAME}-MONGODB-DATA; docker rm OACIS-${PROJECT_NAME}-DATA\"."
+      exit -1
+    fi
+    docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
+    echo "================================================================"
+    echo "A new container named OACIS-${PROJECT_NAME}-MONGODB-DATA is created."
+  else
+    if [ -z "$dockerps" ]
+    then
+      echo "================================================================"
+      echo "Mongodb data container does not exist though project directories exist."
+      echo "Create or restore a mongodb data container."
+      echo "Would you create a new mongodb data container? [Y/n]"
+      while :
+      do
+        read ans
+        if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
+        then
+          docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
+          echo "================================================================"
+          echo "A new container named OACIS-${PROJECT_NAME}-MONGODB-DATA is created."
+          break
+        elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
+        then
+          echo "There is no mongodb data container. exit."
+          exit -1
+        else
+          echo "your input is $ans"
+          echo "Would you create a new mongodb data container? [Y/n]"
+        fi
+      done
+    fi
+  fi
+}
+
+function find_and_create_oacis_data_container() {
+  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-DATA[\ ]*$"`
+  if [ "$MODE" = "create" ]
+  then
+    if [ ! -z "$dockerps" ]
+    then
+      echo "================================================================"
+      echo "OACIS data container exists though project directories do not exist."
+      echo "Check project name or try: \"docker rm OACIS-${PROJECT_NAME}-MONGODB-DATA; docker rm OACIS-${PROJECT_NAME}-DATA\"."
+      exit -1
+    fi
+    docker create --name OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
+    echo "================================================================"
+    echo "A new oacis data container named OACIS-${PROJECT_NAME}-DATA is created."
+  else
+    if [ -z "$dockerps" ]
+    then
+      echo "================================================================"
+      echo "OACIS data container only including ssh settings does not exist."
+      echo "Create or restore an OAICS data container. "
+      echo "Would you create a new OACIS data container? [Y/n]"
+      while :
+      do
+        read ans
+        if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
+        then
+          docker create --name OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
+          echo "================================================================"
+          echo "A new oacis data container named OACIS-${PROJECT_NAME}-DATA is created."
+          break
+        elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
+        then
+          echo "There is no OACIS data container. exit."
+          exit -1
+        else
+          echo "your input is $ans"
+          echo "Would you create a new OACIS data container? [Y/n]"
+        fi
+      done
+    fi
+  fi
 }
 
 function find_and_create_data_folders() {
-  WORK_DIR=`pwd`/${PROJECT_NAME}
-  if [ ! -d ${WORK_DIR} ]
+  if [ $MODE = "create" ]
   then
     mkdir ${WORK_DIR}
     mkdir ${WORK_DIR}/Result_development
     mkdir ${WORK_DIR}/work
     echo "================================================================"
     echo "New data directories are created for ${PROJECT_NAME}"
-  fi
-}
-
-function find_and_crate_mongo_data_container {
-  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-MONGODB-DATA[\ ]*$"`
-  if [ -z "$dockerps" ]
-  then
-    echo "================================================================"
-    echo "Mongodb data container does not exist"
-    echo "Would you create a new mongodb data container? [y/n]"
-    while :
-    do
-      read ans
-      if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
-      then
-        docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
-        echo "================================================================"
-        echo "A new container named OACIS-${PROJECT_NAME}-MONGODB-DATA is created."
-        break
-      elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
-      then
-        echo "There is no mongodb data container."
-        echo "Create or restore a mongodb data container. exit."
-        exit 0
-      else
-        echo "your input is $ans"
-        echo "Would you create a new mongodb data container? [y/n]"
-      fi
-    done
-  fi
-}
-
-function find_and_create_oacis_data_container() {
-  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-DATA[\ ]*$"`
-  if [ -z "$dockerps" ]
-  then
-    echo "================================================================"
-    echo "OACIS data container does not exist"
-    echo "Would you create a new OACIS data container? [y/n]"
-    while :
-    do
-      read ans
-      if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
-      then
-        docker run --entrypoint="echo" --name OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE} "data container is created"
-        echo "================================================================"
-        echo "A new oacis data container named OACIS-${PROJECT_NAME}-DATA is created."
-        break
-      elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
-      then
-        echo "There is no OACIS data container."
-        echo "Create or restore an OAICS data container. exit."
-        exit 0
-      else
-        echo "your input is $ans"
-        echo "Would you restor ssh settings? [y/n]"
-      fi
-    done
   fi
 }
 
@@ -113,54 +163,12 @@ function start_oacis() {
   docker rm OACIS-${PROJECT_NAME}-MONGODB > /dev/null
 }
 
-function make_backup() {
-  echo "Would you make backup of ssh setting files? [y/n]"
-  while :
-  do
-    read ans
-    if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
-    then
-      echo "making a backup of ssh setting files..."
-      backup_script=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)/backup_ssh.sh
-      $backup_script $PROJECT_NAME
-      break
-    elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
-    then
-      echo "skip making a backup of ssh setting files."
-      break
-    else
-      echo "your input is $ans"
-      echo "Would you make backup of ssh setting files? [y/n]"
-    fi
-  done
-
-  echo "Would you make backup of mongodb data files? [y/n]"
-  while :
-  do
-    read ans
-    if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
-    then
-      backup_script=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)/backup_db.sh
-      $backup_script $PROJECT_NAME
-      break
-    elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
-    then
-      echo "skip making a backup of mongodb data files."
-      break
-    else
-      echo "your input is $ans"
-      echo "Would you make backup of mongodb data files? [y/n]"
-    fi
-  done
-}
-
 #main processes
 initialize $@
 check_old_container
-find_and_create_data_folders
 find_and_crate_mongo_data_container
 find_and_create_oacis_data_container
+find_and_create_data_folders
 start_oacis
-make_backup
 
 exit 0
