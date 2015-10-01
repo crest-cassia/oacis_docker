@@ -19,6 +19,22 @@ function initialize() {
     MODE="restart"
   else
     MODE="create"
+    echo "Would you create a new project [${PROJECT_NAME}]? [Y/n]"
+    while :
+    do
+      read ans
+      if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
+      then
+        break
+      elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
+      then
+        echo "Give up to create a new project. exit."
+        exit -1
+      else
+        echo "your input is $ans"
+        echo "Would you create a new project [${PROJECT_NAME}]? [Y/n]"
+      fi
+    done
   fi
 }
 
