@@ -113,47 +113,6 @@ function start_oacis() {
   docker rm OACIS-${PROJECT_NAME}-MONGODB > /dev/null
 }
 
-function make_backup() {
-  echo "Would you make backup of ssh setting files? [y/n]"
-  while :
-  do
-    read ans
-    if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
-    then
-      echo "making a backup of ssh setting files..."
-      backup_script=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)/backup_ssh.sh
-      $backup_script $PROJECT_NAME
-      break
-    elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
-    then
-      echo "skip making a backup of ssh setting files."
-      break
-    else
-      echo "your input is $ans"
-      echo "Would you make backup of ssh setting files? [y/n]"
-    fi
-  done
-
-  echo "Would you make backup of mongodb data files? [y/n]"
-  while :
-  do
-    read ans
-    if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
-    then
-      backup_script=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)/backup_db.sh
-      $backup_script $PROJECT_NAME
-      break
-    elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
-    then
-      echo "skip making a backup of mongodb data files."
-      break
-    else
-      echo "your input is $ans"
-      echo "Would you make backup of mongodb data files? [y/n]"
-    fi
-  done
-}
-
 #main processes
 initialize $@
 check_old_container
@@ -161,6 +120,5 @@ find_and_create_data_folders
 find_and_crate_mongo_data_container
 find_and_create_oacis_data_container
 start_oacis
-make_backup
 
 exit 0
