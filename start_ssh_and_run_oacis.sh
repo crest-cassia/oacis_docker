@@ -4,7 +4,7 @@
 chown -R oacis:oacis /home/oacis/oacis/public/Result_development
 chown -R oacis:oacis /home/oacis/work
 chown oacis:oacis /home/oacis/.ssh
-chmod 700 /home/oacis/.ssh
+chmod -R 700 /home/oacis/.ssh
 if [ ! -f /home/oacis/oacis/config/mongoid.yml.orig ]
 then
   sed -i".orig" -e s/localhost:27017/mongo:27017/g /home/oacis/oacis/config/mongoid.yml
