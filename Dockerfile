@@ -2,7 +2,7 @@
 # OACIS Dockfile for Ubuntu Image #
 ###################################
 FROM ubuntu:14.04
-MAINTAINER "Takeshi Uchitane" <t.uchitane@gmail.com>
+MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
 #Setup packages for oacis and its analyzers
 RUN apt-get update && apt-get install -y openssh-server git build-essential curl gawk libreadline6-dev zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 autoconf libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev supervisor; apt-get clean
@@ -25,7 +25,7 @@ RUN /bin/bash -l -c "rvm requirements"; /bin/bash -l -c "rvm install 2.2"; echo 
 WORKDIR /home/oacis
 RUN git clone https://github.com/crest-cassia/oacis.git
 WORKDIR /home/oacis/oacis
-#RUN git checkout master; git pull origin master; git pull origin master --tags; /bin/bash -l -c "bundle install --path=vendor/bundle"
+RUN git checkout master; git pull origin master; git pull origin master --tags; /bin/bash -l -c "bundle install --path=vendor/bundle"
 RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 
 #install xsub
