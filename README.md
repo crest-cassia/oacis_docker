@@ -27,7 +27,7 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 4. Stop the container
 
   - Run `exit` command in the container.
-  - You can see OACIS process is going to be stoped automatically and then you can see two questions about making backups of data in the container.
+  - You can see OACIS process is going to be stoped automatically.
 
 4. Restart a container for an existing project
 
@@ -40,5 +40,5 @@ See [wiki](https://github.com/crest-cassia/oacis_docker/wiki).
 ## License
 
   - [oacis_docker](https://github.com/crest-cassia/oacis_docker) is a part of [OACIS](https://github.com/crest-cassia/oacis).
-  - OACIS are published under the term of the MIT License (MIT).
+  - OACIS and oacis_docker are published under the term of the MIT License (MIT).
   - Copyright (c) 2014,2015 RIKEN, AICS
