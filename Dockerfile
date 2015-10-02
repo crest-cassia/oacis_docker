@@ -25,7 +25,7 @@ RUN /bin/bash -l -c "rvm requirements"; /bin/bash -l -c "rvm install 2.2"; echo 
 WORKDIR /home/oacis
 RUN git clone https://github.com/crest-cassia/oacis.git
 WORKDIR /home/oacis/oacis
-RUN git checkout master; git pull origin master; git pull origin master --tags;
+#RUN git checkout master; git pull origin master; git pull origin master --tags;
 RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 
 #install xsub
