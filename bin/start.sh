@@ -9,7 +9,7 @@ function initialize() {
   fi
   PROJECT_NAME=$1
   PORT=${2-3000}
-  OACIS_IMAGE=${OACIS_IMAGE-"takeshiuchitane/oacis:latest"}
+  OACIS_IMAGE=${OACIS_IMAGE-"oacis/oacis:latest"}
   MONGO_IMAGE="mongo:3.0.3"
   #check latest image
   docker pull ${OACIS_IMAGE}
