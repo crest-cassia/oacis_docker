@@ -19,7 +19,7 @@ function initialize() {
     MODE="restart"
   else
     MODE="create"
-    echo "Would you create a new project [${PROJECT_NAME}]? [Y/n]"
+    echo "Will you create a new project [${PROJECT_NAME}]? [Y/n]"
     while :
     do
       read ans
@@ -32,7 +32,7 @@ function initialize() {
         exit -1
       else
         echo "your input is $ans"
-        echo "Would you create a new project [${PROJECT_NAME}]? [Y/n]"
+        echo "Will you create a new project [${PROJECT_NAME}]? [Y/n]"
       fi
     done
   fi
@@ -78,7 +78,7 @@ function find_and_crate_mongo_data_container {
       echo "================================================================"
       echo "Mongodb data container does not exist though project directories exist."
       echo "Create or restore a mongodb data container."
-      echo "Would you create a new mongodb data container? [Y/n]"
+      echo "Will you create a new mongodb data container? [Y/n]"
       while :
       do
         read ans
@@ -94,7 +94,7 @@ function find_and_crate_mongo_data_container {
           exit -1
         else
           echo "your input is $ans"
-          echo "Would you create a new mongodb data container? [Y/n]"
+          echo "Will you create a new mongodb data container? [Y/n]"
         fi
       done
     fi
@@ -121,7 +121,7 @@ function find_and_create_oacis_data_container() {
       echo "================================================================"
       echo "OACIS data container only including ssh settings does not exist."
       echo "Create or restore an OAICS data container. "
-      echo "Would you create a new OACIS data container? [Y/n]"
+      echo "Will you create a new OACIS data container? [Y/n]"
       while :
       do
         read ans
@@ -137,7 +137,7 @@ function find_and_create_oacis_data_container() {
           exit -1
         else
           echo "your input is $ans"
-          echo "Would you create a new OACIS data container? [Y/n]"
+          echo "Will you create a new OACIS data container? [Y/n]"
         fi
       done
     fi
