@@ -23,7 +23,7 @@ function initialize() {
     while :
     do
       read ans
-      if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
+      if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" -o "$ans" = "" ]
       then
         break
       elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
@@ -82,7 +82,7 @@ function find_and_crate_mongo_data_container {
       while :
       do
         read ans
-        if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
+        if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" -o "$ans" = "" ]
         then
           docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
           echo "================================================================"
@@ -125,7 +125,7 @@ function find_and_create_oacis_data_container() {
       while :
       do
         read ans
-        if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
+        if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" -o "$ans" = "" ]
         then
           docker create --name OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
           echo "================================================================"
