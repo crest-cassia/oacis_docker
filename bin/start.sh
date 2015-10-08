@@ -36,22 +36,7 @@ function initialize() {
       if [ -z "$docker_image_id" ]
       then
         echo "Latest image for oacis_docker is available."
-        echo "Would you pull the latest oacis image? [y/N]"
-        while :
-        do
-          read ans
-          if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
-          then
-            docker pull $OACIS_IMAGE
-            break
-          elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" -o "$ans" = "" ]
-          then
-            break
-          else
-            echo "your input is $ans"
-            echo "Would you pull the latest oacis image? [y/N]"
-          fi
-        done
+        echo "try: \`docker pull $OACIS_IMAGE\`."
       fi
     fi
   fi
