@@ -101,49 +101,6 @@ function find_and_crate_mongo_data_container {
   fi
 }
 
-function find_and_create_oacis_data_container() {
-  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-DATA[\ ]*$"`
-  if [ "$MODE" = "create" ]
-  then
-    if [ ! -z "$dockerps" ]
-    then
-      echo "================================================================"
-      echo "OACIS data container exists though project directories do not exist."
-      echo "Check project name or try: \"docker rm OACIS-${PROJECT_NAME}-MONGODB-DATA; docker rm OACIS-${PROJECT_NAME}-DATA\"."
-      exit -1
-    fi
-    docker create --name OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
-    echo "================================================================"
-    echo "A new oacis data container named OACIS-${PROJECT_NAME}-DATA is created."
-  else
-    if [ -z "$dockerps" ]
-    then
-      echo "================================================================"
-      echo "OACIS data container only including ssh settings does not exist."
-      echo "Create or restore an OAICS data container. "
-      echo "Will you create a new OACIS data container? [Y/n]"
-      while :
-      do
-        read ans
-        if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" -o "$ans" = "" ]
-        then
-          docker create --name OACIS-${PROJECT_NAME}-DATA ${OACIS_IMAGE}
-          echo "================================================================"
-          echo "A new oacis data container named OACIS-${PROJECT_NAME}-DATA is created."
-          break
-        elif [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" ]
-        then
-          echo "There is no OACIS data container. exit."
-          exit -1
-        else
-          echo "your input is $ans"
-          echo "Will you create a new OACIS data container? [Y/n]"
-        fi
-      done
-    fi
-  fi
-}
-
 function find_and_create_data_folders() {
   if [ $MODE = "create" ]
   then
@@ -158,7 +115,7 @@ function find_and_create_data_folders() {
 function start_oacis() {
   echo "================================================================"
   docker run -d --name OACIS-${PROJECT_NAME}-MONGODB --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
-  docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo --volumes-from OACIS-${PROJECT_NAME}-DATA -v /${WORK_DIR}/Result_development:/home/oacis/oacis/public/Result_development -v /${WORK_DIR}/work:/home/oacis/work ${OACIS_IMAGE}
+  docker run -it --rm -p $PORT:3000 --name OACIS-${PROJECT_NAME} --link OACIS-${PROJECT_NAME}-MONGODB:mongo -v /${WORK_DIR}/Result_development:/home/oacis/oacis/public/Result_development -v /${WORK_DIR}/work:/home/oacis/work ${OACIS_IMAGE}
   docker stop OACIS-${PROJECT_NAME}-MONGODB > /dev/null
   docker rm OACIS-${PROJECT_NAME}-MONGODB > /dev/null
 }
@@ -167,7 +124,6 @@ function start_oacis() {
 initialize $@
 check_old_container
 find_and_crate_mongo_data_container
-find_and_create_oacis_data_container
 find_and_create_data_folders
 start_oacis
 

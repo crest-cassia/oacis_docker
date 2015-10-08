@@ -40,7 +40,6 @@ EXPOSE 3000
 #Create data volumes for OAICS
 VOLUME ["/home/oacis/oacis/public/Result_development"]
 VOLUME ["/home/oacis/work"]
-VOLUME ["/home/oacis/.ssh"]
 
 #Start mongodb daemon and OACIS daemons.
 #When you stop the container (run exit), OACIS daemons and mongodb process are going to stop automatically
