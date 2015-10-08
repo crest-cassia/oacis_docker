@@ -11,8 +11,6 @@ function initialize() {
   PORT=${2-3000}
   OACIS_IMAGE=${OACIS_IMAGE-"oacis/oacis:latest"}
   MONGO_IMAGE="mongo:3.0.3"
-  #check latest image
-  docker pull ${OACIS_IMAGE}
   WORK_DIR=`pwd`/${PROJECT_NAME}
   if [ -d ${WORK_DIR} ]
   then
