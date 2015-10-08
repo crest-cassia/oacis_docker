@@ -1,13 +1,5 @@
 #!/bin/bash
 
-function latest_image_id() {
-repo=$1
-tag=$2
-curl https://index.docker.io/v1/repositories/$repo/tags 2> /dev/null | \
-  awk 'match ($0, /\{\"layer\":\ \"(\w*)\", \"name\":\ "'$tag'\"\}/) {print substr($0, RSTART, RLENGTH)}' | \
-  awk '{print gensub(/\{\"layer\":\ \"(\w*)\", \"name\":\ "'$tag'\"\}/,"\\1", $0)}'
-}
-
 function initialize() {
   #verify arguments
   if [ $# -lt 1 ]
@@ -19,28 +11,6 @@ function initialize() {
   PORT=${2-3000}
   OACIS_IMAGE=${OACIS_IMAGE-"oacis/oacis:latest"}
   MONGO_IMAGE="mongo:3.0.3"
-  #check latest image
-  image_repo=${OACIS_IMAGE%:*}
-  if [ "$image_repo" = "oacis/oacis" ]
-  then
-    if [ -z `echo $OACIS_IMAGE | grep :` ]
-    then
-      image_tag="latest"
-    else
-      image_tag=${OACIS_IMAGE#*:}
-    fi
-    image_id=`latest_image_id $image_repo $image_tag`
-    if [ ! -z "$image_id" ]
-    then
-      docker_image_id=`docker images | grep $image_repo | grep $image_id`
-      if [ -z "$docker_image_id" ]
-      then
-        echo "Latest image for oacis_docker is available."
-        echo "try: \`docker pull $OACIS_IMAGE\`."
-      fi
-    fi
-  fi
-
   WORK_DIR=`pwd`/${PROJECT_NAME}
   if [ -d ${WORK_DIR} ]
   then
