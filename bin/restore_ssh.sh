@@ -7,7 +7,7 @@ function initialize() {
     echo "usage ./backpu_ssh.sh PROJECT_NAME /path/to/ssh_dump_dir"
     exit -1
   fi
-  PROJECT_NAME=$1
+  PROJECT_NAME=${1%/}
   ssh_dump_dir=$2
   if [ ! -d $ssh_dump_dir ]
   then
