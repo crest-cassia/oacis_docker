@@ -7,7 +7,7 @@ function initialize() {
     echo "usage ./run-oacis-docker.sh PROJECT_NAME {port}"
     exit -1
   fi
-  PROJECT_NAME=$1
+  PROJECT_NAME=${1%/}  # removing trailing slash
   PORT=${2-3000}
   OACIS_IMAGE=${OACIS_IMAGE-"oacis/oacis:latest"}
   MONGO_IMAGE="mongo:3.0.3"

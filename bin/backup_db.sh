@@ -7,7 +7,7 @@ function initialize() {
     echo "usage ./backup.sh PROJECT_NAME"
     exit -1
   fi
-  PROJECT_NAME=$1
+  PROJECT_NAME=${1%/}
   MONGO_IMAGE="mongo:3.0.3"
   datetime=`date +%Y%m%d-%H%M`
   uid=`id -u`
