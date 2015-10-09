@@ -9,7 +9,7 @@ function initialize() {
   fi
   PROJECT_NAME=${1%/}  # removing trailing slash
   WORK_DIR=`pwd`/${PROJECT_NAME}
-  DUMP_DIR=`ls ${WORK_DIR}/db/dump-* | sort | tail -n 1`
+  DUMP_DIR=${WORK_DIR}/db/`cd ${WORK_DIR}/db; ls | grep dump | sort | tail -n 1`/oacis_development
 }
 
 function error_if_containers_are_running() {
