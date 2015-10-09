@@ -9,6 +9,7 @@ function initialize() {
   fi
   PROJECT_NAME=${1%/}  # removing trailing slash
   WORK_DIR=`pwd`/${PROJECT_NAME}
+  MONGO_IMAGE="mongo:3.0.3"
 }
 
 function error_if_containers_are_not_running() {

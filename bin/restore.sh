@@ -11,6 +11,7 @@ function initialize() {
   PORT=${2-3000}
   WORK_DIR=`pwd`/${PROJECT_NAME}
   DUMP_DIR=${WORK_DIR}/db/`cd ${WORK_DIR}/db; ls | grep dump | sort | tail -n 1`/oacis_development
+  MONGO_IMAGE="mongo:3.0.3"
 }
 
 function error_if_dump_dir_not_found() {
