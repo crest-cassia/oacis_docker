@@ -12,7 +12,15 @@ function initialize() {
   DUMP_DIR=${WORK_DIR}/db/`cd ${WORK_DIR}/db; ls | grep dump | sort | tail -n 1`/oacis_development
 }
 
-function error_if_containers_are_running() {
+function error_if_dump_dir_not_found() {
+  if [ ! -d ${DUMP_DIR} ]
+  then
+    echo "Error: Directory ${DUMP_DIR} is not found."
+    exit -1
+  fi
+}
+
+function error_if_containers_exist() {
   dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
   then
@@ -32,14 +40,6 @@ function error_if_containers_are_running() {
   then
     echo "================================================================"
     echo "Error: A container named OACIS-${PROJECT_NAME}-MONGODB-DATA exists."
-    exit -1
-  fi
-}
-
-function error_if_dump_dir_not_found() {
-  if [ ! -d ${DUMP_DIR} ]
-  then
-    echo "Error: Directory ${DUMP_DIR} is not found."
     exit -1
   fi
 }
@@ -65,8 +65,8 @@ function create_mongo_oacis_containers() {
 
 #main processes
 initialize $@
-error_if_containers_exist
 error_if_dump_dir_not_found
+error_if_containers_exist
 restore_mongo_data_container
 create_mongo_oacis_containers
 exit 0
