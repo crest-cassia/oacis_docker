@@ -15,9 +15,13 @@ chown oacis:oacis /home/oacis/oacis/config/mongoid.yml*
 #run oacis
 su - -c "\
   cd ~/oacis; \
-  bundle exec rake daemon:start RAILS_ENV=production; \
-  if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" \
+  bundle exec rake daemon:start; \
+  if [ ! -f ~/.ssh/id_rsa ]; \
+  then \
+    echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; \
+    cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys; \
+    chmod 600 $HOME/.ssh/authorized_keys; \
+  fi; \
+  /bin/bash " \
   oacis;
-
-su - -c "/bin/bash" oacis
 
