@@ -4,7 +4,7 @@ function initialize() {
   #verify arguments
   if [ $# -lt 1 ]
   then
-    echo "usage ./$0 PROJECT_NAME [port]"
+    echo "usage $0 PROJECT_NAME [port]"
     exit -1
   fi
   PROJECT_NAME=${1%/}  # removing trailing slash
