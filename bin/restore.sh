@@ -4,10 +4,11 @@ function initialize() {
   #verify arguments
   if [ $# -lt 1 ]
   then
-    echo "usage $0 PROJECT_NAME"
+    echo "usage $0 PROJECT_NAME [PORT]"
     exit -1
   fi
   PROJECT_NAME=${1%/}  # removing trailing slash
+  PORT=${2-3000}
   WORK_DIR=`pwd`/${PROJECT_NAME}
   DUMP_DIR=${WORK_DIR}/db/`cd ${WORK_DIR}/db; ls | grep dump | sort | tail -n 1`/oacis_development
 }

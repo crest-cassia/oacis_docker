@@ -4,11 +4,10 @@ function initialize() {
   #verify arguments
   if [ $# -lt 1 ]
   then
-    echo "usage $0 PROJECT_NAME [port]"
+    echo "usage $0 PROJECT_NAME"
     exit -1
   fi
   PROJECT_NAME=${1%/}  # removing trailing slash
-  PORT=${2-3000}
   OACIS_IMAGE=${OACIS_IMAGE-"oacis/oacis:latest"}
   MONGO_IMAGE="mongo:3.0.3"
   WORK_DIR=`pwd`/${PROJECT_NAME}
