@@ -46,6 +46,7 @@ function check_directory_exists() {
 function dump_mongodb() {
   uid=`id -u`
   datetime=`date +%Y%m%d-%H%M`
+  MONGO_IMAGE="mongo:3.0.3"
   docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGOBACKUP --link OACIS-${PROJECT_NAME}-MONGODB:mongo -v /${WORK_DIR}/db:/db_backup ${MONGO_IMAGE} -c "cd /db_backup; mongodump --db oacis_development -h mongo; chown -R $uid:$uid /db_backup; mv /db_backup/dump /db_backup/dump-$datetime"
 }
 
