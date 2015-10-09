@@ -69,15 +69,8 @@ function delete_containers() {
   else
     echo "Warning: A container named OACIS-${PROJECT_NAME}-MONGODB-DATA is not found."
   fi
-}
 
-function delete_directory() {
-  if [ -d ${WORK_DIR} ]
-  then
-    rm -rf ${WORK_DIR}
-  else
-    echo "Warning: Directory ${WORK_DIR} is not found."
-  fi
+  echo "To delete all the data, please delete ${WORK_DIR}"
 }
 
 #main processes
@@ -85,7 +78,6 @@ initialize $@
 error_if_containers_are_running
 ask_if_you_are_sure
 delete_containers
-delete_directory
 
 exit 0
 
