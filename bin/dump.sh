@@ -26,7 +26,7 @@ function error_if_containers_are_not_running() {
     echo "Error: A container named OACIS-${PROJECT_NAME}-MONGODB is not running"
     exit -1
   fi
-  dockerps=`docker ps | grep "OACIS-${PROJECT_NAME}-MONGODB-DATA[\ ]*$"`
+  dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}-MONGODB-DATA[\ ]*$"`
   if [ -z "$dockerps" ]
   then
     echo "================================================================"
