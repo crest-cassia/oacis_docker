@@ -36,10 +36,7 @@ function ask_if_you_are_sure() {
   echo "Docker containers and work directory will be deleted."
   echo "Are you sure? [y/N]"
   read ans
-  if [ "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" ]
-  then
-    # DO NOTHING
-  else
+  if [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" -o "$ans" = "" ]
     exit -1
   fi
 }
@@ -70,7 +67,7 @@ function delete_containers() {
     echo "Warning: A container named OACIS-${PROJECT_NAME}-MONGODB-DATA is not found."
   fi
 
-  echo "To delete all the data, please delete ${WORK_DIR}"
+  echo "To delete all the data in the file system as well, delete ${WORK_DIR}"
 }
 
 #main processes
