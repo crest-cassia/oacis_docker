@@ -37,6 +37,7 @@ function ask_if_you_are_sure() {
   echo "Are you sure? [y/N]"
   read ans
   if [ "$ans" = "n" -o "$ans" = "N" -o "$ans" = "no" -o "$ans" = "No" -o "$ans" = "" ]
+  then
     exit -1
   fi
 }
