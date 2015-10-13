@@ -3,8 +3,6 @@
 #pre-processes
 chown -R oacis:oacis /home/oacis/oacis/public/Result_development
 chown -R oacis:oacis /home/oacis/work
-chown oacis:oacis /home/oacis/.ssh
-chmod -R 700 /home/oacis/.ssh
 if [ ! -f /home/oacis/oacis/config/mongoid.yml.orig ]
 then
   sed -i".orig" -e s/localhost:27017/mongo:27017/g /home/oacis/oacis/config/mongoid.yml
@@ -15,10 +13,15 @@ chown oacis:oacis /home/oacis/oacis/config/mongoid.yml*
 /usr/bin/supervisord
 
 #run oacis
-su - -c "cd ~/oacis; \
-  bundle exec rake daemon:start RAILS_ENV=production; \
-  if [ ! -f ~/.ssh/id_rsa ]; then echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; cat $HOME/.ssh/id_rsa.pub > $HOME/.ssh/authorized_keys; chmod 600 $HOME/.ssh/authorized_keys; fi" \
-  oacis; su - oacis
+su - -c "\
+  cd ~/oacis; \
+  bundle exec rake daemon:start; \
+  if [ ! -f ~/.ssh/id_rsa ]; \
+  then \
+    echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; \
+    cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys; \
+    chmod 600 $HOME/.ssh/authorized_keys; \
+  fi; \
+  /bin/bash " \
+  oacis;
 
-#post-processes
-su - -c "cd ~/oacis; bundle exec rake daemon:stop RAILS_ENV=production" oacis

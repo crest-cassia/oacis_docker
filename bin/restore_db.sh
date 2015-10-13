@@ -7,7 +7,7 @@ function initialize() {
     echo "usage ./backpu_db.sh PROJECT_NAME /path/to/db_dump_dir/oacis_development"
     exit -1
   fi
-  PROJECT_NAME=$1
+  PROJECT_NAME=${1%/}
   db_dump_dir=$2
   if [ ! -d $db_dump_dir ]
   then

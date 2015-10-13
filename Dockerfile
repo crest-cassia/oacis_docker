@@ -25,7 +25,7 @@ RUN /bin/bash -l -c "rvm requirements"; /bin/bash -l -c "rvm install 2.2"; echo 
 WORKDIR /home/oacis
 RUN git clone https://github.com/crest-cassia/oacis.git
 WORKDIR /home/oacis/oacis
-RUN git checkout master; git pull origin master; git pull origin master --tags;
+#RUN git checkout master; git pull origin master; git pull origin master --tags;
 RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 
 #install xsub
@@ -40,7 +40,6 @@ EXPOSE 3000
 #Create data volumes for OAICS
 VOLUME ["/home/oacis/oacis/public/Result_development"]
 VOLUME ["/home/oacis/work"]
-VOLUME ["/home/oacis/.ssh"]
 
 #Start mongodb daemon and OACIS daemons.
 #When you stop the container (run exit), OACIS daemons and mongodb process are going to stop automatically

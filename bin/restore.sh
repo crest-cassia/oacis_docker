@@ -4,17 +4,25 @@ function initialize() {
   #verify arguments
   if [ $# -lt 1 ]
   then
-    echo "usage $0 PROJECT_NAME [port]"
+    echo "usage $0 PROJECT_NAME [PORT]"
     exit -1
   fi
   PROJECT_NAME=${1%/}  # removing trailing slash
   PORT=${2-3000}
-  OACIS_IMAGE=${OACIS_IMAGE-"oacis/oacis:latest"}
-  MONGO_IMAGE="mongo:3.0.3"
   WORK_DIR=`pwd`/${PROJECT_NAME}
+  DUMP_DIR=${WORK_DIR}/db/`cd ${WORK_DIR}/db; ls | grep dump | sort | tail -n 1`/oacis_development
+  MONGO_IMAGE="mongo:3.0.3"
 }
 
-function check_old_container() {
+function error_if_dump_dir_not_found() {
+  if [ ! -d ${DUMP_DIR} ]
+  then
+    echo "Error: Directory ${DUMP_DIR} is not found."
+    exit -1
+  fi
+}
+
+function error_if_containers_exist() {
   dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
   then
@@ -38,27 +46,16 @@ function check_old_container() {
   fi
 }
 
-function check_directory() {
-  if [ -d ${WORK_DIR} ]
-  then
-    echo "Error: ${WORK_DIR} already exists."
-    exit -1
-  fi
-}
+function restore_mongo_data_container() {
 
-function create_directory() {
-  mkdir ${WORK_DIR}
-  mkdir ${WORK_DIR}/Result_development
-  mkdir ${WORK_DIR}/work
-  echo "================================================================"
-  echo "New data directories are created for ${PROJECT_NAME}"
-}
-
-function create_containers() {
   docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
-  echo "================================================================"
-  echo "A new container named OACIS-${PROJECT_NAME}-MONGODB-DATA is created."
+  docker run -d --name OACIS-${PROJECT_NAME}-MONGODB-TMP --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
+  docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE --link OACIS-${PROJECT_NAME}-MONGODB-TMP:mongo -v ${DUMP_DIR}:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE} -c "mongorestore --db oacis_development -h mongo /db_backup"
+  docker stop OACIS-${PROJECT_NAME}-MONGODB-TMP > /dev/null
+  docker rm OACIS-${PROJECT_NAME}-MONGODB-TMP > /dev/null
+}
 
+function create_mongo_oacis_containers() {
   docker create --name OACIS-${PROJECT_NAME}-MONGODB --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
   echo "================================================================"
   echo "A new container named OACIS-${PROJECT_NAME}-MONGODB is created."
@@ -68,21 +65,10 @@ function create_containers() {
   echo "A new container named OACIS-${PROJECT_NAME} is created."
 }
 
-function start_oacis() {
-  echo "================================================================"
-  docker start OACIS-${PROJECT_NAME}-MONGODB
-  echo "container OACIS-${PROJECT_NAME}-MONGODB has started."
-
-  docker start OACIS-${PROJECT_NAME}
-  echo "container OACIS-${PROJECT_NAME} has started."
-}
-
 #main processes
 initialize $@
-check_old_container
-check_directory
-create_directory
-create_containers
-start_oacis
-
+error_if_dump_dir_not_found
+error_if_containers_exist
+restore_mongo_data_container
+create_mongo_oacis_containers
 exit 0
