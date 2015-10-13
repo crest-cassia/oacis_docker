@@ -7,10 +7,10 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 ## Quick Start
 
-1. Setup docker environment (if you have not installed docker yet.)
+1. Setup docker environment
 
     - See [Docker home page](https://www.docker.com/).
-    - Use [Docker Toolbox](https://www.docker.com/toolbox) if you are using Windows or Mac.
+    - If you are Mac or WIndows user, install [Docker Toolbox](https://www.docker.com/toolbox).
 
 2. Get and run a start script.
 
@@ -22,7 +22,7 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
     - The default port is 3000.
     - (for Mac or Windows users) Run the above command in *Docker Quickstart Terminal*.
-    - A terminal of the container machine is launched.
+    - Directory {YOUR_PROJECT_NAME} is created and your simuluation results are stored in this directory.
 
 3. Access OACIS web interface
 
@@ -30,30 +30,44 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
     - (Mac or Windows) Access `192.168.99.100` instead of `localhost`.
         - ![docket_tool_ip](https://github.com/crest-cassia/oacis_docker/wiki/images/docker_tool_ip.png)
 
-4. Stop the container
+4. To stop the container, run the following command.
 
-  - Run `exit` command in the temrminal of the container.
-  - After OACIS stops, the virtual machine also stops.
+    ```sh
+    /path/to/oacis_docker/bin/stop.sh {YOUR_PROJECT_NAME}
+    ```
 
-5. To restart a container of an existing project, run the script again.
+5. To restart a stopped container, run the following command.
 
-  - Run the script again with an existing project name at the same workdir.
+    ```sh
+    cd /path/to/workdir
+    /path/to/oacis_docker/bin/restart.sh {YOUR_PROJECT_NAME}
+    ```
+
+    - To remove the container and the data, stop the container and then run
+
+        ```sh
+        cd /path/to/workdir
+        /path/to/oacis_docker/bin/remove.sh {YOUR_PROJECT_NAME}
+        rm -r {YOUR_PROJECT_NAME}
+        ```
 
 ## Backup and Restore
 
-To make a backup, run the following command to dump DB data.
-Data will be exported to the directory *PROJECT_NAME/db/dump-YYYYMMDD-hhmm/oacis_development*.
+To make a backup, run the following command to dump DB data in the container.
+Data will be exported to {YOUR_PROJECT_NAME} directory.
 
 ```sh
-./bin/backup_db.sh PROJECT_NAME
+cd /path/to/workdir
+/path/to/oacis_docker/bin/dump.sh PROJECT_NAME
 ```
 
-After running the above command, make a backup of the directory *PROJECT_NAME/*.
+Then, please make a backup of the directory *PROJECT_NAME/*.
+Containers must be running when you make a backup.
 
-To restore data, prepare the project directory, and run the following command to import the data to DB.
+To restore data from a backup directory named {YOUR_PROJECT_NAME}, run the following command to import the data to DB.
 
 ```sh
-./bin/restore_db.sh PROJECT_NAME path/to/dump/oacis_development
+/path/to/oacis_docker/bin/restore.sh {YOUR_PROJECT_NAME}
 ```
 
 ## More infomation
