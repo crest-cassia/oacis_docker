@@ -9,6 +9,7 @@ function initialize() {
   fi
   PROJECT_NAME=${1%/}  # removing trailing slash
   PORT=${2-3000}
+  OACIS_IMAGE=${OACIS_IMAGE-"oacis/oacis:latest"}
   WORK_DIR=`pwd`/${PROJECT_NAME}
   DUMP_DIR=${WORK_DIR}/db/`cd ${WORK_DIR}/db; ls | grep dump | sort | tail -n 1`/oacis_development
   MONGO_IMAGE="mongo:3.0.3"
@@ -50,7 +51,7 @@ function restore_mongo_data_container() {
 
   docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
   docker run -d --name OACIS-${PROJECT_NAME}-MONGODB-TMP --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
-  docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE --link OACIS-${PROJECT_NAME}-MONGODB-TMP:mongo -v ${DUMP_DIR}:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE} -c "mongorestore --db oacis_development -h mongo /db_backup"
+  docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE --link OACIS-${PROJECT_NAME}-MONGODB-TMP:mongo -v /${DUMP_DIR}:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE} -c "mongorestore --db oacis_development -h mongo /db_backup"
   docker stop OACIS-${PROJECT_NAME}-MONGODB-TMP > /dev/null
   docker rm OACIS-${PROJECT_NAME}-MONGODB-TMP > /dev/null
 }
