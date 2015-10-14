@@ -30,7 +30,7 @@ function error_if_containers_are_not_running() {
 }
 
 function launch_sh() {
-  docker exec -it "OACIS-${PROJECT_NAME}" su - oacis -c 'cd /home/oacis/oacis; exec "bash"'
+  docker exec -it "OACIS-${PROJECT_NAME}" bash -c 'su - oacis; cd /home/oacis/oacis; exec "bash && exit"'
 }
 
 #main processes
