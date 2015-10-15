@@ -15,6 +15,18 @@ function initialize() {
   MONGO_IMAGE="mongo:3.0.3"
 }
 
+function check_ports() {
+  ports=`docker ps -a -q | xargs docker inspect --format='{{ if index .HostConfig.PortBindings "3000/tcp" }}{{(index (index .HostConfig.PortBindings "3000/tcp") 0).HostPort}}{{ end }}' | sed '/^$/d'`
+  for port in $ports
+  do
+    if [ $port -eq $PORT ]
+    then
+      echo "Error: The port number ${PORT} has been used. Try: \`$0 PROJECT_NAME [port]\`"
+      exit -1
+    fi
+  done
+}
+
 function error_if_dump_dir_not_found() {
   if [ ! -d ${DUMP_DIR} ]
   then
@@ -68,6 +80,7 @@ function create_mongo_oacis_containers() {
 
 #main processes
 initialize $@
+check_ports
 error_if_dump_dir_not_found
 error_if_containers_exist
 restore_mongo_data_container
