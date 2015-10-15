@@ -12,6 +12,12 @@ chown oacis:oacis /home/oacis/oacis/config/mongoid.yml*
 #start ssh process
 /usr/bin/supervisord
 
+function cleanup() {
+  su - -c "echo terminating; cd ~/oacis; bundle exec rake daemon:stop" oacis
+}
+
+trap cleanup SIGINT SIGTERM
+
 #run oacis
 su - -c "\
   cd ~/oacis; \
@@ -22,6 +28,8 @@ su - -c "\
     cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys; \
     chmod 600 $HOME/.ssh/authorized_keys; \
   fi; \
-  /bin/bash " \
-  oacis;
+  while true; do sleep 1; done" \
+  oacis &
 
+child=$!
+wait "$child"
