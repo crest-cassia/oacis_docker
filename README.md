@@ -73,7 +73,7 @@ To restore data from a backup directory named {YOUR_PROJECT_NAME}, run the follo
 ## Logging in the container
 
 By logging in the container, you can update the configuration of the container.
-For instance, you can install additional packages, set ssh-agent, and see the logs.
+For instance, you can install additional packages, set up ssh-agent, and see the logs.
 
 To login the container as a normal user, run
 
