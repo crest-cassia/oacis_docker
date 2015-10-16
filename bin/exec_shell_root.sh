@@ -30,7 +30,7 @@ function error_if_containers_are_not_running() {
 }
 
 function launch_sh() {
-  if [ $OS"" = "windows_NT" ]
+  if [ "${OS}" = "windows_NT" ]
   then
     winpty docker exec -it "OACIS-${PROJECT_NAME}" bash
   else
