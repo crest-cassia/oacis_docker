@@ -62,10 +62,17 @@ function error_if_containers_exist() {
 function restore_mongo_data_container() {
 
   docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
+  docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA-TMP -v /${DUMP_DIR}:/db_backup ${MONGO_IMAGE}
   docker run -d --name OACIS-${PROJECT_NAME}-MONGODB-TMP --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
-  docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE --link OACIS-${PROJECT_NAME}-MONGODB-TMP:mongo -v /${DUMP_DIR}:/db_backup --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE} -c "mongorestore --db oacis_development -h mongo /db_backup"
+  if [ "$OS" = "windows_NT" ]
+  then
+    winpty docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE --link OACIS-${PROJECT_NAME}-MONGODB-TMP:mongo --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA-TMP --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE} -c "mongorestore --db oacis_development -h mongo /db_backup"
+  else
+    docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE --link OACIS-${PROJECT_NAME}-MONGODB-TMP:mongo --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA-TMP --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE} -c "mongorestore --db oacis_development -h mongo /db_backup"
+  fi
   docker stop OACIS-${PROJECT_NAME}-MONGODB-TMP > /dev/null
   docker rm OACIS-${PROJECT_NAME}-MONGODB-TMP > /dev/null
+  docker rm OACIS-${PROJECT_NAME}-MONGODB-DATA-TMP > /dev/null
 }
 
 function create_mongo_oacis_containers() {
