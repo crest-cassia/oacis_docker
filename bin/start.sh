@@ -14,6 +14,18 @@ function initialize() {
   WORK_DIR=`pwd`/${PROJECT_NAME}
 }
 
+function check_ports() {
+  ports=`docker ps -a -q | xargs docker inspect --format='{{ if index .HostConfig.PortBindings "3000/tcp" }}{{(index (index .HostConfig.PortBindings "3000/tcp") 0).HostPort}}{{ end }}' | sed '/^$/d'`
+  for port in $ports
+  do
+    if [ $port -eq $PORT ]
+    then
+      echo "Error: The port number ${PORT} has been used. Try: \`$0 PROJECT_NAME [port]\`"
+      exit -1
+    fi
+  done
+}
+
 function check_old_container() {
   dockerps=`docker ps -a | grep "OACIS-${PROJECT_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
@@ -79,6 +91,7 @@ function start_oacis() {
 
 #main processes
 initialize $@
+check_ports
 check_old_container
 check_directory
 create_directory
