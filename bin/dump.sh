@@ -49,7 +49,7 @@ function dump_mongodb() {
   datetime=`date +%Y%m%d-%H%M`
   MONGO_IMAGE="mongo:3.0.3"
   docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA-TMP -v /${WORK_DIR}/db:/db_backup ${MONGO_IMAGE}
-  if [ "$OS" = "windows_NT" ]
+  if [ "${OS}" = "windows_NT" ]
   then
     winpty docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGOBACKUP --link OACIS-${PROJECT_NAME}-MONGODB:mongo --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA-TMP ${MONGO_IMAGE} -c "cd /db_backup; mongodump --db oacis_development -h mongo; chown -R $uid:$uid /db_backup; mv /db_backup/dump /db_backup/dump-$datetime"
   else

@@ -64,7 +64,7 @@ function restore_mongo_data_container() {
   docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
   docker create --name OACIS-${PROJECT_NAME}-MONGODB-DATA-TMP -v /${DUMP_DIR}:/db_backup ${MONGO_IMAGE}
   docker run -d --name OACIS-${PROJECT_NAME}-MONGODB-TMP --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE}
-  if [ "$OS" = "windows_NT" ]
+  if [ "${OS}" = "windows_NT" ]
   then
     winpty docker run -it --rm --entrypoint="bash" --name OACIS-${PROJECT_NAME}-MONGORESTORE --link OACIS-${PROJECT_NAME}-MONGODB-TMP:mongo --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA-TMP --volumes-from OACIS-${PROJECT_NAME}-MONGODB-DATA ${MONGO_IMAGE} -c "mongorestore --db oacis_development -h mongo /db_backup"
   else
