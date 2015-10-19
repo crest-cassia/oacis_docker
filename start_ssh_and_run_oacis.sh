@@ -13,6 +13,7 @@ chown oacis:oacis /home/oacis/oacis/config/mongoid.yml*
 /usr/bin/supervisord
 
 function cleanup() {
+  kill ${!}
   su - -c "echo terminating; cd ~/oacis; bundle exec rake daemon:stop" oacis
 }
 
@@ -27,9 +28,11 @@ su - -c "\
     echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; \
     cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys; \
     chmod 600 $HOME/.ssh/authorized_keys; \
-  fi; \
-  while true; do sleep 1; done" \
-  oacis &
+  fi" \
+  oacis
 
+echo "booted"
+tail -f /dev/null &
 child=$!
 wait "$child"
+
