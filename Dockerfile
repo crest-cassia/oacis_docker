@@ -1,15 +1,17 @@
 ######################################
-# OACIS Dockerfile with Ubuntu Image #
+# OACIS Dockerfile from Ubuntu Image #
 ######################################
 FROM ubuntu:14.04
 MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
 #Setup packages for oacis and its analyzers
-RUN apt-get update && apt-get install -y openssh-server git build-essential curl gawk libreadline6-dev zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 autoconf libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev supervisor; apt-get clean
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10; echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
+RUN apt-get update && apt-get install -y openssh-server git build-essential curl mongodb-org gawk libreadline6-dev zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 autoconf libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev supervisor; apt-get clean
 
 #Add config files for supervised to start up daemons
 RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; fi
 ADD sshd.conf /etc/supervisor/conf.d/
+ADD mongod.conf /etc/supervisor/conf.d/
 
 #Create oacis user
 RUN useradd -ms /bin/bash oacis
@@ -37,8 +39,8 @@ WORKDIR /home/oacis
 #Expose ports
 EXPOSE 3000
 #Create data volumes for OAICS
+VOLUME ["/data/db"]
 VOLUME ["/home/oacis/oacis/public/Result_development"]
-VOLUME ["/home/oacis/work"]
 
 #Start mongodb daemon and OACIS daemons.
 #When you stop the container (run exit), OACIS daemons and mongodb process are going to stop automatically
