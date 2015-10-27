@@ -93,7 +93,7 @@ function wait_until_oacis_started() {
   while :
   do
     sleep 1
-    last=`docker logs OACIS-test 2> /dev/null | tail -n 1`
+    last=`docker logs OACIS-${PROJECT_NAME} 2> /dev/null | tail -n 1`
     echo $last
     if [ "$last" = "booted" ]
     then
