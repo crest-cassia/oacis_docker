@@ -1,5 +1,5 @@
 ######################################
-# OACIS Dockerfile with Ubuntu Image #
+# OACIS Dockerfile from Ubuntu Image #
 ######################################
 FROM ubuntu:14.04
 MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
@@ -38,10 +38,9 @@ ENV HOME /home/oacis
 WORKDIR /home/oacis
 #Expose ports
 EXPOSE 3000
-VOLUME ["/data/db"]
 #Create data volumes for OAICS
+VOLUME ["/data/db"]
 VOLUME ["/home/oacis/oacis/public/Result_development"]
-VOLUME ["/home/oacis/work"]
 
 #Start mongodb daemon and OACIS daemons.
 #When you stop the container (run exit), OACIS daemons and mongodb process are going to stop automatically
