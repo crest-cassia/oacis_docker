@@ -3,7 +3,6 @@
 #pre-processes
 chown -R 999:999 /data/db
 chown -R oacis:oacis /home/oacis/oacis/public/Result_development
-chown -R oacis:oacis /home/oacis/work
 
 #start ssh process
 /usr/bin/supervisord
