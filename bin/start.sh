@@ -89,6 +89,19 @@ function start_oacis() {
   echo "container OACIS-${PROJECT_NAME} has started."
 }
 
+function wait_until_oacis_started() {
+  while :
+  do
+    sleep 1
+    last=`docker logs OACIS-${PROJECT_NAME} 2> /dev/null | tail -n 1`
+    echo $last
+    if [ "$last" = "booted" ]
+    then
+      break
+    fi
+  done
+}
+
 #main processes
 initialize $@
 check_ports
@@ -97,5 +110,6 @@ check_directory
 create_directory
 create_containers
 start_oacis
+wait_until_oacis_started
 
 exit 0

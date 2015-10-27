@@ -68,12 +68,26 @@ function restart_container() {
   docker start OACIS-${PROJECT_NAME}
 }
 
+function wait_until_oacis_started() {
+  while :
+  do
+    sleep 1
+    last=`docker logs OACIS-{PROJECT_NAME} 2> /dev/null | tail -n 1`
+    echo $last
+    if [ "$last" = "booted" ]
+    then
+      break
+    fi
+  done
+}
+
 #main processes
 initialize $@
 error_if_containers_are_running
 error_if_containers_are_not_found
 error_if_dir_is_not_found
 restart_container
+wait_until_oacis_started
 
 exit 0
 
