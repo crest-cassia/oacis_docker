@@ -1,8 +1,8 @@
-language: bash
-
 sudo: required
 
-service:
+language: bash
+
+services:
   - docker
 
 before_install:
