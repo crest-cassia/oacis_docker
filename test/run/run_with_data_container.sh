@@ -14,6 +14,6 @@ function run_with_data_container() {
 run_with_data_container
 rc=$?
 
-rm aaa.txt
+rm -f aaa.txt
 
 exit $rc
