@@ -1,7 +1,6 @@
 #!/bin/bash
 
-set -e
-set +x
+set -eux
 
 OACIS_IMAGE=${OACIS_IMAGE-"oacis/oacis"}
 PORT=3100

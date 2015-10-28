@@ -8,7 +8,8 @@ services:
 before_install:
   - docker build -t oacis/oacis .
   - docker pull mongo:3.0.3
+  - docker pull busybox
 
 script:
-  - bash test/test.sh
+  - bash test/test_all.sh
 
