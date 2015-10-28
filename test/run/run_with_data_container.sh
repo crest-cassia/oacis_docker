@@ -14,3 +14,5 @@ function run_with_data_container() {
 
 run_with_data_container
 
+rm aaa.txt
+
