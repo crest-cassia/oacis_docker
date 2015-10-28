@@ -23,5 +23,5 @@ function cleanup() {
     done
   fi
 }
-trap cleanup 0
+trap cleanup EXIT
 
