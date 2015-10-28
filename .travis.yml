@@ -1,0 +1,14 @@
+language: bash
+
+sudo: required
+
+service:
+  - docker
+
+before_install:
+  - docker build -t oacis/oacis .
+  - docker pull mongo:3.0.3
+
+script:
+  - bash test/test.sh
+
