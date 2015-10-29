@@ -11,17 +11,17 @@ function cleanup() {
   dockerps=`docker ps | grep "${OACIS_CONTAINER_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
   then
-    docker stop $dockerps
+    docker stop ${OACIS_CONTAINER_NAME}
   fi
   dockerps=`docker ps | grep "${OACIS_CONTAINER_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
   then
-    docker rm $dockerps
+    docker rm ${OACIS_CONTAINER_NAME}
   fi
   dockerps=`docker ps | grep "${OACIS_DATA_CONTAINER_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
   then
-    docker rm $dockerps
+    docker rm ${OACIS_DATA_CONTAINER_NAME}
   fi
 }
 trap cleanup EXIT
