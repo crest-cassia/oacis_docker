@@ -2,12 +2,13 @@
 
 [![release](https://img.shields.io/github/release/crest-cassia/oacis.svg)](https://github.com/crest-cassia/oacis/releases/latest)
 [![docker image](http://img.shields.io/badge/docker_image-ready-brightgreen.svg)](https://registry.hub.docker.com/u/takeshiuchitane/oacis/)
+[![Build Status](https://travis-ci.org/crest-cassia/oacis_docker.svg?branch=develop)](https://travis-ci.org/crest-cassia/oacis_docker)
 
 You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 ## Quick Start
 
-1. Setup docker environment
+1. Setup docker engint(1.8 or later is required)
 
     - See [Docker home page](https://www.docker.com/).
     - If you are Mac or WIndows user, install [Docker Toolbox](https://www.docker.com/toolbox).
@@ -30,9 +31,10 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 ## Select Port
 
 - The port 3001 is used instead of 3000
-    ```sh
-    docker run --name oacis -d -p 3001:3000 oacis/oacis
-    ```
+
+```sh
+docker run --name oacis -d -p 3001:3000 oacis/oacis
+```
 
 ## Backup and Restore
 
