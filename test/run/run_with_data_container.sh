@@ -4,10 +4,11 @@
 
 function run_with_data_container() {
   echo "hello" > aaa.txt
-  docker create --name oacis-data -v `pwd`:/home/oacis/oacis/public/Result_development busybox
-  docker run --name oacis -p ${PORT}:3000 -d --volumes-from oacis-data ${OACIS_IMAGE}
+  chmod 777 aaa.txt
+  docker create --name ${OACIS_DATA_CONTAINER_NAME} -v `pwd`:/home/oacis/oacis/public/Result_development busybox
+  docker run --name ${OACIS_CONTAINER_NAME} -p ${PORT}:3000 -d --volumes-from ${OACIS_DATA_CONTAINER_NAME} ${OACIS_IMAGE}
   sleep 5
-  test $(echo `docker exec -it oacis bash -c "cat /home/oacis/oacis/public/Result_development/aaa.txt"` | tr -d '\r') == "hello"
+  test $(echo `docker exec -it ${OACIS_CONTAINER_NAME} bash -c "cat /home/oacis/oacis/public/Result_development/aaa.txt"` | tr -d '\r') == "hello"
 }
 
 run_with_data_container

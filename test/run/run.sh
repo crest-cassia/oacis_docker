@@ -3,9 +3,9 @@
 . ./test/base.sh
 
 function run_oacis() {
-  docker run --name oacis -p ${PORT}:3000 -d ${OACIS_IMAGE}
+  docker run --name ${OACIS_CONTAINER_NAME} -p ${PORT}:3000 -d ${OACIS_IMAGE}
   sleep 20
-  docker logs oacis
+  docker logs ${OACIS_CONTAINER_NAME}
   curl localhost:${PORT}
 }
 
