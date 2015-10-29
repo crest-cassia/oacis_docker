@@ -14,6 +14,7 @@ function run_with_data_container() {
 run_with_data_container
 rc=$?
 
-rm -rf .oacis_docker_tmp_dir
+# There is unclear reson why an error `rm: cannot remove ‘.oacis_docker_tmp_dir/aaa.txt’: Permission denied` occurs, skip it
+#rm -rf .oacis_docker_tmp_dir
 
 exit $rc
