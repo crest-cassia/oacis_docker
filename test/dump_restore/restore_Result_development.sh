@@ -14,6 +14,7 @@ function db_dump_restore() {
 db_dump_restore
 rc=$?
 
+docker exec -it ${OACIS_CONTAINER_NAME} bash -c "chmod 777 -R /home/oacis/oacis/public/Result_development"
 rm -rf sample_backup
 
 exit $rc
