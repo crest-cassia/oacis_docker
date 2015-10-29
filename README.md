@@ -46,17 +46,17 @@ datetime=`date +%Y%m%d-%H%M` docker exec -it oacis bash -c "cd /home/oacis/oacis
 
 Then, please make a backup of the directory *Result_development*.
 ```sh
-uid=`id -u` docker run -it --rm --entrypoint="bash" --volumes-from oacis -v `pwd`:/backup oacis/oacis -c "rsync -av /home/oacis/oacis/public/Result_development /backup/; chown -R $uid:$uid /backup/Result_development"
+docker cp oacis:/home/oacis/oacis/public/Result_development .
 ```
 
 
-To restore data, run the following command to import the data to DB.
+To restore data, run the following command to copy *Result_development* and restore db data from Result_development/db/dump.
 
 ```sh
-docker create --name oacis oacis/oacis
-docker run -it --rm --entrypoint="bash" --volumes-from oacis -v /path/to/dump_dir/Result_development:/backup oacis/oacis -c "rsync -av /backup/* /home/oacis/oacis/public/Result_development/"
-docker start oacis
-docker exec -it oacis bash -c "cd /home/oacis/oacis/public/Result_development/db/\`cd /home/oacis/oacis/public/Result_development/db; ls | grep dump | sort | tail -n 1\`/oacis_development; mongorestore --db oacis_development ."
+docker run --name another_oacis oacis/oacis
+sleep 20
+docker cp Result_development another_oacis:/home/oacis/oaics/public/Result_development
+docker exec -it another_oacis bash -c "cd /home/oacis/oacis/public/Result_development/db/\`cd /home/oacis/oacis/public/Result_development/db; ls | grep dump | sort | tail -n 1\`/oacis_development; mongorestore --db oacis_development ."
 ```
 
 ## Logging in the container
