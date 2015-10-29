@@ -1,6 +1,8 @@
 #!/bin/bash
 
-for script in `ls ./test/run/*.sh`
+script_path=$(dirname $0)
+
+for script in `ls $script_path/run/*.sh`
 do
   echo "$script"
   $script
@@ -11,7 +13,7 @@ do
   fi
 done
 
-for script in `ls ./test/dump_restore/*.sh`
+for script in `ls $script_path/dump_restore/*.sh`
 do
   echo "$script"
   $script

@@ -8,17 +8,17 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 ## Quick Start
 
-1. Setup docker engint(1.8 or later is required)
+1. Setup docker engine (version 1.8 or later is required.)
 
     - See [Docker home page](https://www.docker.com/).
-    - If you are Mac or WIndows user, install [Docker Toolbox](https://www.docker.com/toolbox).
+    - If you are Mac or Windows user, install [Docker Toolbox](https://www.docker.com/toolbox).
 
 2. Start an oacis instance
     ```sh
-    docker run --name oacis -d oacis/oacis
+    docker run --name oacis -p 3000:3000 -d oacis/oacis
     ```
 
-    - The default port is 3000.
+    - The default port is 3000. (You can choose another port like `-p 3001:3000`.)
     - (for Mac or Windows users) Run the above command in *Docker Quickstart Terminal*.
 
 3. Access OACIS web interface
@@ -27,14 +27,6 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
     - (Mac or Windows) Access `192.168.99.100` instead of `localhost`.
         - ![docket_tool_ip](https://github.com/crest-cassia/oacis_docker/wiki/images/docker_tool_ip.png)
 
-
-## Select Port
-
-- The port 3001 is used instead of 3000
-
-```sh
-docker run --name oacis -d -p 3001:3000 oacis/oacis
-```
 
 ## Backup and Restore
 
@@ -58,6 +50,7 @@ To restore data, run the following command to copy *Result_development* and rest
 docker run --name another_oacis oacis/oacis
 sleep 20
 docker cp Result_development another_oacis:/home/oacis/oaics/public/Result_development
+docker exec -it another_oacis bash -c "chown oacis:oacis -R /home/oacis/oacis/public/Result_development"
 docker exec -it another_oacis bash -c "cd /home/oacis/oacis/public/Result_development/db/\`cd /home/oacis/oacis/public/Result_development/db; ls | grep dump | sort | tail -n 1\`/oacis_development; mongorestore --db oacis_development ."
 ```
 
