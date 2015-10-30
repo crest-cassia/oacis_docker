@@ -2,7 +2,7 @@
 
 . ./test/base.sh
 
-function db_dump_restore() {
+function get_result_development() {
   docker run --name ${OACIS_CONTAINER_NAME} -p ${PORT}:3000 -d ${OACIS_IMAGE}
   sleep 20
   datetime=`date +%Y%m%d-%H%M`
@@ -11,7 +11,7 @@ function db_dump_restore() {
   test -d Result_development/db
 }
 
-db_dump_restore
+get_result_development
 rc=$?
 
 rm -rf Result_development
