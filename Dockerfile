@@ -33,7 +33,7 @@ RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 RUN git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc'; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile'
 
 #get oacis_start.sh
-RUN git clone https://github.com/crest-cassia/oacis_docker_cmd.git
+RUN git clone https://github.com/crest-cassia/oacis_docker_cmd.git /home/oacis/oacis_docker_cmd
 
 #Start OACIS
 USER root
