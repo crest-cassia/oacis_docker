@@ -2,22 +2,34 @@
 
 [![release](https://img.shields.io/github/release/crest-cassia/oacis.svg)](https://github.com/crest-cassia/oacis/releases/latest)
 [![docker image](http://img.shields.io/badge/docker_image-ready-brightgreen.svg)](https://registry.hub.docker.com/u/takeshiuchitane/oacis/)
+[![Build Status](https://travis-ci.org/crest-cassia/oacis_docker.svg?branch=develop)](https://travis-ci.org/crest-cassia/oacis_docker)
 
 You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 ## Quick Start
 
-1. Setup docker environment
+1. Setup docker engine (version 1.8 or later is required.)
 
     - See [Docker home page](https://www.docker.com/).
-    - If you are Mac or WIndows user, install [Docker Toolbox](https://www.docker.com/toolbox).
+    - If you are Mac or Windows user, install [Docker Toolbox](https://www.docker.com/toolbox).
 
 2. Start an oacis instance
     ```sh
-    docker run --name oacis -d oacis/oacis
+    docker run --name oacis -p 3000:3000 -d oacis/oacis
+    docker logs oacis # wait for boot
     ```
-
-    - The default port is 3000.
+    - OACIS is ready when you get the following logs.
+        ```
+        Progress: |====================================================================|
+        bundle exec rails s -d -b 0.0.0.0
+        => Booting Thin
+        => Rails 4.2.0 application starting in production on http://0.0.0.0:3000
+        => Run `rails server -h` for more startup options
+        ServiceWorker started.
+        JobSubmitterWorker started.
+        JobObserverWorker started.
+        ```
+    - The default port is 3000. (You can choose another port like `-p 3001:3000`.)
     - (for Mac or Windows users) Run the above command in *Docker Quickstart Terminal*.
 
 3. Access OACIS web interface
@@ -26,13 +38,6 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
     - (Mac or Windows) Access `192.168.99.100` instead of `localhost`.
         - ![docket_tool_ip](https://github.com/crest-cassia/oacis_docker/wiki/images/docker_tool_ip.png)
 
-
-## Select Port
-
-- The port 3001 is used instead of 3000
-    ```sh
-    docker run --name oacis -d -p 3001:3000 oacis/oacis
-    ```
 
 ## Backup and Restore
 
@@ -46,17 +51,18 @@ datetime=`date +%Y%m%d-%H%M` docker exec -it oacis bash -c "cd /home/oacis/oacis
 
 Then, please make a backup of the directory *Result_development*.
 ```sh
-uid=`id -u` docker run -it --rm --entrypoint="bash" --volumes-from oacis -v `pwd`:/backup oacis/oacis -c "rsync -av /home/oacis/oacis/public/Result_development /backup/; chown -R $uid:$uid /backup/Result_development"
+docker cp oacis:/home/oacis/oacis/public/Result_development .
 ```
 
 
-To restore data, run the following command to import the data to DB.
+To restore data, run the following command to copy *Result_development* and restore db data from Result_development/db/dump.
 
 ```sh
-docker create --name oacis oacis/oacis
-docker run -it --rm --entrypoint="bash" --volumes-from oacis -v /path/to/dump_dir/Result_development:/backup oacis/oacis -c "rsync -av /backup/* /home/oacis/oacis/public/Result_development/"
-docker start oacis
-docker exec -it oacis bash -c "cd /home/oacis/oacis/public/Result_development/db/\`cd /home/oacis/oacis/public/Result_development/db; ls | grep dump | sort | tail -n 1\`/oacis_development; mongorestore --db oacis_development ."
+docker create --name another_oacis -p 3001:3000 oacis/oacis
+docker cp Result_development another_oacis:/home/oacis/oaics/public/
+docker start another_oacis
+sleep 20
+docker exec -it another_oacis bash -c "cd /home/oacis/oacis/public/Result_development/db/\`cd /home/oacis/oacis/public/Result_development/db; ls | grep dump | sort | tail -n 1\`/oacis_development; mongorestore --db oacis_development ."
 ```
 
 ## Logging in the container
