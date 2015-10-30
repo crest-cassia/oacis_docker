@@ -47,7 +47,7 @@ docker cp oacis:/home/oacis/oacis/public/Result_development .
 To restore data, run the following command to copy *Result_development* and restore db data from Result_development/db/dump.
 
 ```sh
-docker run --name another_oacis oacis/oacis
+docker run --name another_oacis -p 3000:3000 -d oacis/oacis
 sleep 20
 docker cp Result_development another_oacis:/home/oacis/oaics/public/Result_development
 docker exec -it another_oacis bash -c "chown oacis:oacis -R /home/oacis/oacis/public/Result_development"
