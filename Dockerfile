@@ -47,5 +47,4 @@ VOLUME ["/home/oacis/oacis/public/Result_development"]
 
 #Start mongodb daemon and OACIS daemons.
 #When you stop the container (run exit), OACIS daemons and mongodb process are going to stop automatically
-ADD start_ssh_and_run_oacis.sh /home/oacis/
 CMD ["./oacis_docker_cmd/oacis_start.sh"]
