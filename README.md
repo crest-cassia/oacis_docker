@@ -82,6 +82,28 @@ To login as the root user, run
 docker exec -it oacis bash
 ```
 
+## Firewall
+
+Linux users must set up firewall for oacis_docker, or any one can access to your oacis via oacis web browser interface.
+Run the following command by root user.
+
+```sh
+iptables -I FORWARD -i eth+ -o docker0 -p tcp -m tcp --dport 3000 -j DROP
+```
+
+If you also use wifi network, additionarry run the following command.
+
+```sh
+iptables -I FORWARD -i wlan+ -o docker0 -p tcp -m tcp --dport 3000 -j DROP
+```
+
+Note: `iptables` is an application programm for Linux kernel firewall and the configurations are deleted when host OS reboots.
+Note: If you will allow to access to oacis over the firewall, run the following command.
+
+```sh
+iptables -I FORWARD -i eth+ -o docker0 -d $(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' oacis) -p tcp -m tcp --dport 3000 -j ACCEPT
+```
+
 ## More infomation
 
 See [wiki](https://github.com/crest-cassia/oacis_docker/wiki).
