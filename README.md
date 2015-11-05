@@ -85,7 +85,8 @@ docker exec -it oacis bash
 ## Firewall
 
 Linux users must set up firewall for oacis_docker, or any one can access to your oacis via oacis web browser interface.
-Run the following command by root user.
+`iptables` is an application programm for Linux kernel firewall and docker-engine makes iptables configulations.
+Run the following command by root user on host machine to overwrite the configulations.
 
 ```sh
 iptables -I FORWARD -i eth+ -o docker0 -p tcp -m tcp --dport 3000 -j DROP
@@ -97,7 +98,7 @@ If you also use wifi network, additionarry run the following command.
 iptables -I FORWARD -i wlan+ -o docker0 -p tcp -m tcp --dport 3000 -j DROP
 ```
 
-Note: `iptables` is an application programm for Linux kernel firewall and the configurations are deleted when host OS reboots.
+Note: `iptables` configurations are deleted when host OS reboots.
 Note: If you will allow to access to oacis over the firewall, run the following command.
 
 ```sh
