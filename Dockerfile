@@ -35,8 +35,13 @@ RUN git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub; bash -c
 #get oacis_start.sh
 RUN git clone https://github.com/crest-cassia/oacis_docker_cmd.git /home/oacis/oacis_docker_cmd
 
-#Start OACIS
+#prepare tutorials
 USER root
+RUN mkdir /home/oacis/samples
+ADD samples /home/oacis/samples/
+RUN chown -R oacis:oacis /home/oacis/samples
+
+#Start OACIS
 ENV HOME /home/oacis
 WORKDIR /home/oacis
 #Expose ports
