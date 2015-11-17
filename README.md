@@ -39,6 +39,33 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
         - ![docket_tool_ip](https://github.com/crest-cassia/oacis_docker/wiki/images/docker_tool_ip.png)
 
 
+## Stop and Restart
+
+Find a running `oacis` container.
+```sh
+docker ps
+#CONTAINER ID        IMAGE                     COMMAND                        CREATED         STATUS        PORTS                        NAMES
+#3edbc17ee5e4        oacis/oacis:latest        "/home/oacis/oacis_start.sh"   1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
+```
+
+Stop the container.
+```sh
+docker stop oacis
+```
+
+Find the stoped `oacis` container.
+```sh
+docker ps -a
+#CONTAINER ID        IMAGE                     COMMAND                        CREATED         STATUS        PORTS                        NAMES
+#3edbc17ee5e4        oacis/oacis:latest        "/home/oacis/oacis_start.sh"   1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
+```
+
+Restart the container.
+```sh
+docker start oacis
+docker logs oacis
+```
+
 ## Backup and Restore
 
 To make a backup, run the following command to dump DB data.
