@@ -73,7 +73,7 @@ Containers must be running when you make a backup.
 Data will be exported to `/home/oacis/oacis/public/Result_development/db` directory in the container.
 
 ```sh
-datetime=`date +%Y%m%d-%H%M` docker exec -it oacis bash -c "cd /home/oacis/oacis/public/Result_development; if [ ! -d db ]; then mkdir db; fi; cd db; mongodump --db oacis_development; mv dump dump-$datetime; chown -R oacis:oacis /home/oacis/oacis/public/Result_development/db"
+docker exec -it oacis bash -c "cd /home/oacis/oacis/public/Result_development; if [ ! -d db ]; then mkdir db; fi; cd db; mongodump --db oacis_development; mv dump dump-`date +%Y%m%d-%H%M`; chown -R oacis:oacis /home/oacis/oacis/public/Result_development/db"
 ```
 
 Then, please make a backup of the directory *Result_development*.
