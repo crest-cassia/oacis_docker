@@ -1,5 +1,5 @@
 #!/bin/bash
-TUTORIAL_NAME=${0%.sh}
+TUTORIAL_NAME=$(basename ${0%.sh})
 if [ ! -d /home/oacis/oacis/public/${TUTORIAL_NAME} ]
 then
   #clean up old data on DB and file system
