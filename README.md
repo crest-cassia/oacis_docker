@@ -86,7 +86,7 @@ To restore data, run the following command to copy *Result_development* and rest
 
 ```sh
 docker create --name another_oacis -p 3001:3000 oacis/oacis
-docker cp Result_development another_oacis:/home/oacis/oaics/public/
+docker cp Result_development another_oacis:/home/oacis/oacis/public/
 docker start another_oacis
 sleep 20
 docker exec -it another_oacis bash -c "cd /home/oacis/oacis/public/Result_development/db/\`cd /home/oacis/oacis/public/Result_development/db; ls | grep dump | sort | tail -n 1\`/oacis_development; mongorestore --db oacis_development ."
