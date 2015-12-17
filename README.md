@@ -15,7 +15,7 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 
 2. Start an oacis instance
     ```sh
-    docker run --name oacis -p 3000:3000 -d oacis/oacis
+    docker run --name oacis -p 3000:3000 -dt oacis/oacis
     docker logs oacis # wait for boot
     ```
     - OACIS is ready when you get the following logs.
@@ -85,7 +85,7 @@ docker cp oacis:/home/oacis/oacis/public/Result_development .
 To restore data, run the following command to copy *Result_development* and restore db data from Result_development/db/dump.
 
 ```sh
-docker create --name another_oacis -p 3001:3000 oacis/oacis
+docker create -t --name another_oacis -p 3001:3000 oacis/oacis
 docker cp Result_development another_oacis:/home/oacis/oacis/public/
 docker start another_oacis
 sleep 20
