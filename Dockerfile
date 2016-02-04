@@ -5,7 +5,7 @@ FROM ubuntu:14.04
 MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
 #Setup packages for oacis and its analyzers
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927; echo 'deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse' | tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10; echo 'deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse' | tee /etc/apt/sources.list.d/mongodb-org-3.0.list
 RUN apt-get update && apt-get install -y openssh-server git build-essential curl mongodb-org gawk libreadline6-dev zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 autoconf libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev supervisor; apt-get clean
 
 #Add config files for supervised to start up daemons
