@@ -16,7 +16,7 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 2. Start an oacis instance
     ```sh
     docker run --name oacis -p 3000:3000 -dt oacis/oacis
-    docker logs oacis # wait for boot
+    docker logs -f oacis # wait for boot
     ```
     - OACIS is ready when you get the following logs.
         ```
@@ -28,6 +28,11 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
         ServiceWorker started.
         JobSubmitterWorker started.
         JobObserverWorker started.
+        + echo booted
+        booted
+        + child=807
+        + wait 807
+        + tail -f /dev/null
         ```
     - The default port is 3000. (You can choose another port like `-p 3001:3000`.)
     - (for Mac or Windows users) Run the above command in *Docker Quickstart Terminal*.
@@ -45,7 +50,7 @@ Find a running `oacis` container.
 ```sh
 docker ps
 #CONTAINER ID        IMAGE                     COMMAND                        CREATED         STATUS        PORTS                        NAMES
-#3edbc17ee5e4        oacis/oacis:latest        "/home/oacis/oacis_start.sh"   1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
+#3edbc17ee5e4        oacis/oacis:latest        "./oacis_docker_cmd/o"         1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
 ```
 
 Stop the container.
@@ -57,13 +62,19 @@ Find the stoped `oacis` container.
 ```sh
 docker ps -a
 #CONTAINER ID        IMAGE                     COMMAND                        CREATED         STATUS        PORTS                        NAMES
-#3edbc17ee5e4        oacis/oacis:latest        "/home/oacis/oacis_start.sh"   1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
+#3edbc17ee5e4        oacis/oacis:latest        "./oacis_docker_cmd/o"         1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
 ```
 
 Restart the container.
 ```sh
 docker start oacis
-docker logs oacis
+docker logs -f oacis
+```
+
+Revome the container.
+```sh
+docker stop oacis
+docker rm -v oacis
 ```
 
 ## Backup and Restore
@@ -141,5 +152,5 @@ See [wiki](https://github.com/crest-cassia/oacis_docker/wiki).
 
   - [oacis_docker](https://github.com/crest-cassia/oacis_docker) is a part of [OACIS](https://github.com/crest-cassia/oacis).
   - OACIS and oacis_docker are published under the term of the MIT License (MIT).
-  - Copyright (c) 2014,2015 RIKEN, AICS
+  - Copyright (c) 2014,2015,2016 RIKEN, AICS
 
