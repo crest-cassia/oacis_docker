@@ -111,7 +111,7 @@ For instance, you can install additional packages, set up ssh-agent, and see the
 To login the container as a normal user, run
 
 ```sh
-docker exec -it oacis bash -c 'su - oacis; cd /home/oacis/oacis; exec "bash && exit"'
+docker exec -it -u oacis oacis bash -l
 ```
 
 To login as the root user, run
