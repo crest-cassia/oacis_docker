@@ -24,14 +24,3 @@ do
   fi
 done
 
-for script in `ls $script_path/tutorial/*.sh`
-do
-  echo "$script"
-  $script
-  rc=$?
-  if [ $rc -ne 0 ]
-  then
-    exit $rc
-  fi
-done
-
