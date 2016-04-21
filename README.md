@@ -16,7 +16,7 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
 2. Start an oacis instance
     ```sh
     docker run --name oacis -p 3000:3000 -dt oacis/oacis
-    docker logs -f oacis # wait for boot
+    docker logs -f oacis # wait for boot. exit via Ctrl + C
     ```
     - OACIS is ready when you get the following logs.
         ```
