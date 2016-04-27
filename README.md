@@ -4,7 +4,7 @@
 [![docker image](http://img.shields.io/badge/docker_image-ready-brightgreen.svg)](https://registry.hub.docker.com/u/takeshiuchitane/oacis/)
 [![Build Status](https://travis-ci.org/crest-cassia/oacis_docker.svg?branch=develop)](https://travis-ci.org/crest-cassia/oacis_docker)
 
-You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
+You can start using [OACIS](https://github.com/crest-cassia/oacis) quickly using Docker.
 
 ## Quick Start
 
@@ -19,6 +19,7 @@ You can run [OAICS](https://github.com/crest-cassia/oacis) anywhere.
     docker logs -f oacis # wait for boot. exit via Ctrl + C
     ```
     - OACIS is ready when you get the following logs.
+
         ```
         Progress: |====================================================================|
         bundle exec rails s -d -b 0.0.0.0
@@ -99,7 +100,7 @@ To restore data, run the following command to copy *Result_development* and rest
 docker create -t --name another_oacis -p 3001:3000 oacis/oacis
 docker cp Result_development another_oacis:/home/oacis/oacis/public/
 docker start another_oacis
-sleep 20
+sleep 20   # wait until daemon process is ready
 docker exec -it another_oacis bash -c "cd /home/oacis/oacis/public/Result_development/db/\`cd /home/oacis/oacis/public/Result_development/db; ls | grep dump | sort | tail -n 1\`/oacis_development; mongorestore --db oacis_development ."
 ```
 
@@ -152,5 +153,5 @@ See [wiki](https://github.com/crest-cassia/oacis_docker/wiki).
 
   - [oacis_docker](https://github.com/crest-cassia/oacis_docker) is a part of [OACIS](https://github.com/crest-cassia/oacis).
   - OACIS and oacis_docker are published under the term of the MIT License (MIT).
-  - Copyright (c) 2014,2015,2016 RIKEN, AICS
+  - Copyright (c) 2014-2016 RIKEN, AICS
 
