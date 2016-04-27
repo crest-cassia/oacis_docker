@@ -32,14 +32,10 @@ RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 #install xsub
 RUN git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc'; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile'
 
-#prepare tutorials
-USER root
 #put oacis_start.sh
+USER root
 ADD oacis_start.sh /home/oacis/
 RUN chown oacis:oacis /home/oacis/oacis_start.sh
-RUN mkdir /home/oacis/samples
-ADD samples /home/oacis/samples/
-RUN chown -R oacis:oacis /home/oacis/samples
 
 #Start OACIS
 ENV HOME /home/oacis
