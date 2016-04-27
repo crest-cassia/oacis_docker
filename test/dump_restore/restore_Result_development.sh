@@ -3,9 +3,9 @@
 . ./test/base.sh
 
 function restore_result_development() {
-  tar jxvf ./samples/sample_backup.tar.bz2
+  tar jxvf ./test/sample_backup_data.tar.bz2
   docker create --name ${OACIS_CONTAINER_NAME} -p ${PORT}:3000 ${OACIS_IMAGE}
-  docker cp `pwd`/sample_backup/Result_development ${OACIS_CONTAINER_NAME}:/home/oacis/oacis/public/
+  docker cp `pwd`/sample_backup_data/Result_development ${OACIS_CONTAINER_NAME}:/home/oacis/oacis/public/
   docker start ${OACIS_CONTAINER_NAME}
   sleep 20
   docker exec -it ${OACIS_CONTAINER_NAME} bash -c "cd /home/oacis/oacis/public/Result_development/db/\`cd /home/oacis/oacis/public/Result_development/db; ls | grep dump | sort | tail -n 1\`/oacis_development; mongorestore --db oacis_development ."
