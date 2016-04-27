@@ -32,11 +32,11 @@ RUN /bin/bash -l -c "bundle install --path=vendor/bundle"
 #install xsub
 RUN git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc'; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile'
 
-#get oacis_start.sh
-RUN git clone https://github.com/crest-cassia/oacis_docker_cmd.git /home/oacis/oacis_docker_cmd
-
 #prepare tutorials
 USER root
+#put oacis_start.sh
+ADD oacis_start.sh /home/oacis/
+RUN chown oacis:oacis /home/oacis/oacis_start.sh
 RUN mkdir /home/oacis/samples
 ADD samples /home/oacis/samples/
 RUN chown -R oacis:oacis /home/oacis/samples
@@ -52,4 +52,4 @@ VOLUME ["/home/oacis/oacis/public/Result_development"]
 
 #Start mongodb daemon and OACIS daemons.
 #When you stop the container (run exit), OACIS daemons and mongodb process are going to stop automatically
-CMD ["./oacis_docker_cmd/oacis_start.sh"]
+CMD ["./oacis_start.sh"]
