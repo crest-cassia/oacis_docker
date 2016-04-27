@@ -16,7 +16,7 @@ You can start using [OACIS](https://github.com/crest-cassia/oacis) quickly using
 2. Start an oacis instance
     ```sh
     docker run --name oacis -p 3000:3000 -dt oacis/oacis
-    docker logs oacis # wait for boot
+    docker logs -f oacis # wait for boot. exit via Ctrl + C
     ```
     - OACIS is ready when you get the following logs.
 
@@ -29,6 +29,11 @@ You can start using [OACIS](https://github.com/crest-cassia/oacis) quickly using
         ServiceWorker started.
         JobSubmitterWorker started.
         JobObserverWorker started.
+        + echo booted
+        booted
+        + child=807
+        + wait 807
+        + tail -f /dev/null
         ```
     - The default port is 3000. (You can choose another port like `-p 3001:3000`.)
     - (for Mac or Windows users) Run the above command in *Docker Quickstart Terminal*.
@@ -46,7 +51,7 @@ Find a running `oacis` container.
 ```sh
 docker ps
 #CONTAINER ID        IMAGE                     COMMAND                        CREATED         STATUS        PORTS                        NAMES
-#3edbc17ee5e4        oacis/oacis:latest        "/home/oacis/oacis_start.sh"   1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
+#3edbc17ee5e4        oacis/oacis:latest        "./oacis_docker_cmd/o"         1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
 ```
 
 Stop the container.
@@ -58,13 +63,19 @@ Find the stoped `oacis` container.
 ```sh
 docker ps -a
 #CONTAINER ID        IMAGE                     COMMAND                        CREATED         STATUS        PORTS                        NAMES
-#3edbc17ee5e4        oacis/oacis:latest        "/home/oacis/oacis_start.sh"   1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
+#3edbc17ee5e4        oacis/oacis:latest        "./oacis_docker_cmd/o"         1 days ago      Up 23 hours   0.0.0.0:3000->3000/tcp       oacis
 ```
 
 Restart the container.
 ```sh
 docker start oacis
-docker logs oacis
+docker logs -f oacis
+```
+
+Revome the container.
+```sh
+docker stop oacis
+docker rm -v oacis
 ```
 
 ## Backup and Restore
@@ -101,7 +112,7 @@ For instance, you can install additional packages, set up ssh-agent, and see the
 To login the container as a normal user, run
 
 ```sh
-docker exec -it oacis bash -c 'su - oacis; cd /home/oacis/oacis; exec "bash && exit"'
+docker exec -it -u oacis oacis bash -l
 ```
 
 To login as the root user, run
