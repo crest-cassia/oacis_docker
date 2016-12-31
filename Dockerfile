@@ -6,7 +6,7 @@ MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
 #Setup packages for oacis and its analyzers
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10; echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
-RUN apt-get update && apt-get install -y openssh-server git build-essential curl mongodb-org gawk libreadline6-dev zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 autoconf libgmp-dev libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev supervisor; apt-get clean
+RUN apt-get update && apt-get install -y openssh-server git build-essential curl mongodb-org gawk libreadline6-dev zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 autoconf libgmp-dev libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev supervisor python3-pip; apt-get clean
 
 #Add config files for supervised to start up daemons
 RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; fi
