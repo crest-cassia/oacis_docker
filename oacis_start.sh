@@ -5,7 +5,7 @@ chown -R 999:999 /data/db
 chown -R oacis:oacis /home/oacis/oacis/public/Result_development
 
 #start mongod and sshd
-/usr/bin/supervisord
+supervisorctl start
 
 #waiting for mongod boot
 until [ "$(mongo --eval 'printjson(db.serverStatus().ok)' | tail -1 | tr -d '\r')" == "1" ]
