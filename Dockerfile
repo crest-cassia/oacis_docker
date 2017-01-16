@@ -37,8 +37,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
 
 #Add config files for supervised to start up daemons
 RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; fi
-ADD sshd.conf /etc/supervisor/conf.d/
-ADD mongod.conf /etc/supervisor/conf.d/
+COPY sshd.conf /etc/supervisor/conf.d/
+COPY mongod.conf /etc/supervisor/conf.d/
 
 #Create oacis user
 RUN useradd -ms /bin/bash oacis
@@ -61,7 +61,7 @@ RUN git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub; bash -c
 
 #put oacis_start.sh
 USER root
-ADD oacis_start.sh /home/oacis/
+COPY oacis_start.sh /home/oacis/
 RUN chown oacis:oacis /home/oacis/oacis_start.sh
 
 #Start OACIS
