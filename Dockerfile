@@ -50,14 +50,13 @@ ENV HOME /home/oacis
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3; \curl -sSL https://get.rvm.io | bash -s stable
 RUN /bin/bash -l -c "rvm requirements"; /bin/bash -l -c "rvm install 2.2"; echo "source $HOME/.rvm/scripts/rvm" >> $HOME/.bashrc; /bin/bash -l -c "gem install bundler"
 
-#Install OACIS
+#Install OACIS and xsub
 WORKDIR /home/oacis
-RUN git clone -b master https://github.com/crest-cassia/oacis.git
-WORKDIR /home/oacis/oacis
-RUN /bin/bash -l -c "git submodule update --init --recursive; bundle install --path=vendor/bundle"
-
-#install xsub
-RUN git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc'; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile'
+RUN git clone -b master --recursive https://github.com/crest-cassia/oacis.git && \
+    cd oacis && \
+    bundle install && \
+    git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub && \
+    bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc'; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile'
 
 #put oacis_start.sh
 USER root
