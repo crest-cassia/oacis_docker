@@ -54,9 +54,9 @@ RUN /bin/bash -l -c "rvm requirements"; /bin/bash -l -c "rvm install 2.2"; echo 
 WORKDIR /home/oacis
 RUN git clone -b master --recursive https://github.com/crest-cassia/oacis.git && \
     cd oacis && \
-    bundle install && \
+    bundle install --path=vendor/bundle && \
     git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub && \
-    bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bashrc'; bash -c 'echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile'
+    echo -e "\nexport PATH=\$PATH:/home/oacis/xsub/bin\nexport XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile
 
 #put oacis_start.sh
 USER root
