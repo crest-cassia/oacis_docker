@@ -15,8 +15,9 @@ do
 done
 
 function cleanup() {
-  kill ${!}
   su - -c "echo terminating; cd ~/oacis; bundle exec rake daemon:stop" oacis
+  kill $(ps -Af | grep [s]upervisord | awk '{print $2}')
+  kill ${!}
 }
 
 trap cleanup SIGINT SIGTERM
