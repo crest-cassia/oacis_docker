@@ -9,14 +9,15 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927 \
     && apt-get update \
     && apt-get install -y \
         vim \
+        less \
         bash-completion \
         openssh-server \
         mongodb-org-server \
         mongodb-org-shell \
         mongodb-org-tools \
+        rsync \
         supervisor \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /var/run/sshd
 
 #Install OACIS and xsub
@@ -27,7 +28,11 @@ RUN git clone -b master --recursive https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install --path=vendor/bundle \
     && git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub \
-    && echo "export PATH=\$PATH:/home/oacis/xsub/bin; export XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile
+    && echo "export PATH=\$PATH:/home/oacis/xsub/bin; export XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile \
+    && echo "export BUNDLE_PATH=$BUNDLE_PATH" >> /home/oacis/.bash_profile \
+    && echo "export BUNDLE_BIN=$BUNDLE_BIN" >> /home/oacis/.bash_profile \
+    && echo "export BUNDLE_APP_CONFIG=$BUNDLE_APP_CONFIG" >> /home/oacis/.bash_profile
+
 
 #put oacis_start.sh
 USER root
