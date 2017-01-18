@@ -28,11 +28,12 @@ RUN git clone -b master --recursive https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install --path=vendor/bundle \
     && git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub \
-    && echo "export PATH=\$PATH:/home/oacis/xsub/bin; export XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile \
+    && echo "export PATH=\$PATH:/home/oacis/xsub/bin" >> /home/oacis/.bash_profile \
+    && echo "export XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile \
     && echo "export BUNDLE_PATH=$BUNDLE_PATH" >> /home/oacis/.bash_profile \
     && echo "export BUNDLE_BIN=$BUNDLE_BIN" >> /home/oacis/.bash_profile \
-    && echo "export BUNDLE_APP_CONFIG=$BUNDLE_APP_CONFIG" >> /home/oacis/.bash_profile
-
+    && echo "export BUNDLE_APP_CONFIG=$BUNDLE_APP_CONFIG" >> /home/oacis/.bash_profile \
+    && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile
 
 #put oacis_start.sh
 USER root
@@ -44,6 +45,7 @@ RUN chown oacis:oacis /home/oacis/oacis_start.sh
 #Start OACIS
 WORKDIR /home/oacis
 ENV HOME /home/oacis
+ENV OACIS_ROOT /home/oacis/oacis
 #Expose ports
 EXPOSE 3000
 #Create data volumes for OAICS
