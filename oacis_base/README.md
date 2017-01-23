@@ -128,9 +128,3 @@ To login as the root user, run
 docker exec -it oacis bash -l
 ```
 
-## License
-
-- [oacis_docker](https://github.com/crest-cassia/oacis_docker) is a part of [OACIS](https://github.com/crest-cassia/oacis).
-- OACIS and oacis_docker are published under the term of the MIT License (MIT).
-- Copyright (c) 2014-2017 RIKEN, AICS
-
