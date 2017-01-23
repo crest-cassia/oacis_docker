@@ -10,8 +10,8 @@ services:
   - docker
 
 before_install:
-  - docker build -t oacis/oacis .
-  - docker pull busybox
+  - docker build -t oacis/oacis_base oacis_base
+  - docker build -t oacis/oacis_jupyter oacis_jupyter
 
 script:
   - bash test/test_all.sh
