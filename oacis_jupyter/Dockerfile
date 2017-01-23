@@ -1,7 +1,7 @@
 ######################################
 # OACIS Dockerfile from Ubuntu Image #
 ######################################
-FROM oacis_base:latest
+FROM oacis/oacis_base:latest
 MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
 USER root
