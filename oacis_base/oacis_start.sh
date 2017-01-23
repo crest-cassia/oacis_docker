@@ -31,7 +31,7 @@ fi
 #run oacis
 su - -c "\
   cd /home/oacis/oacis && \
-  bundle exec rake daemon:start && \
+  bundle exec rake daemon:restart && \
   if [ ! -f ~/.ssh/id_rsa ]; \
   then \
     echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa && \
