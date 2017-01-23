@@ -25,6 +25,7 @@ WORKDIR /home/oacis
 RUN git clone -b master --recursive https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install --path=vendor/bundle \
+    && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \
     && git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub \
     && echo "export PATH=\$PATH:/home/oacis/xsub/bin" >> /home/oacis/.bash_profile \
     && echo "export XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile \
