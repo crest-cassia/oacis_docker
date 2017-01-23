@@ -40,7 +40,7 @@ su - -c "\
   fi" \
   oacis
 
-echo "booted"
+echo "==== OACIS READY ===="
 tail -f /dev/null &
 child=$!
 wait "$child"
