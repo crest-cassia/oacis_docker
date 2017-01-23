@@ -2,22 +2,24 @@
 
 ## What it Gives You
 
-- Jupyter Notebook 4.3.x
-- Conda Python 3.x and Python 2.7.x environments
-- pandas, matplotlib, scipy, seaborn, scikit-learn, scikit-image, sympy, cython, patsy, statsmodel, cloudpickle, dill, numba, bokeh, vincent, beautifulsoup, xlrd pre-installed
-- Unprivileged user `jovyan` (uid=1000, configurable, see options) in group `users` (gid=100) with ownership over `/home/jovyan` and `/opt/conda`
-- [tini](https://github.com/krallin/tini) as the container entrypoint and [start-notebook.sh](../base-notebook/start-notebook.sh) as the default command
-- A [start-singleuser.sh](../base-notebook/start-singleuser.sh) script useful for running a single-user instance of the Notebook server, as required by JupyterHub
-- A [start.sh](../base-notebook/start.sh) script useful for running alternative commands in the container (e.g. `ipython`, `jupyter kernelgateway`, `jupyter lab`)
-- Options for HTTPS, password auth, and passwordless `sudo`
+In addition to `oacis/oacis_base` image, the following applications and libraries are installed.
+
+- Conda Python 3.x environments.
+    - Jupyter Notebook
+    - numpy, matplotlib, pandas
+- `setup_ns_model.sh`, which installs a sample simulator and registeres it to the OACIS.
 
 ## Basic Usage
 
 The following command starts a container with OACIS and the Jupyter Notebook server listening for HTTP connections on port 3000 and 8888, respectively.
 
 ```
-docker run --name my_oacis -p 3000:3000 -p 8888:8888 -dt oacis/oacis_jupyter
+docker run --name my_oacis -p 127.0.0.1:3000:3000 -p 127.0.0.1:8888:8888 -dt oacis/oacis_jupyter
 ```
+
+Basically, the usage is same as the [oacis_base](https://github.com/crest-cassia/oacis_docker/tree/master/oacis_base) image.
+In this image, however, a jupyter server is launched at 8888 port in addition to OACIS.
+Access [http://localhost:8888](http://localhost:8888) via your web browser. If you are using Docker toolbox, access `http://192.168.99.100:8888` instead of localhost.
 
 ## Register a sample simulator
 
@@ -25,5 +27,6 @@ docker run --name my_oacis -p 3000:3000 -p 8888:8888 -dt oacis/oacis_jupyter
 docker exec -t -u oacis jupyter_test bash /home/oacis/setup_ns_model.sh
 ```
 
-It will register a simulator "Nagel_Schreckenberg" to OACIS. The source code of the simulator can be found at [yohm/nagel_schreckenberg_model](https://github.com/yohm/nagel_schreckenberg_model).
+It will register a simulator "Nagel_Schreckenberg" to OACIS.
+The source code of the simulator can be found at [yohm/nagel_schreckenberg_model](https://github.com/yohm/nagel_schreckenberg_model).
 
