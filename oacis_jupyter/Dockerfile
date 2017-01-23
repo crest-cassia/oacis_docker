@@ -7,7 +7,6 @@ MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 USER root
 RUN apt-get update \
     && apt-get install -y \
-        vim \
         less \
         bash-completion \
         gnuplot \

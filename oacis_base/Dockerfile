@@ -14,6 +14,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927 \
         mongodb-org-tools \
         rsync \
         supervisor \
+        vim
     && apt-get clean \
     && mkdir -p /var/run/sshd
 
