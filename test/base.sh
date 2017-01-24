@@ -1,12 +1,16 @@
 #!/bin/bash
 
-set -eux
+set -ux
 
 function run_oacis() {
-  docker run --name ${OACIS_CONTAINER_NAME} -p 127.0.0.1:${PORT}:3000 -d ${OACIS_IMAGE}
-  sleep 20
+  docker run --name ${OACIS_CONTAINER_NAME} -p 127.0.0.1:${PORT}:3000 -d ${OACIS_IMAGE} || return 1
+  for i in {0..1}
+  do
+    sleep 3
+    curl localhost:${PORT} && return 0
+  done
   docker logs ${OACIS_CONTAINER_NAME}
-  curl localhost:${PORT}
+  return 1
 }
 
 function cleanup() {
@@ -16,7 +20,7 @@ function cleanup() {
   dockerps=`docker ps | grep "${OACIS_CONTAINER_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
   then
-    docker stop -t 30 ${OACIS_CONTAINER_NAME}
+    docker stop ${OACIS_CONTAINER_NAME}
   fi
   dockerps=`docker ps -a | grep "${OACIS_CONTAINER_NAME}[\ ]*$"`
   if [ -n "$dockerps" ]
@@ -24,4 +28,6 @@ function cleanup() {
     docker rm -v ${OACIS_CONTAINER_NAME}
   fi
 }
+
+trap cleanup EXIT ERR
 

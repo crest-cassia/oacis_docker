@@ -7,5 +7,6 @@ PORT=3210
 OACIS_CONTAINER_NAME="oacis_docker_test"
 
 run_oacis
-cleanup
+rc=$?
+exit $rc
 
