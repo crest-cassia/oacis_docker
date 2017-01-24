@@ -1,9 +1,5 @@
 sudo: required
 
-#docker engine v1.8 or later is required
-#trusty is beta at 2015/10/29
-dist: trusty
-
 language: bash
 
 services:
