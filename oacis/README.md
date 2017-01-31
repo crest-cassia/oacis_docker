@@ -44,7 +44,7 @@ When you see the output like the following, OACIS is ready to use.
 + tail -f /dev/null
 ```
 
-Access [http://localhost:3000](http://localhost:3000) via your web browser. If you are using Docker toolbox, access `http://192.168.99.100:3000` instead of localhost. 
+Access [http://localhost:3000](http://localhost:3000) via your web browser. If you are using Docker toolbox, access [http://192.168.99.100:3000](http://192.168.99.100:3000) instead of localhost.
 
 ### Stopping and Restarting
 
@@ -99,23 +99,23 @@ Containers must be running when you make a backup.
 Data will be exported to `/home/oacis/oacis/public/Result_development/dump` directory in the container.
 
 ```sh
-$ docker exec -it oacis bash -c "cd /home/oacis/oacis/public/Result_development; mongodump --db oacis_development; chown -R oacis:oacis dump"
+$ docker exec -u oacis -it my_oacis bash -c "cd /home/oacis/oacis/public/Result_development; mongodump --db oacis_development"
 ```
 
 Then, please make a backup of the directory *Result_development*.
 
 ```sh
-docker cp oacis:/home/oacis/oacis/public/Result_development .
+docker cp my_oacis:/home/oacis/oacis/public/Result_development .
 ```
 
 To restore data, run the following command to copy *Result_development* and restore db data from `Result_development/dump`.
 
 ```sh
-docker create -t --name another_oacis -p 3001:3000 oacis/oacis
-docker cp Result_development another_oacis:/home/oacis/oacis/public/
+docker create -t --name another_oacis -p 127.0.0.1:3001:3000 oacis/oacis
+for file in Result_development/*; do docker cp $file another_oacis:/home/oacis/oacis/public/Result_development; done
 docker start another_oacis
-docker logs -f another_oacis   # wait until daemon process is ready
-docker exec -it another_oacis bash -c "cd /home/oacis/oacis/public/Result_development/dump/oacis_development; mongorestore --db oacis_development ."
+docker logs -f another_oacis   # wait until OACIS is ready
+docker exec -it another_oacis bash -c "cd /home/oacis/oacis/public/Result_development && chown -R oacis:oacis . && mongorestore --db oacis_development dump/oacis_development"
 ```
 
 ## Logging in the container
@@ -138,7 +138,7 @@ docker exec -it oacis bash -l
 ## Register a sample simulator
 
 ```
-docker exec -t -u oacis jupyter_test bash /home/oacis/setup_ns_model.sh
+docker exec -t -u oacis my_oacis bash /home/oacis/setup_ns_model.sh
 ```
 
 It will register a simulator "Nagel_Schreckenberg" to OACIS.
