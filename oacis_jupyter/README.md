@@ -27,12 +27,3 @@ Basically, the usage is same as the [oacis_base](https://github.com/crest-cassia
 In this image, however, a jupyter server is launched at 8888 port in addition to OACIS.
 Access [http://localhost:8888](http://localhost:8888) via your web browser. If you are using Docker toolbox, access `http://192.168.99.100:8888` instead of localhost.
 
-## Register a sample simulator
-
-```
-docker exec -t -u oacis jupyter_test bash /home/oacis/setup_ns_model.sh
-```
-
-It will register a simulator "Nagel_Schreckenberg" to OACIS.
-The source code of the simulator can be found at [yohm/nagel_schreckenberg_model](https://github.com/yohm/nagel_schreckenberg_model).
-

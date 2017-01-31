@@ -34,8 +34,6 @@ RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux
 
 USER root
 COPY jupyter.conf /etc/supervisor/conf.d/
-COPY setup_ns_model.sh /home/oacis/
-RUN chown oacis:oacis /home/oacis/setup_ns_model.sh
 EXPOSE 8888
 CMD ["./oacis_start.sh"]
 
