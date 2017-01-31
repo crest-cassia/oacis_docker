@@ -5,7 +5,7 @@ chown -R 999:999 /data/db
 chown -R oacis:oacis /home/oacis/oacis/public/Result_development
 
 #start mongod and sshd
-/usr/bin/supervisord
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 #waiting for mongod boot
 until [ "$(mongo --eval 'printjson(db.serverStatus().ok)' | tail -1 | tr -d '\r')" == "1" ]
@@ -15,8 +15,9 @@ do
 done
 
 function cleanup() {
-  kill ${!}
   su - -c "echo terminating; cd ~/oacis; bundle exec rake daemon:stop" oacis
+  kill $(ps -Af | grep [s]upervisord | awk '{print $2}')
+  kill ${!}
 }
 
 trap cleanup SIGINT SIGTERM
@@ -29,17 +30,17 @@ fi
 
 #run oacis
 su - -c "\
-  cd ~/oacis; \
-  bundle exec rake daemon:start; \
+  cd /home/oacis/oacis && \
+  bundle exec rake daemon:restart && \
   if [ ! -f ~/.ssh/id_rsa ]; \
   then \
-    echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa; \
-    cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys; \
+    echo -e \"\\n\" | ssh-keygen -N \"\" -f $HOME/.ssh/id_rsa && \
+    cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys && \
     chmod 600 $HOME/.ssh/authorized_keys; \
   fi" \
   oacis
 
-echo "booted"
+echo "==== OACIS READY ===="
 tail -f /dev/null &
 child=$!
 wait "$child"
