@@ -41,6 +41,10 @@ COPY mongod.conf /etc/supervisor/conf.d/
 COPY oacis_start.sh /home/oacis/
 RUN chown oacis:oacis /home/oacis/oacis_start.sh
 
+# scritp to setup a sample simulator used in tutorial
+COPY setup_ns_model.sh /home/oacis/
+RUN chown oacis:oacis /home/oacis/setup_ns_model.sh
+
 #Start OACIS
 WORKDIR /home/oacis
 ENV HOME /home/oacis
