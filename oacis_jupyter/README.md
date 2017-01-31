@@ -7,7 +7,6 @@ In addition to `oacis/oacis` image, the following applications and libraries are
 - Conda Python 3.x environments.
     - Jupyter Notebook
     - numpy, matplotlib, pandas
-- `setup_ns_model.sh`, which installs a sample simulator and registeres it to the OACIS.
 
 ## Basic Usage
 

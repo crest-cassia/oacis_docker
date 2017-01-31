@@ -11,6 +11,7 @@
 - SSH settings are configured such that an SSH connection to the container itself becomes possible.
 - Unprivileged user `oacis` in group `oacis` with ownership over `home/oacis`.
     - OACIS is installed at `~/oacis` for `oacis` user.
+- `setup_ns_model.sh`, which installs a sample simulator and registeres it to the OACIS.
 
 ## Basic Usage
 
