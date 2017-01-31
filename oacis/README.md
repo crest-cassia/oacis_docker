@@ -17,13 +17,13 @@
 The following command starts a container with OACIS listening for HTTP connections on port 3000. The port is exposed locally, i.e., it is inaccessible from other hosts.
 
 ```
-docker run --name my_oacis -p 127.0.0.1:3000:3000 -dt oacis/oacis_base
+docker run --name my_oacis -p 127.0.0.1:3000:3000 -dt oacis/oacis
 ```
 
 If you are using Docker Toolbox, run the following.
 
 ```
-docker run --name my_oacis -p 3000:3000 -dt oacis/oacis_base
+docker run --name my_oacis -p 3000:3000 -dt oacis/oacis
 ```
 
 A few tens of seconds are necessary to complete the booting of OACIS. To see if OACIS is ready to use, run the following command to see the standard output of the booting process.
@@ -52,7 +52,7 @@ Find a running container via `docker ps` command.
 ```sh
 $ docker ps
 CONTAINER ID     IMAGE               COMMAND              CREATED             STATUS          PORTS                      NAMES
-e279dbdcc855     oacis/oacis_base    "./oacis_start.sh"   About an hour ago   Up 5 minutes    127.0.0.1:3002->3000/tcp   my_oacis
+e279dbdcc855     oacis/oacis         "./oacis_start.sh"   About an hour ago   Up 5 minutes    127.0.0.1:3002->3000/tcp   my_oacis
 ```
 
 Stop the container by `docker stop` command. The `-t` option specifies seconds to wait for stop before killing it. Since OACIS requires some time to gracefully stop the daemon, we recommend to set it longer by the default value (10sec).
@@ -65,8 +65,8 @@ You'll see the list of stopped container by `docker ps -a` command.
 
 ```sh
 $ docker ps -a
-CONTAINER ID     IMAGE                COMMAND             CREATED             STATUS                       PORTS        NAMES
-e279dbdcc855     oacis/oacis_base     "./oacis_start.sh"  About an hour ago   Exited (137) 2 minutes ago                my_oacis
+CONTAINER ID     IMAGE              COMMAND             CREATED             STATUS                       PORTS        NAMES
+e279dbdcc855     oacis/oacis        "./oacis_start.sh"  About an hour ago   Exited (137) 2 minutes ago                my_oacis
 ```
 
 To restart the stopped container, use `docker start` command. Use `docker logs -f` as well to see if the booting has finished.
@@ -80,7 +80,7 @@ To remove the stopped container, use `docker rm -v`. If you want to remove the i
 
 ```sh
 $ docker rm -v my_oacis          # removing the container
-$ docker rmi oacis/oacis_base    # removing the image of OACIS
+$ docker rmi oacis/oacis         # removing the image of OACIS
 ```
 
 ## Mounting a directory
@@ -88,7 +88,7 @@ $ docker rmi oacis/oacis_base    # removing the image of OACIS
 Simulation results are stored in "/home/oacis/oacis/public/Result_development" directory. You can mount a directory of the host machine to this directory.
 
 ```
-docker run --name my_oacis -p 127.0.0.1:3000:3000 -v $(pwd):/home/oacis/oacis/public/Result_development -dt oacis/oacis_base
+docker run --name my_oacis -p 127.0.0.1:3000:3000 -v $(pwd):/home/oacis/oacis/public/Result_development -dt oacis/oacis
 ```
 
 ## Backup and Restore
@@ -110,7 +110,7 @@ docker cp oacis:/home/oacis/oacis/public/Result_development .
 To restore data, run the following command to copy *Result_development* and restore db data from `Result_development/dump`.
 
 ```sh
-docker create -t --name another_oacis -p 3001:3000 oacis/oacis_base
+docker create -t --name another_oacis -p 3001:3000 oacis/oacis
 docker cp Result_development another_oacis:/home/oacis/oacis/public/
 docker start another_oacis
 docker logs -f another_oacis   # wait until daemon process is ready

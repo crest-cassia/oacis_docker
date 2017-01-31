@@ -11,7 +11,7 @@ Ready-to-run [OACIS](https://github.com/crest-cassia/oacis) application in Docke
 If you're familiar with Docker, have it configured, and know exactly what you'd like to run, this one-liner should work in most cases:
 
 ```
-docker run --name my_oacis -p 127.0.0.1:3000:3000 -dt oacis/oacis_base
+docker run --name my_oacis -p 127.0.0.1:3000:3000 -dt oacis/oacis
 ```
 
 Or if you are using OACIS with Jupyter:
@@ -30,10 +30,10 @@ If this is your first time using Docker or OACIS, do the following to get starte
 
 ## Available Projects
 
-- oacis\_base
-    - A simple projects, which consists of OACIS and its prerequisites.
+- oacis
+    - A base image, which consists of OACIS and its prerequisites.
 - oacis\_jupyter
-    - On top of `oacis_base` image, Python and Jupyter environments are installed.
+    - On top of the `base` image, Python and Jupyter environments are installed.
 
 ## License
 
