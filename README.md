@@ -33,7 +33,7 @@ If this is your first time using Docker or OACIS, do the following to get starte
 - oacis
     - A base image, which consists of OACIS and its prerequisites.
 - oacis\_jupyter
-    - On top of the `base` image, Python and Jupyter environments are installed.
+    - On top of the "base" image, Python and Jupyter environments are installed.
 
 ## License
 
