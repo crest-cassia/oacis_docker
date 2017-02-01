@@ -135,12 +135,3 @@ To login as the root user, run
 docker exec -it oacis bash -l
 ```
 
-## Register a sample simulator
-
-```
-docker exec -t -u oacis my_oacis bash /home/oacis/setup_ns_model.sh
-```
-
-It will register a simulator "Nagel_Schreckenberg" to OACIS.
-The source code of the simulator can be found at [yohm/nagel_schreckenberg_model](https://github.com/yohm/nagel_schreckenberg_model).
-

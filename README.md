@@ -30,10 +30,22 @@ If this is your first time using Docker or OACIS, do the following to get starte
 
 ## Available Projects
 
-- oacis
+- [oacis](oacis)
     - A base image, which consists of OACIS and its prerequisites.
-- oacis\_jupyter
+- [oacis\_jupyter](oacis_jupyter)
     - On top of the "base" image, Python and Jupyter environments are installed.
+
+## Registering a sample simulator
+
+The following command registers a sample simulator "Nagel_Schreckenberg" to OACIS.
+This is useful for you to quickly try the [tutorial of OACIS](http://crest-cassia.github.io/oacis/en/tutorial.html).
+After this command, Step1 and Step2 of the tutorial are already finished. You can start from Step3.
+
+```
+docker exec -t -u oacis my_oacis bash /home/oacis/setup_ns_model.sh
+```
+
+The source code of the sample simulator can be found at [yohm/nagel_schreckenberg_model](https://github.com/yohm/nagel_schreckenberg_model).
 
 ## License
 
