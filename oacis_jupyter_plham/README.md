@@ -6,6 +6,7 @@ In addition to `oacis/oacis_jupyter` image, the following applications and libra
 
 - default-jdk (for x10)
 - x10-2.5.4 (for plham)
+- R (for plham)
 - nkf (for text code modification)
 
 ## Basic Usage
@@ -31,14 +32,8 @@ docker exec -it -u oacis my_oaics bash {command} #run a command
 
 Commands related with plham.
 ```
-#download and install plham
+#download and setup plham
 ~/setup_plham.sh
-#build an example CI2002
-~/plham_tutorial/CI2002/build_binary.sh
-#install CI2002 to OACIS
-~/plham_tutorial/CI2002/install_to_OACIS.sh
-#install seminer simulator to OACIS
-~/plahm_tutorial/seminer/install_to_OACIS.sh
 ```
 
 Basically, the usage is same as the [base image](../oacis) image.
