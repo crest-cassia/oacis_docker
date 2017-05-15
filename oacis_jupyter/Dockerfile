@@ -19,6 +19,7 @@ RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux
     && bash conda.sh -b \
     && rm conda.sh \
     && echo 'export PATH=/home/oacis/miniconda3/bin:$PATH' >> ~/.bash_profile \
+    && echo 'export LANG=C.UTF-8' >> ~/.bash_profile \
     && . ~/.bash_profile \
     && conda install -y \
         numpy \
