@@ -25,7 +25,7 @@ RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux
         pandas \
         matplotlib \
         jupyter \
-    && pip install msgpack-rpc-python \
+    && pip install msgpack-rpc-python fibers \
     && mkdir -p ~/.jupyter \
     && echo 'c.NotebookApp.token = ""' > ~/.jupyter/jupyter_notebook_config.py \
     && echo 'c.NotebookApp.password = ""' >> ~/.jupyter/jupyter_notebook_config.py \
