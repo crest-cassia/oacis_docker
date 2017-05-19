@@ -68,7 +68,7 @@ echo "{
 
 echo "{
   \"name\": \"Plham_Seminar02\",
-  \"command\": \"bash ~/oacis/publicvelopment/plham/seminar/oacis/run.sh ~/CI2002.exe\",
+  \"command\": \"bash ~/oacis/public/Result_development/plham/seminar/oacis/run.sh ~/CI2002.exe\",
   \"support_input_json\": false,
   \"support_mpi\": false,
   \"support_omp\": false,
