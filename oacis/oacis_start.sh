@@ -2,7 +2,8 @@
 
 #pre-processes
 chown -R 999:999 /data/db
-chown -R oacis:oacis /home/oacis/oacis/public/Result_development
+usermod -u ${LOCAL_UID:-1000} oacis
+groupmod -g ${LOCAL_GID:-1000} oacis
 
 #start mongod and sshd
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
