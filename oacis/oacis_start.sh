@@ -3,7 +3,7 @@
 #pre-processes
 chown -R 999:999 /data/db
 groupmod -g ${LOCAL_GID:-1000} oacis
-usermod -g ${LOCAL_GID:1000} -u ${LOCAL_UID:-1000} oacis
+usermod -g ${LOCAL_GID:-1000} -u ${LOCAL_UID:-1000} oacis
 chown -R oacis:oacis /usr/local/bundle
 
 #start mongod and sshd
