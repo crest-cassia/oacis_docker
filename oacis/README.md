@@ -86,10 +86,11 @@ $ docker rmi oacis/oacis         # removing the image of OACIS
 
 ## Mounting a directory
 
-Simulation results are stored in "/home/oacis/oacis/public/Result_development" directory. You can mount a directory of the host machine to this directory.
+Simulation results are stored in "/home/oacis/oacis/public/Result_development" directory in the container. You can mount this directory to a directory in the host machine with `-v` option.
+When mounting the directroy, you also need to set `-e LOCAL_UID=$(id -u $USER) -e LOCAL_GID=$(id -g $USER)` options. This is because the user in the container must have the same uid and gid as those in the local host to access the mounted directory properly. By these options, local uid and gid are sent to the container as environment variables.
 
 ```
-docker run --name my_oacis -p 127.0.0.1:3000:3000 -v $(pwd):/home/oacis/oacis/public/Result_development -dt oacis/oacis
+docker run --name my_oacis -p 127.0.0.1:3000:3000 -e LOCAL_UID=$(id -u $USER) -e LOCAL_GID=$(id -g $USER) -v $(pwd):/home/oacis/oacis/public/Result_development -dt oacis/oacis
 ```
 
 ## Backup and Restore
