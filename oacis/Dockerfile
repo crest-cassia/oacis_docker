@@ -39,7 +39,8 @@ RUN git clone -b develop --recursive https://github.com/crest-cassia/oacis.git \
     && echo "export BUNDLE_BIN=$BUNDLE_BIN" >> /home/oacis/.bash_profile \
     && echo "export BUNDLE_APP_CONFIG=$BUNDLE_APP_CONFIG" >> /home/oacis/.bash_profile \
     && echo "export BUNDLE_GEMFILE=$BUNDLE_GEMFILE" >> /home/oacis/.bash_profile \
-    && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile
+    && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile \
+    && mkdir -p /home/oacis/oacis/public/Result_development
 
 #put oacis_start.sh
 USER root
