@@ -20,6 +20,9 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF505
     && cp /etc/redis/redis.conf /etc/redis/redis.conf.org \
     && sed -e 's/daemonize yes/daemonize no/' /etc/redis/redis.conf.org > /etc/redis/redis.conf
 
+# workaround for https://github.com/bundler/bundler/issues/6154
+ENV BUNDLE_GEMFILE='./Gemfile'
+
 #Install OACIS and xsub
 RUN useradd -ms /bin/bash oacis
 USER oacis
@@ -34,6 +37,7 @@ RUN git clone -b master --recursive https://github.com/crest-cassia/oacis.git \
     && echo "export BUNDLE_PATH=$BUNDLE_PATH" >> /home/oacis/.bash_profile \
     && echo "export BUNDLE_BIN=$BUNDLE_BIN" >> /home/oacis/.bash_profile \
     && echo "export BUNDLE_APP_CONFIG=$BUNDLE_APP_CONFIG" >> /home/oacis/.bash_profile \
+    && echo "export BUNDLE_GEMFILE=$BUNDLE_GEMFILE" >> /home/oacis/.bash_profile \
     && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile
 
 #put oacis_start.sh
