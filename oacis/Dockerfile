@@ -1,22 +1,24 @@
 ######################################
 # OACIS Dockerfile from Ubuntu Image #
 ######################################
-FROM ruby:2.3.3
+FROM ruby:2.5.1
 MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927 \
-    && echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.2 main" > /etc/apt/sources.list.d/mongodb-org-3.2.list \
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5 \
+    && echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.6 main" | tee /etc/apt/sources.list.d/mongodb-org-3.6.list \
+    && echo "deb http://ftp.debian.org/debian jessie-backports main" | tee /etc/apt/sources.list.d/jessie-backports.list \
     && apt-get update \
     && apt-get install -y \
         openssh-server \
-        mongodb-org-server \
-        mongodb-org-shell \
-        mongodb-org-tools \
+        mongodb-org=3.6.4 mongodb-org-server=3.6.4 mongodb-org-shell=3.6.4 mongodb-org-mongos=3.6.4 mongodb-org-tools=3.6.4 \
+        redis-server \
         rsync \
         supervisor \
         vim \
     && apt-get clean \
-    && mkdir -p /var/run/sshd
+    && mkdir -p /var/run/sshd \
+    && cp /etc/redis/redis.conf /etc/redis/redis.conf.org \
+    && sed -e 's/daemonize yes/daemonize no/' /etc/redis/redis.conf.org > /etc/redis/redis.conf
 
 #Install OACIS and xsub
 RUN useradd -ms /bin/bash oacis
@@ -24,7 +26,7 @@ USER oacis
 WORKDIR /home/oacis
 RUN git clone -b master --recursive https://github.com/crest-cassia/oacis.git \
     && cd oacis \
-    && bundle install --path=vendor/bundle \
+    && bundle install \
     && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \
     && git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub \
     && echo "export PATH=\$PATH:/home/oacis/xsub/bin" >> /home/oacis/.bash_profile \
@@ -38,6 +40,7 @@ RUN git clone -b master --recursive https://github.com/crest-cassia/oacis.git \
 USER root
 COPY sshd.conf /etc/supervisor/conf.d/
 COPY mongod.conf /etc/supervisor/conf.d/
+COPY redis.conf /etc/supervisor/conf.d/
 COPY oacis_start.sh /home/oacis/
 RUN chown oacis:oacis /home/oacis/oacis_start.sh
 
