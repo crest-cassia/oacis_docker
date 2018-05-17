@@ -1,10 +1,14 @@
 #!/bin/bash -x
 
 #pre-processes
-groupmod -g ${LOCAL_GID:-1000} oacis
-usermod -g ${LOCAL_GID:-1000} -u ${LOCAL_UID:-1000} oacis
-chown -R oacis:oacis /usr/local/bundle
-chown -R oacis:oacis /data/db
+if [ ! ${LOCAL_GID:-1000} = `id -g oacis` ]; then
+  groupmod -g ${LOCAL_GID:-1000} oacis
+fi
+if [ ! ${LOCAL_UID:-1000} = `id -u oacis` ]; then
+  usermod -g ${LOCAL_GID:-1000} -u ${LOCAL_UID:-1000} oacis
+  chown -R oacis:oacis /usr/local/bundle
+  chown -R oacis:oacis /data/db
+fi
 
 #start mongod, redis and sshd
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
