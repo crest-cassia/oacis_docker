@@ -27,8 +27,7 @@ ENV BUNDLE_GEMFILE='./Gemfile'
 RUN useradd -ms /bin/bash oacis
 USER oacis
 WORKDIR /home/oacis
-# [TODO] temporarily using develop branch. must be fixed later
-RUN git clone -b develop --recursive https://github.com/crest-cassia/oacis.git \
+RUN git clone --recursive https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install \
     && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \
