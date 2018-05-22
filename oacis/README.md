@@ -6,6 +6,7 @@
     - OACIS
     - Ruby
     - MongoDB
+    - Redis
     - OpenSSH server
     - xsub
 - SSH settings are configured such that an SSH connection to the container itself becomes possible.
