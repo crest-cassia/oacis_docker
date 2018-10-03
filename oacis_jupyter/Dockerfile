@@ -22,6 +22,7 @@ RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux
     && echo 'export LANG=C.UTF-8' >> ~/.bash_profile \
     && . ~/.bash_profile \
     && conda install -y \
+        python=3.5 \
         numpy \
         pandas \
         matplotlib \
