@@ -20,6 +20,19 @@ Or if you are using OACIS with Jupyter:
 docker run --name my_oacis -p 127.0.0.1:3000:3000 -p 127.0.0.1:8888:8888 -dt oacis/oacis_jupyter
 ```
 
+When using Docker toolbox, the command to launch the container is slightly different:
+
+```
+docker run --name my_oacis -p 3000:3000 -dt oacis/oacis
+```
+
+or
+
+```
+docker run --name my_oacis -p 3000:3000 -p 8888:8888 -dt oacis/oacis_jupyter
+```
+
+
 ## Getting Started
 
 If this is your first time using Docker or OACIS, do the following to get started.
