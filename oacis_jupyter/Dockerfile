@@ -33,6 +33,7 @@ RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux
     && echo 'c.NotebookApp.password = ""' >> ~/.jupyter/jupyter_notebook_config.py \
     && echo 'c.NotebookApp.ip = "0.0.0.0"' >> ~/.jupyter/jupyter_notebook_config.py \
     && echo 'c.NotebookApp.open_browser = False' >> ~/.jupyter/jupyter_notebook_config.py
+ENV PYTHONPATH=$OACIS_ROOT:$PYTHONPATH
 
 USER root
 COPY jupyter.conf /etc/supervisor/conf.d/
