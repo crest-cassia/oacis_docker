@@ -34,6 +34,7 @@ RUN git clone --recursive https://github.com/crest-cassia/oacis.git \
     && echo "unset BUNDLE_APP_CONFIG" >> /home/oacis/.bash_profile \
     && echo "export BUNDLE_PATH=$BUNDLE_PATH" >> /home/oacis/.bash_profile \
     && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile \
+    && echo 'export USER=$(whoami)' >> /home/oacis/.bash_profile \
     && mkdir -p /home/oacis/oacis/public/Result_development
 
 #put oacis_start.sh
