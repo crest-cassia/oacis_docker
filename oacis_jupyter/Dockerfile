@@ -15,11 +15,13 @@ RUN apt-get update \
 USER oacis
 WORKDIR /home/oacis
 ENV HOME /home/oacis
-RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh \
     && bash conda.sh -b \
+    && ~/miniconda3/bin/conda clean -tipsy \
     && rm conda.sh \
-    && echo 'export PATH=/home/oacis/miniconda3/bin:$PATH' >> ~/.bash_profile \
     && echo 'export LANG=C.UTF-8' >> ~/.bash_profile \
+    && echo '. /home/oacis/miniconda3/etc/profile.d/conda.sh' >> ~/.bash_profile \
+    && echo "conda activate base" >> ~/.bash_profile \
     && . ~/.bash_profile \
     && conda install -y \
         python=3.5 \
@@ -27,6 +29,7 @@ RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux
         pandas \
         matplotlib \
         jupyter \
+    && conda clean -tipsy \
     && pip install msgpack-rpc-python fibers \
     && mkdir -p ~/.jupyter \
     && echo 'c.NotebookApp.token = ""' > ~/.jupyter/jupyter_notebook_config.py \
