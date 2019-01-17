@@ -4,14 +4,6 @@
 FROM oacis/oacis:latest
 MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
-USER root
-RUN apt-get update \
-    && apt-get install -y \
-        less \
-        bash-completion \
-        gnuplot \
-    && apt-get clean
-
 USER oacis
 WORKDIR /home/oacis
 ENV HOME /home/oacis
