@@ -15,6 +15,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF505
         rsync \
         supervisor \
         vim \
+        less \
+        bash-completion \
     && apt-get clean \
     && mkdir -p /var/run/sshd \
     && cp /etc/redis/redis.conf /etc/redis/redis.conf.org \
