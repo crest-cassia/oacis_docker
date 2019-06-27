@@ -60,6 +60,11 @@ docker exec -t -u oacis my_oacis bash /home/oacis/setup_ns_model.sh
 
 The source code of the sample simulator can be found at [yohm/nagel_schreckenberg_model](https://github.com/yohm/nagel_schreckenberg_model).
 
+## (For developers) Creating images for a specific OACIS version
+
+To create images for a specific OACIS version and push them to dockerhub, edit `OACIS_VERSION` in "version_tagging.sh" and run it.
+It also creates a tag for this repository.
+
 ## License
 
 - [oacis_docker](https://github.com/crest-cassia/oacis_docker) is a part of [OACIS](https://github.com/crest-cassia/oacis).
