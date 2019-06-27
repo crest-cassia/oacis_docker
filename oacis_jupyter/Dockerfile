@@ -1,7 +1,8 @@
 ######################################
 # OACIS Dockerfile from Ubuntu Image #
 ######################################
-FROM oacis/oacis:latest
+ARG OACIS_VERSION
+FROM oacis/oacis:${OACIS_VERSION:-latest}
 MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
 USER oacis

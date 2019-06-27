@@ -25,7 +25,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75
 RUN useradd -ms /bin/bash oacis
 USER oacis
 WORKDIR /home/oacis
-RUN git clone --recursive https://github.com/crest-cassia/oacis.git \
+ARG OACIS_VERSION
+RUN git clone --recursive -b ${OACIS_VERSION:-master} https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install \
     && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \
