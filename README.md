@@ -62,8 +62,17 @@ The source code of the sample simulator can be found at [yohm/nagel_schreckenber
 
 ## (For developers) Creating images for a specific OACIS version
 
-To create images for a specific OACIS version and push them to dockerhub, edit `OACIS_VERSION` in "version_tagging.sh" and run it.
-It also creates a tag for this repository.
+To create images for a specific OACIS version and push them to dockerhub, edit `OACIS_VERSION` in "version_tagging.sh" and run it as following.
+
+```
+git pull
+# edit "version_tagging.sh"
+git commit version_tagging.sh
+git push
+./version_tagging.sh
+git tag -a ${OACIS_VERSION} -m "version ${OACIS_VERSION}"
+git tag --push
+```
 
 ## License
 
