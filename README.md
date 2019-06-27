@@ -68,9 +68,9 @@ To create images for a specific OACIS version and push them to dockerhub, edit `
 git pull
 # edit "version_tagging.sh"
 git commit version_tagging.sh
-git push
 ./version_tagging.sh
 git tag -a ${OACIS_VERSION} -m "version ${OACIS_VERSION}"
+git push
 git tag --push
 ```
 
