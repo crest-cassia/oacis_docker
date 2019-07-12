@@ -1,7 +1,7 @@
 ######################################
 # OACIS Dockerfile from Ubuntu Image #
 ######################################
-FROM ruby:2.6.3-stretch
+FROM buildpack-deps:stretch
 MAINTAINER "OACIS developers" <oacis-dev@googlegroups.com>
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4 \
@@ -21,20 +21,27 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75
     && cp /etc/redis/redis.conf /etc/redis/redis.conf.org \
     && sed -e 's/daemonize yes/daemonize no/' /etc/redis/redis.conf.org > /etc/redis/redis.conf
 
-#Install OACIS and xsub
+# Install Ruby, OACIS & xsub
 RUN useradd -ms /bin/bash oacis
 USER oacis
 WORKDIR /home/oacis
 ARG OACIS_VERSION
-RUN git clone --recursive -b ${OACIS_VERSION:-master} https://github.com/crest-cassia/oacis.git \
+RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv \
+    && echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile \
+    && . ~/.bash_profile \
+    && echo 'eval "$(rbenv init -)"' >> ~/.bash_profile \
+    && . ~/.bash_profile \
+    && mkdir -p "$(rbenv root)"/plugins \
+    && git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build \
+    && rbenv install 2.6.3 \
+    && rbenv global 2.6.3 \
+    && git clone --recursive -b ${OACIS_VERSION:-master} https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install \
     && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \
     && git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub \
     && echo "export PATH=\$PATH:/home/oacis/xsub/bin" >> /home/oacis/.bash_profile \
     && echo "export XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile \
-    && echo "unset BUNDLE_APP_CONFIG" >> /home/oacis/.bash_profile \
-    && echo "export BUNDLE_PATH=$BUNDLE_PATH" >> /home/oacis/.bash_profile \
     && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile \
     && echo 'export USER=$(whoami)' >> /home/oacis/.bash_profile \
     && mkdir -p /home/oacis/oacis/public/Result_development
