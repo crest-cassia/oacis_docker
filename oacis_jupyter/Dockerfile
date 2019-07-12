@@ -18,6 +18,7 @@ RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux
     && . ~/.bash_profile \
     && conda install -y \
         python=3.5 \
+        conda \
         numpy \
         pandas \
         matplotlib \
