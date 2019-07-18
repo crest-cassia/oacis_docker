@@ -1,0 +1,7 @@
+Host localhost
+ HostName localhost
+ Port 22
+ User oacis
+ IdentityFile ~/.ssh/id_rsa
+ ForwardAgent yes
+

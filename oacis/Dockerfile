@@ -45,6 +45,7 @@ RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv \
     && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile \
     && echo 'export USER=$(whoami)' >> /home/oacis/.bash_profile \
     && mkdir -p /home/oacis/oacis/public/Result_development
+COPY --chown=oacis:oacis ssh_config /home/oacis/.ssh/config
 
 #put oacis_start.sh
 USER root
