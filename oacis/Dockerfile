@@ -35,6 +35,8 @@ RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv \
     && git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build \
     && rbenv install 2.6.3 \
     && rbenv global 2.6.3 \
+    && gem install bundler -v 2.0.2 \
+    && rbenv rehash \
     && git clone --recursive -b ${OACIS_VERSION:-master} https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install \
