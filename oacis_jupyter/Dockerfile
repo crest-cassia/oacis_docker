@@ -17,14 +17,14 @@ RUN wget -O conda.sh https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux
     && echo "conda activate base" >> ~/.bash_profile \
     && . ~/.bash_profile \
     && conda install -y \
-        python=3.5 \
+        python=3.6 \
         conda \
         numpy \
         pandas \
         matplotlib \
         jupyter \
     && conda clean -tipsy \
-    && pip install msgpack-python==0.4.8 msgpack-rpc-python==0.4.1 fibers \
+    && pip install mprpc fibers \
     && mkdir -p ~/.jupyter \
     && echo 'c.NotebookApp.token = ""' > ~/.jupyter/jupyter_notebook_config.py \
     && echo 'c.NotebookApp.password = ""' >> ~/.jupyter/jupyter_notebook_config.py \
