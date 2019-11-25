@@ -2,7 +2,7 @@
 
 # before running this script, run `docker login`
 set -eux
-OACIS_VERSION="v3.6.2"
+OACIS_VERSION="v3.6.3"
 
 docker login
 SCRIPT_DIR=$(cd $(dirname $0);pwd)
