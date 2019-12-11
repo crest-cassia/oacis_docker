@@ -27,6 +27,7 @@ USER oacis
 WORKDIR /home/oacis
 ARG OACIS_VERSION
 RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv \
+    && echo 'export LANG=C.UTF-8' >> ~/.bash_profile \
     && echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile \
     && . ~/.bash_profile \
     && echo 'eval "$(rbenv init -)"' >> ~/.bash_profile \
