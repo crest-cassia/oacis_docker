@@ -137,3 +137,34 @@ To login as the root user, run
 docker exec -it oacis bash -l
 ```
 
+## Registering a remote host  
+
+To register a new remote host, you need to enable your container to access to your remote host (remote computer).  
+First, log in to the container you have just created.    
+
+```sh
+docker exec -it -u oacis my_oacis bash -l
+```
+
+Then, edit your container's `config`. Open it like `vim ~/.ssh/config`.  
+Once you open `config`, you should see the default setting. Change the setting according to your remote host's setting. For example,  
+```sh
+Host my_remote_host # this field is used when registering your remote host later 
+ HostName 192.168.111.133 # address of your remote host
+ Port 22
+ User bob # your username of your remote computer's home directory.  
+ IdentityFile ~/.ssh/id_rsa
+```
+
+Next, register your container's ssh public key into your remote host.  
+```sh
+cat .ssh/id_rsa.pub
+```
+Copy its output and paste it into your remote host's `~/.ssh/authorized_keys`.  
+
+
+Finally, access [http://localhost:3000/hosts/new](http://localhost:3000/hosts/new) via your web browser..  
+In the `Name` field in the GUI, fill in the value in the `Host` field you have entered in `~/.ssh/config` on your container. In this example, put "my_remote_host" in the `Name` field.  
+You should now be able to add your remote host.  
+
+
