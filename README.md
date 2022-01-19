@@ -55,7 +55,7 @@ This is useful for you to quickly try the [tutorial of OACIS](http://crest-cassi
 After this command, Step1 and Step2 of the tutorial are already finished. You can start from Step3.
 
 ```
-docker exec -t -u oacis my_oacis bash /home/oacis/setup_ns_model.sh
+docker exec -t -u oacis my_oacis bash -l /home/oacis/setup_ns_model.sh
 ```
 
 The source code of the sample simulator can be found at [yohm/nagel_schreckenberg_model](https://github.com/yohm/nagel_schreckenberg_model).
@@ -86,7 +86,7 @@ cat .ssh/id_rsa.pub
 Copy its output and paste it into your remote host's `~/.ssh/authorized_keys`.  
 
 
-Finally, access [http://localhost:3000/hosts/new](http://localhost:3000/hosts/new) via your web browser..  
+Finally, access [http://localhost:3000/hosts/new](http://localhost:3000/hosts/new) via your web browser.  
 In the `Name` field in the GUI, fill in the value in the `Host` field you have entered in `~/.ssh/config` on your container. In this example, put "my_remote_host" in the `Name` field.  
 You should now be able to add your remote host.  
 
