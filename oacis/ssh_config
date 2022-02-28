@@ -1,7 +1,6 @@
-Host localhost
- HostName localhost
- Port 22
- User oacis
- IdentityFile ~/.ssh/id_rsa
- ForwardAgent yes
-
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+  ForwardAgent yes
+Host docker-host
+  HostName host.docker.internal
+  Include /home/oacis/local_ssh_config

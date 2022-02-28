@@ -47,8 +47,8 @@ RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv \
     && echo "export XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile \
     && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile \
     && echo 'export USER=$(whoami)' >> /home/oacis/.bash_profile \
-    && mkdir -p /home/oacis/oacis/public/Result_development
-COPY --chown=oacis:oacis ssh_config /home/oacis/.ssh/config
+    && mkdir -p /home/oacis/oacis/public/Result_development \
+    && mkdir -p /home/oacis/.ssh
 
 #put oacis_start.sh
 USER root
@@ -56,7 +56,9 @@ COPY sshd.conf /etc/supervisor/conf.d/
 COPY mongod.conf /etc/supervisor/conf.d/
 COPY redis.conf /etc/supervisor/conf.d/
 COPY oacis_start.sh /home/oacis/
-RUN chown oacis:oacis /home/oacis/oacis_start.sh
+COPY ssh_config /etc/ssh/ssh_config_template
+RUN chown oacis:oacis /home/oacis/oacis_start.sh \
+    && cat /etc/ssh/ssh_config_template >> /etc/ssh/ssh_config
 
 # scritp to setup a sample simulator used in tutorial
 COPY setup_ns_model.sh /home/oacis/

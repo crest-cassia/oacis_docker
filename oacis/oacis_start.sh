@@ -8,8 +8,14 @@ if [ ! ${LOCAL_GID:-1000} = `id -g oacis` ]; then
 fi
 if [ ! ${LOCAL_UID:-1000} = `id -u oacis` ]; then
   usermod -g ${LOCAL_GID:-1000} -u ${LOCAL_UID:-1000} oacis
-  chown -R oacis:oacis /usr/local/bundle
   chown -R oacis:oacis /data/db
+fi
+if [ -n ${SSH_AUTH_SOCK} ]; then
+  chown oacis:oacis ${SSH_AUTH_SOCK}
+fi
+if [ -n ${LOCAL_USER} ]; then
+  echo "User ${LOCAL_USER}" > /home/oacis/local_ssh_config
+  chown oacis:oacis /home/oacis/local_ssh_config
 fi
 
 #start mongod, redis and sshd
@@ -23,6 +29,7 @@ do
 done
 
 function cleanup() {
+  set -x
   su - -c "echo terminating; cd ~/oacis; bundle exec rake daemon:stop" oacis
   kill $(ps -Af | grep [s]upervisord | awk '{print $2}')
   kill ${!}
@@ -37,7 +44,7 @@ then
 fi
 
 #run oacis
-su - -c "\
+su - -m -c "\
   cd /home/oacis/oacis && \
   bundle exec rake daemon:restart && \
   if [ ! -f ~/.ssh/id_rsa ]; \
@@ -48,7 +55,8 @@ su - -c "\
   fi" \
   oacis
 
-echo "==== OACIS READY ===="
+set +x
+echo "================= OACIS READY ================="
 tail -f /dev/null &
 child=$!
 wait "$child"
