@@ -1,0 +1,7 @@
+version: '3'
+services:
+  oacis:
+    volumes:
+      - "$SSH_AUTH_SOCK_APP:/tmp/ssh-agent.sock"
+    environment:
+      SSH_AUTH_SOCK: "/tmp/ssh-agent.sock"
