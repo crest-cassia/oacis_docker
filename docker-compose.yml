@@ -1,11 +1,7 @@
 version: '3'
 services:
   oacis:
-    # image: oacis/oacis_jupyter:${OACIS_IMAGE_TAG:-latest}
-    build:
-      context: oacis
-      dockerfile: Dockerfile
-    image: oacis_test
+    image: oacis/oacis_jupyter:${OACIS_IMAGE_TAG:-latest}
     volumes:
       - ./Result:/home/oacis/oacis/public/Result_development
       - ${HOME}/.ssh/config:/home/oacis/.ssh/config:ro
@@ -13,7 +9,6 @@ services:
       - LOCAL_UID
       - LOCAL_GID
       - LOCAL_USER
-    #env_file: ./.env
     ports:
       - "127.0.0.1:${OACIS_PORT:-3000}:3000"
       - "127.0.0.1:${JUPYTER_PORT:-8888}:8888"

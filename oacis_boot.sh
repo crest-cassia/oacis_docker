@@ -12,6 +12,9 @@ usage() {
     echo "  -p PORT (default: 3000) : port used for OACIS"
     echo "  -j JUPYTER_PORT (default: 8888) : port used for Jupyter"
     echo "  --no-ssh-agent : disable sharing ssh-agent of host OS"
+    echo "  --image-tag OACIS_IMAGE_TAG (default: latest) : the tag name of OACIS image. Image 'oacis/oacis_jupyter:<TAG>' is used."
+    echo "  --build-image OACIS_VERSION: don't pull the image but build a new image from Dockerfile"
+    echo "                               specify the branch/tag name of OACIS ('develop', 'v3.10.0')"
     echo
     exit 1
 }
@@ -43,6 +46,22 @@ do
       SSH_AUTH_SOCK=""
       shift
       ;;
+    --image-tag)
+      if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+        echo "$PROGNAME: option requires an argument -- $1" 1>&2
+        exit 1
+      fi
+      OACIS_IMAGE_TAG=$2
+      shift 2
+      ;;
+    --build-image)
+      if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+        echo "$PROGNAME: option requires an argument -- $1" 1>&2
+        exit 1
+      fi
+      OACIS_VERSION=$2
+      shift 2
+      ;;
     *)
       echo "[Error] invalid argument"
       usage
@@ -69,8 +88,23 @@ if [ "${COMPOSE_PS_JSON}" != '[]' ]; then
   exit 1
 fi
 
-# set SSH_AUTH_SOCK_APP
 set -ex
+
+# build a docker image
+if [ -n "${OACIS_VERSION}" ]; then
+  if [ -z "${OACIS_IMAGE_TAG}" ]; then
+    OACIS_IMAGE_TAG=OACIS_VERSION   #OACIS_IMAGE_TAG is determined by OACIS_VERSION unless explicitly given
+  fi
+  SCRIPT_DIR=$(cd $(dirname $0);pwd)
+  cd $SCRIPT_DIR/oacis
+  docker build . -t oacis/oacis:${OACIS_IMAGE_TAG} --build-arg OACIS_VERSION=${OACIS_VERSION}
+  cd $SCRIPT_DIR/oacis_jupyter
+  docker build . -t oacis/oacis_jupyter:${OACIS_IMAGE_TAG} --build-arg OACIS_VERSION=${OACIS_IMAGE_TAG}
+  cd $SCRIPT_DIR
+fi
+
+
+# set SSH_AUTH_SOCK_APP
 if [ -n "${SSH_AUTH_SOCK}" ]; then
   if [ "$(uname)" == 'Darwin' ]; then  # Mac
     SSH_AUTH_SOCK_APP=/run/host-services/ssh-auth.sock

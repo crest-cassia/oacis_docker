@@ -1,4 +1,5 @@
 SSH_AUTH_SOCK_APP=${SSH_AUTH_SOCK_APP}
+OACIS_IMAGE_TAG=${OACIS_IMAGE_TAG:-latest}
 LOCAL_UID=$(id -u murase)
 LOCAL_GID=$(id -g murase)
 LOCAL_USER=${USER}
