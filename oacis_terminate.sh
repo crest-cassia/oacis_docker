@@ -40,7 +40,7 @@ done
 if [ $FORCE_TERMINATE -eq 0 ]; then
   echo "The database will be lost by terminating the container."
   echo "Make sure you made a backup by './oacis_dump_db.sh' if you need."
-  read -p "Are you sure you want to terminate the container? ([y]/n): " -r REPLY
+  read -p "Are you sure you want to terminate the container? (y/[n]): " -r REPLY
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "==== termination aborted ===="
     exit 1
