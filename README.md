@@ -104,6 +104,8 @@ $ bash ./setup_ns_model.sh
 $ exit     # to logout from the container
 ```
 
+The source code of this sample simulator can be found at [yohm/sim_ns_model](https://github.com/yohm/sim_ns_model).
+
 ## SSH agent setup
 
 On the container, you can use the SSH agent running on the **host OS**. (Hereafter, the host on which docker is running is called **host OS**). If environemnt varialbe `SSH_AUTH_SOCK` is set in the host OS, the agent and `~.ssh/config` are mounted on the container so that you can connect to remote hosts from OACIS.
@@ -193,8 +195,16 @@ Copyright (c) 2014-2022 RIKEN AICS, RIKEN R-CCS
 - [oacis\_jupyter](oacis_jupyter)
     - On top of the "base" image, Python and Jupyter environments are installed.
 
+## running an image built from the source code
 
-The source code of the sample simulator can be found at [yohm/nagel_schreckenberg_model](https://github.com/yohm/nagel_schreckenberg_model).
+When you would like to build an OACIS image from source rather than pulling an image from dockerhub, run `oacis_boot.sh` with `--build-image OACIS_VERSION` option.
+For instance, when you would like to build an OACIS image from `develop` branch, run the following.
+
+```shell
+$ ./oacis_boot.sh --build-image develop
+```
+
+Note this command requires some time to build an image.
 
 ## creating images for a specific version of OACIS
 
@@ -204,10 +214,9 @@ To create images for a specific version of OACIS and push them to dockerhub, edi
 git pull
 # edit "version_tagging.sh"
 git commit version_tagging.sh
+docker login
 ./version_tagging.sh
 git tag -a ${OACIS_VERSION} -m "version ${OACIS_VERSION}"
 git push
 git tag --push
 ```
-
-
