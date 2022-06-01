@@ -8,6 +8,8 @@ Ready-to-run [OACIS](https://github.com/crest-cassia/oacis) application in Docke
 
 ## Quick Start
 
+(prerequisite) docker is required.
+
 ### 1. Clone oacis_docker_tools
 
 ```shell
