@@ -14,7 +14,7 @@ Ready-to-run [OACIS](https://github.com/crest-cassia/oacis) application in Docke
 
 ```shell
 git clone https://github.com/crest-cassia/oacis_docker.git
-cd oacis_docker_tools
+cd oacis_docker
 ```
 
 ### 2. Start OACIS container
