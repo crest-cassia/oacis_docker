@@ -1,7 +1,5 @@
 #!/bin/bash -x
 
-. ~/.bash_profile
-
 #pre-processes
 if [ ! ${LOCAL_GID:-1000} = `id -g oacis` ]; then
   groupmod -g ${LOCAL_GID:-1000} oacis
