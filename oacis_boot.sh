@@ -93,7 +93,7 @@ set -ex
 # build a docker image
 if [ -n "${OACIS_VERSION}" ]; then
   if [ -z "${OACIS_IMAGE_TAG}" ]; then
-    OACIS_IMAGE_TAG=OACIS_VERSION   #OACIS_IMAGE_TAG is determined by OACIS_VERSION unless explicitly given
+    OACIS_IMAGE_TAG=${OACIS_VERSION}   #OACIS_IMAGE_TAG is determined by OACIS_VERSION unless explicitly given
   fi
   SCRIPT_DIR=$(cd $(dirname $0);pwd)
   cd $SCRIPT_DIR/oacis
