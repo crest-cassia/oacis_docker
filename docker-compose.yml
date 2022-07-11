@@ -13,3 +13,5 @@ services:
       - "127.0.0.1:${OACIS_PORT:-3000}:3000"
       - "127.0.0.1:${JUPYTER_PORT:-8888}:8888"
     tty: true
+    extra_hosts:
+      - "gateway.docker.internal:host-gateway"
