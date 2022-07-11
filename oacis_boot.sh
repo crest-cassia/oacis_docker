@@ -108,6 +108,7 @@ fi
 # otherwise config file is mounted as a directory in container
 if [ ! -f ~/.ssh/config ]; then
   touch ~/.ssh/config
+  chmod 600 ~/.ssh/config
 fi
 
 # set SSH_AUTH_SOCK_APP
