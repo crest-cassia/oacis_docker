@@ -3,14 +3,15 @@
 #pre-processes
 if [ ! ${LOCAL_GID:-1000} = `id -g oacis` ]; then
   groupmod -g ${LOCAL_GID:-1000} oacis
+  # this command can fail when the group already exists.
 fi
 if [ ! ${LOCAL_UID:-1000} = `id -u oacis` ]; then
   usermod -g ${LOCAL_GID:-1000} -u ${LOCAL_UID:-1000} oacis
 fi
 
 # mounted volumes are owned by root by default
-chown -R oacis:oacis /home/oacis/oacis/public/Result_development
-chown -R oacis:oacis /data/db
+chown -R oacis:$(id -g oacis) /home/oacis/oacis/public/Result_development
+chown -R oacis:$(id -g oacis) /data/db
 
 if [ -n ${SSH_AUTH_SOCK} ]; then
   chown oacis:oacis ${SSH_AUTH_SOCK}
