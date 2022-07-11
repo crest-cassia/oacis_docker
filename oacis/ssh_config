@@ -2,5 +2,5 @@
   UserKnownHostsFile=/dev/null
   ForwardAgent yes
 Host docker-host
-  HostName host.docker.internal
+  HostName gateway.docker.internal
   Include /home/oacis/local_ssh_config
