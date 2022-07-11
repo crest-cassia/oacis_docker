@@ -6,8 +6,12 @@ if [ ! ${LOCAL_GID:-1000} = `id -g oacis` ]; then
 fi
 if [ ! ${LOCAL_UID:-1000} = `id -u oacis` ]; then
   usermod -g ${LOCAL_GID:-1000} -u ${LOCAL_UID:-1000} oacis
-  chown -R oacis:oacis /data/db
 fi
+
+# mounted volumes are owned by root by default
+chown -R oacis:oacis /home/oacis/oacis/public/Result_development
+chown -R oacis:oacis /data/db
+
 if [ -n ${SSH_AUTH_SOCK} ]; then
   chown oacis:oacis ${SSH_AUTH_SOCK}
 fi
