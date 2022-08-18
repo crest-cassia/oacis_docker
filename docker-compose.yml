@@ -10,8 +10,8 @@ services:
       - LOCAL_GID
       - LOCAL_USER
     ports:
-      - "127.0.0.1:${OACIS_PORT:-3000}:3000"
-      - "127.0.0.1:${JUPYTER_PORT:-8888}:8888"
+      - "${HOST_IP:-127.0.0.1}:${OACIS_PORT:-3000}:3000"
+      - "${HOST_IP:-127.0.0.1}:${JUPYTER_PORT:-8888}:8888"
     tty: true
     extra_hosts:
       - "gateway.docker.internal:host-gateway"

@@ -11,6 +11,7 @@ usage() {
     echo "  -h, --help : show this message"
     echo "  -p PORT (default: 3000) : port used for OACIS"
     echo "  -j JUPYTER_PORT (default: 8888) : port used for Jupyter"
+    echo "  --publish-port : publish OACIS and jupyter port to external host"
     echo "  --no-ssh-agent : disable sharing ssh-agent of host OS"
     echo "  --image-tag OACIS_IMAGE_TAG (default: latest) : the tag name of OACIS image. Image 'oacis/oacis_jupyter:<TAG>' is used."
     echo "  --build-image OACIS_VERSION: don't pull the image but build a new image from Dockerfile"
@@ -41,6 +42,10 @@ do
       fi
       JUPYTER_PORT=$2
       shift 2
+      ;;
+    --publish-port)
+      HOST_IP="0.0.0.0"
+      shift
       ;;
     --no-ssh-agent)
       SSH_AUTH_SOCK=""
@@ -158,3 +163,4 @@ if [ -e "Result/db_dump" ]; then
   echo
   echo "===== 'Result/db_dump' file is found. Run ./oacis_restore_db.sh to restore the database ===="
 fi
+
