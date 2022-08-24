@@ -184,7 +184,7 @@ See the document for details: [How to setup host on OACIS](http://crest-cassia.g
 
 Add a host with the reserved name "**docker-host**" to use your host OS as a computational host. You'll be able to run your simulators on your host OS.
 
-## synchronizing data with a remote host
+## synchronizing data with another OACIS
 
 When you would like to copy your data to another OACIS instance in another machine, run a shell script like the following. (Replace `your_host_name` with your actual host name).
 
@@ -196,6 +196,16 @@ set -eux
 rsync -ahv --progress Result/ your_remote_host:oacis_docker/Result
 ssh your_remote_host '~/oacis_docker/oacis_restore_db.sh'
 ```
+
+## updating OACIS image
+
+Take the following steps to update the docker image of OACIS.
+
+1. `./oacis_dump_db.sh`
+2. `./oacis_terminate.sh`
+3. `docker pull oacis/oacis_jupyter`
+4. `./oacis_boot.sh`
+5. `./oacis_restore_db.sh`
 
 # License
 oacis_docker is a part of OACIS. [OACIS](https://github.com/crest-cassia/oacis) is published under the term of the MIT License (MIT).
