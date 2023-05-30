@@ -29,7 +29,7 @@ do
 done
 
 
-COMPOSE_PS_JSON=$(docker compose ps --format json)
+COMPOSE_PS_JSON=$(docker compose ps -a --format json)
 echo "${COMPOSE_PS_JSON}"
 if [ "${COMPOSE_PS_JSON}" == '[]' ]; then
   echo "===== there is no container ============"
