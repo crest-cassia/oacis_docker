@@ -78,7 +78,10 @@ done
 
 # check if contianer is already running
 COMPOSE_PS_JSON=$(docker compose ps --format json)
-if [ "${COMPOSE_PS_JSON}" != '[]' ]; then
+echo $COMPOSE_PS_JSON
+if [ -z "${COMPOSE_PS_JSON}" ] || [ "${COMPOSE_PS_JSON}" == '[]' ]; then
+  echo "====== no container is running. starting a new container ====="
+else
   echo "${COMPOSE_PS_JSON}"
   if echo "${COMPOSE_PS_JSON}" | grep -q '"State":"running"'; then
     set +x
