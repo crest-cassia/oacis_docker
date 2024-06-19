@@ -113,7 +113,7 @@ The source code of this sample simulator can be found at [yohm/sim_ns_model](htt
 
 ## SSH agent setup
 
-On the container, you can use the SSH agent running on the **host OS**. (Hereafter, the host on which docker is running is called **host OS**). If environemnt varialbe `SSH_AUTH_SOCK` is set in the host OS, the agent and `~.ssh/config` are mounted on the container so that you can connect to remote hosts from OACIS.
+On the container, you can use the SSH agent running on the **host OS**. (Hereafter, the host on which docker is running is called **host OS**). If environemnt varialbe `SSH_AUTH_SOCK` is set in the host OS so that you can connect to remote hosts from OACIS.
 Here is how to set up SSH agent.
 
 ### 1. Create a key pair and add it to authorized_keys.
@@ -126,7 +126,7 @@ $ ssh-keygen -t rsa
 
 You may enter a passphrase when making a key-pair. The key pair will be created in `~/.ssh` directory.
 
-### 2. Setup ssh-agent and ssh/.config
+### 2. Setup ssh-agent
 
 Set up ssh-agent on your host OS.
 Launch SSH agent as follows. On macOS, SSH agent is automatically launched so you can skip this step.
@@ -136,7 +136,6 @@ $ eval $(ssh-agent)
 Agent pid 97280
 ```
 
-Edit `~/.ssh/config` file. This file is mounted on the container when running `oacis_boot.sh`.
 The information required for SSH connection is determined by this file.
 
 
@@ -174,7 +173,35 @@ When these set up are done, launch OACIS.
 $ ./oacis_boot.sh
 ```
 
-### 5. Register your host OS on OACIS
+### 6. Edit `.ssh/config` on the container
+
+OACIS refers to `.ssh/config` file when making SSH connections. Run
+
+```shell
+$ ./oacis_shell.sh
+```
+
+to login to the container. On the container, edit `.ssh/config` file.
+
+```shell
+$ vi ~/.ssh/config
+```
+
+Here is an example of the config file. `docker-host` is the host running the docker.
+When you want to access a server located in the intranet, use `ProxyJump` to login via docker-host.
+
+```
+Host my_intra_server
+  User my_user
+  HostName my_intra_server
+  ProxyJump docker-host
+Host my_server
+  User my_user
+  HostName my_server.example.com
+```
+
+
+### 6. Register your host OS on OACIS
 
 Go to the page of host list. http://localhost:3000/hosts
 Select `New Host` and fill in the host information. You can add hosts that are listed in `~/.ssh/config`.

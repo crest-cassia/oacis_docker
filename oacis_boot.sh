@@ -112,12 +112,6 @@ if [ -n "${OACIS_VERSION}" ]; then
 fi
 
 
-# create ~/.ssh/config if it doesn't exist
-# otherwise config file is mounted as a directory in container
-if [ ! -f ~/.ssh/config ]; then
-  touch ~/.ssh/config
-  chmod 600 ~/.ssh/config
-fi
 
 # set SSH_AUTH_SOCK_APP
 if [ -n "${SSH_AUTH_SOCK}" ]; then
