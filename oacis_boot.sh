@@ -10,10 +10,9 @@ usage() {
     echo "Options:"
     echo "  -h, --help : show this message"
     echo "  -p PORT (default: 3000) : port used for OACIS"
-    echo "  -j JUPYTER_PORT (default: 8888) : port used for Jupyter"
-    echo "  --publish-port : publish OACIS and jupyter port to external host"
+    echo "  --publish-port : publish OACIS port to external host"
     echo "  --no-ssh-agent : disable sharing ssh-agent of host OS"
-    echo "  --image-tag OACIS_IMAGE_TAG (default: latest) : the tag name of OACIS image. Image 'oacis/oacis_jupyter:<TAG>' is used."
+    echo "  --image-tag OACIS_IMAGE_TAG (default: latest) : the tag name of OACIS image. Image 'oacis/oacis:<TAG>' is used."
     echo "  --build-image OACIS_VERSION: don't pull the image but build a new image from Dockerfile"
     echo "                               specify the branch/tag name of OACIS ('develop', 'v3.10.0')"
     echo
@@ -106,8 +105,6 @@ if [ -n "${OACIS_VERSION}" ]; then
   SCRIPT_DIR=$(cd $(dirname $0);pwd)
   cd $SCRIPT_DIR/oacis
   docker build . -t oacis/oacis:${OACIS_IMAGE_TAG} --build-arg OACIS_VERSION=${OACIS_VERSION}
-  cd $SCRIPT_DIR/oacis_jupyter
-  docker build . -t oacis/oacis_jupyter:${OACIS_IMAGE_TAG} --build-arg OACIS_VERSION=${OACIS_IMAGE_TAG}
   cd $SCRIPT_DIR
 fi
 
