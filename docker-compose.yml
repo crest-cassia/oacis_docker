@@ -1,7 +1,7 @@
 version: '3'
 services:
   oacis:
-    image: oacis/oacis_jupyter:${OACIS_IMAGE_TAG:-latest}
+    image: oacis/oacis:${OACIS_IMAGE_TAG:-latest}
     volumes:
       - ./Result:/home/oacis/oacis/public/Result_development
     environment:
@@ -10,7 +10,6 @@ services:
       - LOCAL_USER
     ports:
       - "${HOST_IP:-127.0.0.1}:${OACIS_PORT:-3000}:3000"
-      - "${HOST_IP:-127.0.0.1}:${JUPYTER_PORT:-8888}:8888"
     tty: true
     extra_hosts:
       - "gateway.docker.internal:host-gateway"
