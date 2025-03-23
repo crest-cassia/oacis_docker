@@ -10,8 +10,6 @@ numpy = "*"
 pandas = "*"
 matplotlib = "*"
 jupyter = "*"
-mprpc = "*"
-fibers = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.11"
