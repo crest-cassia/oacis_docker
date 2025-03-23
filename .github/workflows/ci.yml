@@ -18,7 +18,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build OACIS image
-        run: docker build . -t oacis/oacis:test --build-arg OACIS_VERSION=develop
+        run: docker build oacis -t oacis/oacis:test --build-arg OACIS_VERSION=develop
 
       - name: Run tests
         run: bash test/test_all.sh
