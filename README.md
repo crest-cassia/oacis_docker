@@ -230,7 +230,7 @@ Take the following steps to update the docker image of OACIS.
 
 1. `./oacis_dump_db.sh`
 2. `./oacis_terminate.sh`
-3. `docker pull oacis/oacis_jupyter`
+3. `docker pull oacis/oacis`
 4. `./oacis_boot.sh`
 5. `./oacis_restore_db.sh`
 
@@ -245,8 +245,6 @@ Copyright (c) 2014-2022 RIKEN AICS, RIKEN R-CCS
 
 - [oacis](oacis)
     - A base image, which consists of OACIS and its prerequisites.
-- [oacis\_jupyter](oacis_jupyter)
-    - On top of the "base" image, Python and Jupyter environments are installed.
 
 ## running an image built from the source code
 
