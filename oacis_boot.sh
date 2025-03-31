@@ -34,14 +34,6 @@ do
       OACIS_PORT=$2
       shift 2
       ;;
-    -j)
-      if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
-        echo "$PROGNAME: option requires an argument -- $1" 1>&2
-        exit 1
-      fi
-      JUPYTER_PORT=$2
-      shift 2
-      ;;
     --publish-port)
       HOST_IP="0.0.0.0"
       shift
