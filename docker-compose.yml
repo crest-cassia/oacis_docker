@@ -1,4 +1,3 @@
-version: '3'
 services:
   oacis:
     image: oacis/oacis:${OACIS_IMAGE_TAG:-latest}
