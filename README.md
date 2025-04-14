@@ -234,9 +234,23 @@ Take the following steps to update the docker image of OACIS.
 4. `./oacis_boot.sh`
 5. `./oacis_restore_db.sh`
 
+## Running on macOS with Apple Silicon
+
+As of April 2025 (Docker v4.40.0), the OACIS image is only available for the 'linux/amd64' architecture. Unfortunately, a 'linux/arm64' image is not provided.
+
+If you are using a Mac with Apple Silicon, you need to run the image using a virtualization framework. Our tests have shown that the image does not work with the "Apple Virtualization Framework," but it does work with the "QEMU" virtualization framework.
+
+### Steps to Enable QEMU on Docker Desktop
+
+1. Open **Docker Desktop**.
+2. Navigate to **Settings** -> **General**.
+3. Under **Virtual Machine Options**, enable the **QEMU** virtualization framework.
+
+Once QEMU is enabled, you should be able to run the OACIS image on your Apple Silicon Mac without issues.
+
 # License
 oacis_docker is a part of OACIS. [OACIS](https://github.com/crest-cassia/oacis) is published under the term of the MIT License (MIT).
-Copyright (c) 2014-2022 RIKEN AICS, RIKEN R-CCS
+Copyright (c) 2014-2025 RIKEN AICS, RIKEN R-CCS
 
 
 # Note for Developers
@@ -271,3 +285,5 @@ git tag -a ${OACIS_VERSION} -m "version ${OACIS_VERSION}"
 git push
 git tag --push
 ```
+
+Note: As of April 2025, the build process must be performed on a 'linux/amd64' architecture. Building on a Mac with Apple Silicon is not recommended due to the significant time required for virtualization. If you are using an Apple Silicon Mac, consider using a Linux/amd64 environment for building the image.
