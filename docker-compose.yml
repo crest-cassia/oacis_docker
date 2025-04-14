@@ -2,6 +2,7 @@ version: '3'
 services:
   oacis:
     image: oacis/oacis:${OACIS_IMAGE_TAG:-latest}
+    platform: linux/amd64
     volumes:
       - ./Result:/home/oacis/oacis/public/Result_development
     environment:
