@@ -29,7 +29,6 @@ $ ./oacis_boot.sh
 A container of OACIS launches. It takes some time until the launch completes.
 
 - Visit http://localhost:3000 to access OACIS like the following. You may change the port by specifying `-p` option.
-- Visit http://localhost:8888 to access Jupyter notebook with OACIS API. The port may be changed by `-j` option.
 
 <img src="./fig/top.png" width="600" style="display: block; margin: auto;">
 
