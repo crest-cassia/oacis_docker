@@ -13,6 +13,19 @@ Ready-to-run [OACIS](https://github.com/crest-cassia/oacis) application in Docke
 - https://docs.docker.com/get-docker/
 - https://docs.docker.com/compose/install/
 
+### Running on macOS with Apple Silicon
+
+As of April 2025 (Docker v4.40.0), the OACIS image is only available for the 'linux/amd64' architecture. Unfortunately, a 'linux/arm64' image is not provided.
+
+If you are using a Mac with Apple Silicon, you need to run the image using a virtualization framework. Our tests have shown that the image does not work with the "Apple Virtualization Framework," but it does work with the "QEMU" virtualization framework.
+
+1. Open **Docker Desktop**.
+2. Navigate to **Settings** -> **General**.
+3. Under **Virtual Machine Options**, enable the **QEMU** virtualization framework.
+
+Once QEMU is enabled, you should be able to run the OACIS image on your Apple Silicon Mac without issues.
+
+
 ### 1. Clone oacis_docker_tools
 
 ```shell
@@ -232,20 +245,6 @@ Take the following steps to update the docker image of OACIS.
 3. `docker pull oacis/oacis`
 4. `./oacis_boot.sh`
 5. `./oacis_restore_db.sh`
-
-## Running on macOS with Apple Silicon
-
-As of April 2025 (Docker v4.40.0), the OACIS image is only available for the 'linux/amd64' architecture. Unfortunately, a 'linux/arm64' image is not provided.
-
-If you are using a Mac with Apple Silicon, you need to run the image using a virtualization framework. Our tests have shown that the image does not work with the "Apple Virtualization Framework," but it does work with the "QEMU" virtualization framework.
-
-### Steps to Enable QEMU on Docker Desktop
-
-1. Open **Docker Desktop**.
-2. Navigate to **Settings** -> **General**.
-3. Under **Virtual Machine Options**, enable the **QEMU** virtualization framework.
-
-Once QEMU is enabled, you should be able to run the OACIS image on your Apple Silicon Mac without issues.
 
 # License
 oacis_docker is a part of OACIS. [OACIS](https://github.com/crest-cassia/oacis) is published under the term of the MIT License (MIT).
