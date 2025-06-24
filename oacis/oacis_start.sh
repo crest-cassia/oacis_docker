@@ -53,9 +53,11 @@ fi
 
 #run oacis
 # pre-compile assets to accelerate the boot
-su - -m -c "\
+su - -c "
+  export RAILS_ENV=production && \
+  export SSH_AUTH_SOCK=$SSH_AUTH_SOCK && \
   cd /home/oacis/oacis && \
-  env RAILS_ENV=production bin/rails assets:precompile && \
+  bin/rails assets:precompile && \
   bundle exec rake daemon:restart && \
   if [ ! -f ~/.ssh/id_rsa ]; \
   then \
