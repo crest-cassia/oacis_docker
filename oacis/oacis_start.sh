@@ -13,10 +13,10 @@ fi
 chown -R oacis:$(id -g oacis) /home/oacis/oacis/public/Result_development
 chown -R oacis:$(id -g oacis) /data/db
 
-if [ -n ${SSH_AUTH_SOCK} ]; then
+if [ -n "${SSH_AUTH_SOCK}" ]; then
   chown oacis:oacis ${SSH_AUTH_SOCK}
 fi
-if [ -n ${LOCAL_USER} ]; then
+if [ -n "${LOCAL_USER}" ]; then
   echo "User ${LOCAL_USER}" > /home/oacis/local_ssh_config
   chown oacis:oacis /home/oacis/local_ssh_config
 fi
