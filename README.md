@@ -13,18 +13,19 @@ Ready-to-run [OACIS](https://github.com/crest-cassia/oacis) application in Docke
 - https://docs.docker.com/get-docker/
 - https://docs.docker.com/compose/install/
 
-### Running on macOS with Apple Silicon
-
-As of April 2025 (Docker v4.40.0), the OACIS image is only available for the 'linux/amd64' architecture. Unfortunately, a 'linux/arm64' image is not provided.
-
-If you are using a Mac with Apple Silicon, you need to run the image using a virtualization framework. Our tests have shown that the image does not work with the "Apple Virtualization Framework," but it does work with the "QEMU" virtualization framework.
-
-1. Open **Docker Desktop**.
-2. Navigate to **Settings** -> **General**.
-3. Under **Virtual Machine Options**, enable the **QEMU** virtualization framework.
-
-Once QEMU is enabled, you should be able to run the OACIS image on your Apple Silicon Mac without issues.
-
+> [!NOTE]
+> 
+>### Running on macOS with Apple Silicon
+>
+>As of April 2025 (Docker v4.40.0), the OACIS image is only available for the 'linux/amd64' architecture. Unfortunately, a 'linux/arm64' image is not provided.
+>
+>If you are using a Mac with Apple Silicon, you need to run the image using a virtualization framework. Our tests have shown that the image does not work with the "Apple Virtualization Framework," but it does work with the "QEMU" virtualization framework.
+>
+>1. Open **Docker Desktop**.
+>2. Navigate to **Settings** -> **General**.
+>3. Under **Virtual Machine Options**, enable the **QEMU** virtualization framework.
+>
+>Once QEMU is enabled, you should be able to run the OACIS image on your Apple Silicon Mac without issues.
 
 ### 1. Clone oacis_docker_tools
 
@@ -34,6 +35,36 @@ cd oacis_docker
 ```
 
 ### 2. Start OACIS container
+
+> [!NOTE]
+> ### Booting Container on Ubuntu
+> 
+> Due to differences between macOS and Ubuntu, configuring the installation to allow the localhost (Docker container) to connect to the docker-host (Ubuntu machine) requires additional steps. If the jobs require the installation of libraries that are not provided in the OACIS Docker container, then running the jobs on the docker-host will allow the scripts to access the software available on the docker-host. Unlike [on macOS](README.md#ssh-agent-setup), setting up the ssh keys must be done before booting OACIS. In order to install OACIS in Ubuntu with the ability to run jobs on the docker-host:
+> 
+> - Install dependencies on Ubuntu machine, which are also required for other systems
+>    - [Docker](https://docs.docker.com/engine/install/ubuntu/#installation-methods)
+>    - Ruby 2.0.0 or later
+>        - Using apt: `sudo apt install ruby`
+>    - [xsub](https://github.com/crest-cassia/xsub)
+>        - clone directory and add paths to `~/.bash_profile`
+>- Install dependencies on Ubuntu machine, specific to Ubuntu:
+>    - `openssh-server` to allow remote connection to docker-host from Docker container
+>        - Using apt: `sudo apt install openssh-server`
+>        - If the ssh server is not installed, then the OACIS Docker container will not be able to connect to the docker-host.
+>- Configure ssh keys
+>    - Add public key from Ubuntu machine to its own authorized keys
+>        - `cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys`
+>    - Add key to the SSH agent
+>        - `ssh-add ~/.ssh/id_ed25519`
+>    - If the ssh key is not set up correctly, then the password authentication will prevent the Docker container from connecting to the docker-host.
+>- Run `sudo -E ./oacis_boot.sh`
+>    - Unlike on macOS, running Docker on Ubuntu requires `sudo`. The `-E` option preserves the environment within sudo, as the OACIS Docker environment setup specifically requires `SSH_AUTH_SOCK` in order for the Docker container to have access to the SSH agent.
+>- Run `sudo -E ./oacis_shell.sh`
+>    - In the shell, view `/etc/ssh/ssh_config`, and look for the `docker-host` "Include" file name, and in that file set the "User" to your username for Ubuntu, instead of the original value of "root".
+>    - Without setting the User for the ssh config, because OACIS is run with `sudo`, OACIS will be attempting to connect as root rather than as the user, which will fail.
+>- To confirm the installation is correct:
+>    - Confirm that "Check Scheduler Status" under "Hosts" -> "docker-host" in the browser shows a schedule status, rather than an error
+>    - Submit a job to from OACIS to the docker-host, and confirm that it progresses to "finished" rather than "failed"
 
 ```shell
 $ ./oacis_boot.sh
