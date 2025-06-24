@@ -66,6 +66,8 @@ do
   esac
 done
 
+# save the original user in case it is called as sudo
+ORIG_USER=${SUDO_USER:-$USER}
 
 # check if contianer is already running
 COMPOSE_PS_JSON=$(docker compose ps --format json)
