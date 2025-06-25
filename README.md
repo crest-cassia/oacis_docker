@@ -59,9 +59,6 @@ cd oacis_docker
 >    - If the ssh key is not set up correctly, then the password authentication will prevent the Docker container from connecting to the docker-host.
 >- Run `sudo -E ./oacis_boot.sh`
 >    - Unlike on macOS, running Docker on Ubuntu requires `sudo`. The `-E` option preserves the environment within sudo, as the OACIS Docker environment setup specifically requires `SSH_AUTH_SOCK` in order for the Docker container to have access to the SSH agent.
->- Run `sudo -E ./oacis_shell.sh`
->    - In the shell, view `/etc/ssh/ssh_config`, and look for the `docker-host` "Include" file name, and in that file set the "User" to your username for Ubuntu, instead of the original value of "root".
->    - Without setting the User for the ssh config, because OACIS is run with `sudo`, OACIS will be attempting to connect as root rather than as the user, which will fail.
 >- To confirm the installation is correct:
 >    - Confirm that "Check Scheduler Status" under "Hosts" -> "docker-host" in the browser shows a schedule status, rather than an error
 >    - Submit a job to from OACIS to the docker-host, and confirm that it progresses to "finished" rather than "failed"
