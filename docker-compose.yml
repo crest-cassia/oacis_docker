@@ -17,7 +17,7 @@ services:
       - LOCAL_UID
       - LOCAL_GID
       - LOCAL_USER
-      - OACIS_MONGO_URL=mongo:27017
+      - OACIS_MONGODB_URL=mongo:27017
       - OACIS_REDIS_URL=redis:6379
     ports:
       - "${HOST_IP:-127.0.0.1}:${OACIS_PORT:-3000}:3000"

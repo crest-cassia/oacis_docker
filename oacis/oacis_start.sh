@@ -38,6 +38,8 @@ trap cleanup SIGINT SIGTERM
 su - -c "
   export RAILS_ENV=production && \
   export SSH_AUTH_SOCK=$SSH_AUTH_SOCK && \
+  export OACIS_MONGODB_URL=$OACIS_MONGODB_URL && \
+  export OACIS_REDIS_URL=$OACIS_REDIS_URL && \
   cd /home/oacis/oacis && \
   bin/rails assets:precompile && \
   bundle exec rake daemon:restart && \

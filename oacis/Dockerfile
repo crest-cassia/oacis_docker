@@ -37,7 +37,8 @@ ARG OACIS_VERSION
 
 RUN git clone --recursive -b ${OACIS_VERSION:-master} https://github.com/crest-cassia/oacis.git \
     && cd oacis \
-    && bundle install \
+    && unset BUNDLE_APP_CONFIG \
+    && bundle install --path vendor/bundle \
     && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \
     && git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub \
     && echo "export PATH=\$PATH:/home/oacis/xsub/bin" >> /home/oacis/.bash_profile \
