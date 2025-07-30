@@ -7,9 +7,6 @@ services:
   redis:
     image: redis:8.0.1
   oacis:
-    build:
-      context: ./oacis
-      dockerfile: Dockerfile
     image: oacis/oacis:${OACIS_IMAGE_TAG:-latest}
     volumes:
       - ./Result:/home/oacis/oacis/public/Result_development
