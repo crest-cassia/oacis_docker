@@ -13,6 +13,8 @@ fi
 chown -R oacis:$(id -g oacis) /home/oacis/oacis/public/Result_development
 chown -R oacis:$(id -g oacis) /data/db
 
+# Ruby image assumes that the user is root, so we need to change ownership of the bundle directory
+chown -R oacis:oacis /usr/local/bundle
 if [ -n "${SSH_AUTH_SOCK}" ]; then
   chown oacis:oacis ${SSH_AUTH_SOCK}
 fi
@@ -35,11 +37,14 @@ trap cleanup SIGINT SIGTERM
 
 #run oacis
 # pre-compile assets to accelerate the boot
+# environment variables are set to ensure that the OACIS application runs correctly
 su - -c "
   export RAILS_ENV=production && \
   export SSH_AUTH_SOCK=$SSH_AUTH_SOCK && \
   export OACIS_MONGODB_URL=$OACIS_MONGODB_URL && \
   export OACIS_REDIS_URL=$OACIS_REDIS_URL && \
+  export BUNDLE_APP_CONFIG=$BUNDLE_APP_CONFIG && \
+  export GEM_HOME=$GEM_HOME && \
   cd /home/oacis/oacis && \
   bin/rails assets:precompile && \
   bundle exec rake daemon:restart && \

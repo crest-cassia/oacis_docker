@@ -37,14 +37,15 @@ ARG OACIS_VERSION
 
 RUN git clone --recursive -b ${OACIS_VERSION:-master} https://github.com/crest-cassia/oacis.git \
     && cd oacis \
-    && unset BUNDLE_APP_CONFIG \
-    && bundle install --path vendor/bundle \
+    && bundle install \
     && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \
     && git clone https://github.com/crest-cassia/xsub.git /home/oacis/xsub \
     && echo "export PATH=\$PATH:/home/oacis/xsub/bin" >> /home/oacis/.bash_profile \
     && echo "export XSUB_TYPE=\"none\"" >> /home/oacis/.bash_profile \
     && echo "export OACIS_ROOT=/home/oacis/oacis" >> /home/oacis/.bash_profile \
     && echo 'export USER=$(whoami)' >> /home/oacis/.bash_profile \
+    && echo 'export BUNDLE_APP_CONFIG="/usr/local/bundle"' >> /home/oacis/.bash_profile \
+    && echo 'export GEM_HOME="/usr/local/bundle"' >> /home/oacis/.bash_profile \
     && mkdir -p /home/oacis/oacis/public/Result_development \
     && mkdir -p /home/oacis/.ssh
 
