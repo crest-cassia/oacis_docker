@@ -29,7 +29,7 @@ do
   esac
 done
 
-set -eux
+set -x
 script_dir=$(cd $(dirname $0); pwd)
 RESULT_DIR="$script_dir/Result"
 DUMP_FILE="db_dump_$(date '+%Y%m%d_%H:%M:%S')"
