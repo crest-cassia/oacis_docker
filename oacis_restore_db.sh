@@ -35,4 +35,17 @@ if [ ! -e "Result/db_dump" ]; then
 fi
 
 set -x
-docker compose exec -u oacis oacis /home/oacis/oacis/bin/oacis_restore_db
+script_dir=$(cd $(dirname $0); pwd)
+RESULT_DIR="$script_dir/Result"
+DUMP_FILE="$RESULT_DIR/db_dump"
+DUMP_TMP_FILE="$RESULT_DIR/db_dump_backup_$(date '+%Y%m%d_%H:%M:%S')"
+
+# 復元前にバックアップを作成（mongoコンテナで実行）
+docker compose exec mongo mongodump --archive --db=oacis_development > "$DUMP_TMP_FILE"
+
+# データベースを復元（mongoコンテナで実行）
+docker compose exec -T mongo mongorestore --archive --db=oacis_development --drop < "$DUMP_FILE"
+
+set +x
+echo "DB was successfully restored from \"$DUMP_FILE\"" >&2
+echo "Backup saved to \"$DUMP_TMP_FILE\"" >&2
