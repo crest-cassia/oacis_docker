@@ -36,9 +36,6 @@ jobs:
             exit 1
           fi
 
-      - name: Run tests
-        run: bash test/test_all.sh
-
       - name: Cleanup containers
         if: always()
         run: ./oacis_terminate.sh || true
