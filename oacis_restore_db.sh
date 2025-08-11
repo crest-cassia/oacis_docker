@@ -40,10 +40,8 @@ RESULT_DIR="$script_dir/Result"
 DUMP_FILE="$RESULT_DIR/db_dump"
 DUMP_TMP_FILE="$RESULT_DIR/db_dump_backup_$(date '+%Y%m%d_%H:%M:%S')"
 
-# 復元前にバックアップを作成（mongoコンテナで実行）
 docker compose exec mongo mongodump --archive --db=oacis_development > "$DUMP_TMP_FILE"
 
-# データベースを復元（mongoコンテナで実行）
 docker compose exec -T mongo mongorestore --archive --db=oacis_development --drop < "$DUMP_FILE"
 
 set +x
