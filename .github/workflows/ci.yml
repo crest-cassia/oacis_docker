@@ -17,9 +17,26 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build OACIS image
-        run: docker build oacis -t oacis/oacis:test --build-arg OACIS_VERSION=develop
+      - name: Boot OACIS with multi-container setup
+        run: ./oacis_boot.sh --build-image develop --image-tag test
 
-      - name: Run tests
-        run: bash test/test_all.sh
+      - name: Wait for OACIS to be ready
+        run: |
+          echo "Waiting for OACIS web server to be ready..."
+          timeout 60 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do sleep 2; done'
+          echo "OACIS web server is ready"
+
+      - name: Verify OACIS web server
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
+          if [ "$response" -eq 200 ]; then
+            echo "✅ OACIS web server is responding correctly (HTTP $response)"
+          else
+            echo "❌ OACIS web server returned HTTP $response"
+            exit 1
+          fi
+
+      - name: Cleanup containers
+        if: always()
+        run: ./oacis_terminate.sh || true
 

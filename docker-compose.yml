@@ -1,15 +1,29 @@
 services:
+  mongo:
+    image: mongo:8.0.10-rc0
+    volumes:
+      - mongo_data:/data/db
+      - ./init_mongo_data.sh:/docker-entrypoint-initdb.d/init_mongo_data.sh:ro
+  redis:
+    image: redis:8.0.1
   oacis:
     image: oacis/oacis:${OACIS_IMAGE_TAG:-latest}
-    platform: linux/amd64
     volumes:
       - ./Result:/home/oacis/oacis/public/Result_development
     environment:
       - LOCAL_UID
       - LOCAL_GID
       - LOCAL_USER
+      - OACIS_MONGODB_URL=mongo:27017
+      - OACIS_REDIS_URL=redis:6379
     ports:
       - "${HOST_IP:-127.0.0.1}:${OACIS_PORT:-3000}:3000"
     tty: true
     extra_hosts:
       - "gateway.docker.internal:host-gateway"
+    depends_on:
+      - mongo
+      - redis
+
+volumes:
+  mongo_data:

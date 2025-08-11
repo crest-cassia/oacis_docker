@@ -30,4 +30,14 @@ do
 done
 
 set -x
-docker compose exec -u oacis oacis /home/oacis/oacis/bin/oacis_dump_db
+script_dir=$(cd $(dirname $0); pwd)
+RESULT_DIR="$script_dir/Result"
+DUMP_FILE="db_dump_$(date '+%Y%m%d_%H:%M:%S')"
+DUMP_FILE_LINK="db_dump"
+
+docker compose exec mongo mongodump --archive --db=oacis_development > "$RESULT_DIR/$DUMP_FILE"
+cd "$RESULT_DIR"
+ln -fs "$DUMP_FILE" "$DUMP_FILE_LINK"
+
+set +x
+echo "File \"$RESULT_DIR/$DUMP_FILE\" was successfully written"
