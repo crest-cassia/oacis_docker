@@ -2,7 +2,6 @@
 
 [![GitHub version](https://badge.fury.io/gh/crest-cassia%2Foacis_docker.svg)](https://badge.fury.io/gh/crest-cassia%2Foacis_docker)
 [![docker image](http://img.shields.io/badge/docker_image-ready-brightgreen.svg)](https://registry.hub.docker.com/r/oacis/oacis/)
-[![Build Status](https://travis-ci.org/crest-cassia/oacis_docker.svg?branch=develop)](https://travis-ci.org/crest-cassia/oacis_docker)
 
 Ready-to-run [OACIS](https://github.com/crest-cassia/oacis) application in Docker.
 
@@ -13,21 +12,7 @@ Ready-to-run [OACIS](https://github.com/crest-cassia/oacis) application in Docke
 - https://docs.docker.com/get-docker/
 - https://docs.docker.com/compose/install/
 
-> [!NOTE]
-> 
->### Running on macOS with Apple Silicon
->
->As of April 2025 (Docker v4.40.0), the OACIS image is only available for the 'linux/amd64' architecture. Unfortunately, a 'linux/arm64' image is not provided.
->
->If you are using a Mac with Apple Silicon, you need to run the image using a virtualization framework. Our tests have shown that the image does not work with the "Apple Virtualization Framework," but it does work with the "QEMU" virtualization framework.
->
->1. Open **Docker Desktop**.
->2. Navigate to **Settings** -> **General**.
->3. Under **Virtual Machine Options**, enable the **QEMU** virtualization framework.
->
->Once QEMU is enabled, you should be able to run the OACIS image on your Apple Silicon Mac without issues.
-
-### 1. Clone oacis_docker_tools
+### 1. Clone oacis_docker
 
 ```shell
 git clone https://github.com/crest-cassia/oacis_docker.git
@@ -312,4 +297,4 @@ git push
 git tag --push
 ```
 
-Note: As of April 2025, the build process must be performed on a 'linux/amd64' architecture. Building on a Mac with Apple Silicon is not recommended due to the significant time required for virtualization. If you are using an Apple Silicon Mac, consider using a Linux/amd64 environment for building the image.
+Note: As of August 2025, the build process must be performed both on 'linux/amd64' and 'linux/arm64' architectures. Building a 'linux/amd64' image on a Mac with Apple Silicon is not recommended due to the significant time required for building dependent gems on virtualization.
