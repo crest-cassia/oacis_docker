@@ -1,170 +1,73 @@
-# OACIS base Image
+# OACIS Docker Image
 
 ## What it Gives You
 
-- latest OACIS and its prerequisites
-    - OACIS
-    - Ruby
-    - MongoDB
-    - Redis
-    - OpenSSH server
-    - xsub
-- SSH settings are configured such that an SSH connection to the container itself becomes possible.
-- Unprivileged user `oacis` in group `oacis` with ownership over `home/oacis`.
-    - OACIS is installed at `~/oacis` for `oacis` user.
-- `setup_ns_model.sh`, which installs a sample simulator and registeres it to the OACIS.
+- OACIS Ruby application with prerequisites:
+    - Ruby 2.7.8
+    - OACIS simulation management platform
+    - OpenSSH server for remote connections
+    - xsub job scheduler
+    - Essential system packages (git, build tools, etc.)
+- Unprivileged `oacis` user with OACIS installed at `~/oacis`
+- SSH configuration for remote host connections
+- Sample simulator setup script (`setup_ns_model.sh`)
 
-## Basic Usage
+**Note**: This image does NOT include MongoDB or Redis databases. These are provided as separate services via Docker Compose.
 
-The following command starts a container with OACIS listening for HTTP connections on port 3000. The port is exposed locally, i.e., it is inaccessible from other hosts.
+## Usage
 
-```
-docker run --name my_oacis -p 127.0.0.1:3000:3000 -dt oacis/oacis
-```
+**This image is designed to be used with the [oacis_docker](https://github.com/crest-cassia/oacis_docker) repository, which provides Docker Compose configuration with MongoDB and Redis services.**
 
-If you are using Docker Toolbox, run the following.
+### Quick Start
 
-```
-docker run --name my_oacis -p 3000:3000 -dt oacis/oacis
-```
+Instead of running this image directly, use the oacis_docker repository:
 
-A few tens of seconds are necessary to complete the booting of OACIS. To see if OACIS is ready to use, run the following command to see the standard output of the booting process.
+```bash
+# Clone the oacis_docker repository
+git clone https://github.com/crest-cassia/oacis_docker.git
+cd oacis_docker
 
-```
-docker logs -f my_oacis   # wait for boot. Exit by Ctrl + C
+# Start OACIS with all required services
+./oacis_boot.sh
 ```
 
-When you see the output like the following, OACIS is ready to use.
+This will start:
+- OACIS application (this image)
+- MongoDB database
+- Redis cache
+- Proper networking and volume mounting
 
-```
-...
-+ echo '==== OACIS READY ===='
-==== OACIS READY ====
-+ child=232
-+ wait 232
-+ tail -f /dev/null
-```
+### Access OACIS
 
-Access [http://localhost:3000](http://localhost:3000) via your web browser. If you are using Docker toolbox, access [http://192.168.99.100:3000](http://192.168.99.100:3000) instead of localhost.
+After running `./oacis_boot.sh`, wait for the "OACIS READY" message, then access:
+- Web interface: [http://localhost:3000](http://localhost:3000)
 
-### Stopping and Restarting
+### Container Management
 
-Find a running container via `docker ps` command.
+Use the provided scripts in oacis_docker repository:
 
-```sh
-$ docker ps
-CONTAINER ID     IMAGE               COMMAND              CREATED             STATUS          PORTS                      NAMES
-e279dbdcc855     oacis/oacis         "./oacis_start.sh"   About an hour ago   Up 5 minutes    127.0.0.1:3002->3000/tcp   my_oacis
-```
+```bash
+# Stop containers (preserves data)
+./oacis_stop.sh
 
-Stop the container by `docker stop` command. The `-t` option specifies seconds to wait for stop before killing it. Since OACIS requires some time to gracefully stop the daemon, we recommend to set it longer by the default value (10sec).
+# Restart stopped containers
+./oacis_start.sh
 
-```sh
-$ docker stop -t 60 my_oacis
-```
+# Access container shell
+./oacis_shell.sh
 
-You'll see the list of stopped container by `docker ps -a` command.
+# Backup database
+./oacis_dump_db.sh
 
-```sh
-$ docker ps -a
-CONTAINER ID     IMAGE              COMMAND             CREATED             STATUS                       PORTS        NAMES
-e279dbdcc855     oacis/oacis        "./oacis_start.sh"  About an hour ago   Exited (137) 2 minutes ago                my_oacis
+# Restore database
+./oacis_restore_db.sh
+
+# Terminate containers (deletes data)
+./oacis_terminate.sh
 ```
 
-To restart the stopped container, use `docker start` command. Use `docker logs -f` as well to see if the booting has finished.
+## Direct Docker Usage (Not Recommended)
 
-```sh
-$ docker start my_oacis
-$ docker logs -f my_oacis
-```
+If you need to run this image directly without Docker Compose, you must provide external MongoDB and Redis services and configure the appropriate environment variables (`OACIS_MONGODB_URL`, `OACIS_REDIS_URL`).
 
-To remove the stopped container, use `docker rm -v`. If you want to remove the image as well, run `docker rmi`.
-
-```sh
-$ docker rm -v my_oacis          # removing the container
-$ docker rmi oacis/oacis         # removing the image of OACIS
-```
-
-## Mounting a directory
-
-Simulation results are stored in "/home/oacis/oacis/public/Result_development" directory in the container. You can mount this directory to a directory in the host machine with `-v` option.
-When mounting the directroy, you also need to set `-e LOCAL_UID=$(id -u $USER) -e LOCAL_GID=$(id -g $USER)` options. This is because the user in the container must have the same uid and gid as those in the local host to access the mounted directory properly. By these options, local uid and gid are sent to the container as environment variables.
-
-```
-docker run --name my_oacis -p 127.0.0.1:3000:3000 -e LOCAL_UID=$(id -u $USER) -e LOCAL_GID=$(id -g $USER) -v $(pwd):/home/oacis/oacis/public/Result_development -dt oacis/oacis
-```
-
-## Backup and Restore
-
-To make a backup, run the following command to dump DB data.
-Containers must be running when you make a backup.
-Data will be exported to `/home/oacis/oacis/public/Result_development/dump` directory in the container.
-
-```sh
-$ docker exec -u oacis -it my_oacis bash -c "cd /home/oacis/oacis/public/Result_development; mongodump --db oacis_development"
-```
-
-Then, please make a backup of the directory *Result_development*.
-
-```sh
-docker cp my_oacis:/home/oacis/oacis/public/Result_development .
-```
-
-To restore data, run the following command to copy *Result_development* and restore db data from `Result_development/dump`.
-
-```sh
-docker create -t --name another_oacis -p 127.0.0.1:3001:3000 oacis/oacis
-for file in Result_development/*; do docker cp $file another_oacis:/home/oacis/oacis/public/Result_development; done
-docker start another_oacis
-docker logs -f another_oacis   # wait until OACIS is ready
-docker exec -it another_oacis bash -c "cd /home/oacis/oacis/public/Result_development && chown -R oacis:oacis . && mongorestore --db oacis_development dump/oacis_development"
-```
-
-## Logging in the container
-
-By logging in the container, you can update the configuration of the container.
-For instance, you can install additional packages, set up ssh-agent, and see the logs.
-
-To login the container as a normal user, run `docker exec` with `-u` option.
-
-```sh
-docker exec -it -u oacis my_oacis bash -l
-```
-
-To login as the root user, run
-
-```sh
-docker exec -it oacis bash -l
-```
-
-## Registering a remote host  
-
-To register a new remote host, you need to enable your container to access to your remote host (remote computer).  
-First, log in to the container you have just created.    
-
-```sh
-docker exec -it -u oacis my_oacis bash -l
-```
-
-Then, edit your container's `config`. Open it like `vim ~/.ssh/config`.  
-Once you open `config`, you should see the default setting. Change the setting according to your remote host's setting. For example,  
-```sh
-Host my_remote_host # this field is used when registering your remote host later 
- HostName 192.168.111.133 # address of your remote host
- Port 22
- User bob # your username of your remote computer's home directory.  
- IdentityFile ~/.ssh/id_rsa
-```
-
-Next, register your container's ssh public key into your remote host.  
-```sh
-cat .ssh/id_rsa.pub
-```
-Copy its output and paste it into your remote host's `~/.ssh/authorized_keys`.  
-
-
-Finally, access [http://localhost:3000/hosts/new](http://localhost:3000/hosts/new) via your web browser..  
-In the `Name` field in the GUI, fill in the value in the `Host` field you have entered in `~/.ssh/config` on your container. In this example, put "my_remote_host" in the `Name` field.  
-You should now be able to add your remote host.  
-
-
+For complete setup and usage instructions, please refer to the [oacis_docker repository](https://github.com/crest-cassia/oacis_docker).
