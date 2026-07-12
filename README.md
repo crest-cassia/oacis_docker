@@ -28,8 +28,9 @@ cd oacis_docker
 > 
 > - Install dependencies on Ubuntu machine, which are also required for other systems
 >    - [Docker](https://docs.docker.com/engine/install/ubuntu/#installation-methods)
->    - Ruby 2.0.0 or later
+>    - Ruby
 >        - Using apt: `sudo apt install ruby`
+>        - This Ruby is only used by `xsub` on the docker-host; the version installed by apt is sufficient. (OACIS itself requires Ruby 3.2 or later, but it is bundled inside the container, so you do not need it on the host.)
 >    - [xsub](https://github.com/crest-cassia/xsub)
 >        - clone directory and add paths to `~/.bash_profile`
 >- Install dependencies on Ubuntu machine, specific to Ubuntu:
@@ -135,6 +136,18 @@ $ exit     # to logout from the container
 ```
 
 The source code of this sample simulator can be found at [yohm/sim_ns_model](https://github.com/yohm/sim_ns_model).
+
+## MCP server for AI agents (OACIS v4)
+
+OACIS v4 ships an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server, which lets AI agents such as Claude create parameter sets, submit and monitor runs, read result files, and trigger analyzers.
+Use the `oacis_mcp.sh` wrapper script to launch it inside the running container. For instance, register it to [Claude Code](https://claude.com/claude-code) as follows:
+
+```shell
+claude mcp add oacis -- /path/to/oacis_docker/oacis_mcp.sh
+```
+
+The server speaks JSON-RPC over stdio; it opens no network port. OACIS must be running (`./oacis_boot.sh`) when the agent connects.
+See the [OACIS MCP documentation](http://crest-cassia.github.io/oacis/en/mcp.html) for the available tools and the security model.
 
 ## SSH agent setup
 
@@ -251,6 +264,9 @@ ssh your_remote_host '~/oacis_docker/oacis_restore_db.sh'
 
 ## updating OACIS image
 
+> [!IMPORTANT]
+> If you are upgrading from OACIS v3 to v4, read [MIGRATION_V3_TO_V4.md](MIGRATION_V3_TO_V4.md) first.
+
 Take the following steps to update the docker image of OACIS.
 
 1. `./oacis_dump_db.sh`
@@ -270,6 +286,8 @@ Copyright (c) 2014-2025 RIKEN AICS, RIKEN R-CCS
 
 - [oacis](oacis)
     - A base image, which consists of OACIS and its prerequisites.
+
+Note: the current Dockerfile is based on Ruby 3.4 and can only build OACIS v4 (the `develop` branch or `v4.x` tags). To build a v3 image, check out an older tag of oacis_docker (e.g. `v3.12.0`).
 
 ## running an image built from the source code
 

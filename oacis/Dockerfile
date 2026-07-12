@@ -1,13 +1,10 @@
-######################################
-# OACIS Dockerfile from Debian Image #
-# Built for x86_64 platform          #
-######################################
-FROM ruby:2.7.8
+#########################################################
+# OACIS Dockerfile from Debian-based Ruby image         #
+# Multi-arch: linux/amd64, linux/arm64                  #
+# OACIS v4 requires Ruby >= 3.2                         #
+#########################################################
+FROM ruby:3.4
 LABEL maintainer="OACIS developers <oacis-dev@googlegroups.com>"
-
-# Add MongoDB official repository (x86_64 only!)
-# RUN apt-get update && apt-get install -y gnupg curl ca-certificates
-
 
 # Install essential dependencies and services
 RUN apt-get update \
@@ -35,7 +32,8 @@ USER oacis
 WORKDIR /home/oacis
 ARG OACIS_VERSION
 
-RUN git clone --recursive -b ${OACIS_VERSION:-master} https://github.com/crest-cassia/oacis.git \
+# TODO: change the default back to "master" once OACIS v4 is merged into master
+RUN git clone -b ${OACIS_VERSION:-develop} https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install \
     && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \
@@ -66,7 +64,6 @@ WORKDIR /home/oacis
 ENV HOME=/home/oacis
 ENV OACIS_ROOT=/home/oacis/oacis
 EXPOSE 3000
-VOLUME ["/data/db"]
 VOLUME ["/home/oacis/oacis/public/Result_development"]
 
 # Start command

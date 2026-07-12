@@ -3,7 +3,7 @@
 ## What it Gives You
 
 - OACIS Ruby application with prerequisites:
-    - Ruby 2.7.8
+    - Ruby 3.4
     - OACIS simulation management platform
     - OpenSSH server for remote connections
     - xsub job scheduler
@@ -11,8 +11,11 @@
 - Unprivileged `oacis` user with OACIS installed at `~/oacis`
 - SSH configuration for remote host connections
 - Sample simulator setup script (`setup_ns_model.sh`)
+- MCP server (`~/oacis/bin/oacis_mcp`) for AI agents (OACIS v4)
 
 **Note**: This image does NOT include MongoDB or Redis databases. These are provided as separate services via Docker Compose.
+
+**Compatibility note**: As of OACIS v4, the Python API (`oacis_python`) is no longer included. Use the [Ruby API](http://crest-cassia.github.io/oacis/en/api.html) or the [MCP server](http://crest-cassia.github.io/oacis/en/mcp.html) instead.
 
 ## Usage
 

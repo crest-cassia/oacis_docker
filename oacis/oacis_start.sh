@@ -11,7 +11,6 @@ fi
 
 # mounted volumes are owned by root by default
 chown -R oacis:$(id -g oacis) /home/oacis/oacis/public/Result_development
-chown -R oacis:$(id -g oacis) /data/db
 
 # Ruby image assumes that the user is root, so we need to change ownership of the bundle directory
 chown -R oacis:oacis /usr/local/bundle
@@ -23,7 +22,7 @@ if [ -n "${LOCAL_USER}" ]; then
   chown oacis:oacis /home/oacis/local_ssh_config
 fi
 
-#start mongod, redis and sshd
+#start sshd
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 function cleanup() {

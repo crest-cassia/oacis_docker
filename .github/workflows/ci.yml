@@ -36,6 +36,17 @@ jobs:
             exit 1
           fi
 
+      - name: Verify Ruby version in the container
+        run: |
+          ruby_version=$(docker compose exec -T -u oacis oacis ruby -e 'print RUBY_VERSION')
+          echo "Ruby version in the container: $ruby_version"
+          if [[ "$ruby_version" == 3.* ]]; then
+            echo "✅ OACIS v4 is running on Ruby 3"
+          else
+            echo "❌ Unexpected Ruby version: $ruby_version"
+            exit 1
+          fi
+
       - name: Cleanup containers
         if: always()
         run: ./oacis_terminate.sh || true

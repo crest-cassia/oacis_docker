@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Multi-arch build & push for oacis/oacis
 # Usage:
-#   OACIS_VERSION=v3.12.0 ./build_multi.sh
+#   OACIS_VERSION=v4.0.0 ./version_tagging.sh
 #   (Override with environment variables: IMAGE, PLATFORMS)
 
 set -euo pipefail
@@ -9,7 +9,9 @@ IFS=$'\n\t'
 
 # ====== Config ======
 IMAGE="${IMAGE:-oacis/oacis}"
-OACIS_VERSION="${OACIS_VERSION:-v3.12.0}"
+# NOTE: the corresponding tag must exist on https://github.com/crest-cassia/oacis
+#       (git clone fails loudly otherwise)
+OACIS_VERSION="${OACIS_VERSION:-v4.0.0}"
 PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64}"
 BUILDER_NAME="${BUILDER_NAME:-oacis-multi}"
 
