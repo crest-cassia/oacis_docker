@@ -139,12 +139,22 @@ The source code of this sample simulator can be found at [yohm/sim_ns_model](htt
 
 ## MCP server for AI agents (OACIS v4)
 
-OACIS v4 ships an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server, which lets AI agents such as Claude create parameter sets, submit and monitor runs, read result files, and trigger analyzers.
-Use the `oacis_mcp.sh` wrapper script to launch it inside the running container. For instance, register it to [Claude Code](https://claude.com/claude-code) as follows:
+OACIS v4 ships an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server, which lets AI agents such as Claude and Codex create parameter sets, submit and monitor runs, read result files, and trigger analyzers.
+Use the `oacis_mcp.sh` wrapper script to launch it inside the running container. Register it with your AI agent as follows.
+
+### Claude Code
 
 ```shell
 claude mcp add oacis -- /path/to/oacis_docker/oacis_mcp.sh
 ```
+
+### Codex
+
+```shell
+codex mcp add oacis -- /path/to/oacis_docker/oacis_mcp.sh
+```
+
+Confirm that Codex has registered the server with `codex mcp list`. Start a new Codex session before using the OACIS tools.
 
 The server speaks JSON-RPC over stdio; it opens no network port. OACIS must be running (`./oacis_boot.sh`) when the agent connects.
 See the [OACIS MCP documentation](http://crest-cassia.github.io/oacis/en/mcp.html) for the available tools and the security model.
