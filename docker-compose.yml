@@ -1,11 +1,26 @@
 services:
   mongo:
-    image: mongo:8.0.10-rc0
+    image: mongo:8.0.10
     volumes:
       - mongo_data:/data/db
       - ./init_mongo_data.sh:/docker-entrypoint-initdb.d/init_mongo_data.sh:ro
+    healthcheck:
+      # During first-run initialization, the image temporarily starts mongod
+      # before executing init scripts. Requiring mongod to be PID 1 prevents
+      # that temporary process from being reported as ready.
+      test: ["CMD-SHELL", "test \"$$(cat /proc/1/comm)\" = mongod && mongosh --quiet --eval \"quit(db.adminCommand('ping').ok ? 0 : 1)\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
   redis:
     image: redis:8.0.1
+    healthcheck:
+      test: ["CMD-SHELL", "response=$$(redis-cli ping) && test \"$$response\" = PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
   oacis:
     image: oacis/oacis:${OACIS_IMAGE_TAG:-latest}
     volumes:
@@ -22,8 +37,16 @@ services:
     extra_hosts:
       - "gateway.docker.internal:host-gateway"
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "--max-time", "5", "http://localhost:3000/"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 180s
 
 volumes:
   mongo_data:

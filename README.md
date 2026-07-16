@@ -54,12 +54,49 @@ $ ./oacis_boot.sh
 ```
 
 A container of OACIS launches. It takes some time until the launch completes.
+The Compose stack uses the stable MongoDB 8.0 series (currently `mongo:8.0.10`)
+and waits for MongoDB and Redis to become healthy before starting OACIS.
+`oacis_boot.sh` returns after the OACIS container's HTTP healthcheck succeeds.
 
 - Visit http://localhost:3000 to access OACIS like the following. You may change the port by specifying `-p` option.
 
 <img src="./fig/top.png" width="600" style="display: block; margin: auto;">
 
 See [OACIS documentation](http://crest-cassia.github.io/oacis/).
+
+### Checking container health
+
+Run the following command to inspect all three services:
+
+```shell
+$ docker compose ps
+```
+
+The `mongo`, `redis`, and `oacis` services should all show `healthy`. MongoDB is
+checked with an administrative ping after first-run initialization is complete,
+Redis must answer `PONG`, and OACIS must return a successful response from
+`http://localhost:3000/` inside its container.
+
+Both `oacis_boot.sh` and `oacis_start.sh` stop waiting and return a non-zero
+status if a service becomes unhealthy or OACIS does not become healthy within
+10 minutes. Override the limit in seconds with `OACIS_HEALTH_TIMEOUT`, for
+example:
+
+```shell
+$ OACIS_HEALTH_TIMEOUT=900 ./oacis_boot.sh
+```
+
+On failure, the scripts print `docker compose ps` and recent logs for OACIS,
+MongoDB, and Redis. To inspect them again, run:
+
+```shell
+$ docker compose logs oacis
+$ docker compose logs mongo
+$ docker compose logs redis
+```
+
+These Compose changes do not pin the OACIS image tag, the OACIS Git source
+reference used for local builds, the Ruby base image, or the xsub version.
 
 ### 3. stopping the container temporarily
 
