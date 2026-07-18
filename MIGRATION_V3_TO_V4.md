@@ -8,7 +8,8 @@ This guide describes how to upgrade an existing oacis_docker installation from O
 - **Python API removed**: `bin/oacis_python` and the Python version of `OacisWatcher` are no longer included. See [If you used the Python API](#if-you-used-the-python-api) below.
 - **New: MCP server**: AI agents can create parameter sets, submit and monitor runs, and read results through `bin/oacis_mcp`. See the [MCP section of the README](README.md#mcp-server-for-ai-agents-oacis-v4).
 - **Session secret**: v4 generates a per-installation session secret on first boot. You will be logged out of the web UI once after the upgrade (and whenever the container is recreated). This is harmless.
-- **Unchanged**: the MongoDB and Redis service containers, the exposed port (3000), the `Result` directory layout, and all the management scripts (`oacis_boot.sh`, `oacis_dump_db.sh`, etc.) work the same way.
+- **Service health**: the multi-container setup uses stable MongoDB 8.0 and healthchecks for MongoDB, Redis, and OACIS. OACIS starts only after MongoDB and Redis are healthy.
+- **Unchanged**: the exposed port (3000), the `Result` directory layout, and the management-script command names (`oacis_boot.sh`, `oacis_dump_db.sh`, etc.) remain the same.
 
 ## 0. Back up your data first (required)
 
@@ -69,6 +70,8 @@ Nothing changes on your remote hosts. Ruby 3 is required only by OACIS itself, w
 
 ## Troubleshooting
 
-- Check the logs: `docker compose logs oacis` and `docker compose logs mongo`.
-- `./oacis_restore_db.sh` fails: OACIS must be running — run `./oacis_boot.sh` first, wait for "OACIS READY", then retry.
+- Check `docker compose ps`; the `mongo`, `redis`, and `oacis` services should show `healthy`.
+- Startup waits at most 10 minutes by default. Set `OACIS_HEALTH_TIMEOUT` to override the limit.
+- Check the logs: `docker compose logs oacis`, `docker compose logs mongo`, and `docker compose logs redis`.
+- `./oacis_restore_db.sh` fails: OACIS must be running — run `./oacis_boot.sh` first, confirm that `docker compose ps` reports OACIS as `healthy`, then retry.
 - The web UI does not come up after upgrading: run `./oacis_shell.sh` and check `~/oacis/log/production.log`.

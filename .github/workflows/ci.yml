@@ -2,9 +2,13 @@ name: OACIS CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ "**" ]
   pull_request:
     branches: [ master ]
+
+concurrency:
+  group: oacis-ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:
@@ -14,40 +18,92 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate Docker Compose configuration
+        run: docker compose config --quiet
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Boot OACIS with multi-container setup
         run: ./oacis_boot.sh --build-image develop --image-tag test
+        env:
+          OACIS_HEALTH_TIMEOUT: 600
 
-      - name: Wait for OACIS to be ready
+      - name: Verify service health
         run: |
-          echo "Waiting for OACIS web server to be ready..."
-          timeout 60 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do sleep 2; done'
-          echo "OACIS web server is ready"
+          ./oacis_wait_healthy.sh mongo redis oacis
+          for service in mongo redis oacis; do
+            container_id=$(docker compose ps -q "$service")
+            health=$(docker inspect --format '{{.State.Health.Status}}' "$container_id")
+            echo "$service health: $health"
+            test "$health" = healthy
+          done
 
       - name: Verify OACIS web server
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
-          if [ "$response" -eq 200 ]; then
-            echo "✅ OACIS web server is responding correctly (HTTP $response)"
-          else
-            echo "❌ OACIS web server returned HTTP $response"
-            exit 1
-          fi
+          response=$(curl -sS -o /dev/null -w "%{http_code}" http://localhost:3000/)
+          echo "OACIS web server HTTP status: $response"
+          test "$response" -eq 200
+
+      - name: Verify MongoDB and Redis versions
+        run: |
+          mongo_image=$(docker compose config --images mongo)
+          expected_mongo_version=${mongo_image##*:}
+          echo "MongoDB image: $mongo_image"
+          case "$expected_mongo_version" in
+            8.0.*-rc*) echo "MongoDB must not use an RC image: $mongo_image"; exit 1 ;;
+            8.0.*) ;;
+            *) echo "MongoDB must use a versioned stable 8.0 image: $mongo_image"; exit 1 ;;
+          esac
+
+          mongo_version=$(docker compose exec -T mongo mongosh --quiet --eval 'db.version()' | tr -d '\r')
+          echo "MongoDB version: $mongo_version"
+          test "$mongo_version" = "$expected_mongo_version"
+
+          redis_version=$(docker compose exec -T redis redis-cli --raw INFO server \
+            | sed -n 's/^redis_version://p' | tr -d '\r')
+          echo "Redis version: $redis_version"
+          test -n "$redis_version"
 
       - name: Verify Ruby version in the container
         run: |
           ruby_version=$(docker compose exec -T -u oacis oacis ruby -e 'print RUBY_VERSION')
           echo "Ruby version in the container: $ruby_version"
           if [[ "$ruby_version" == 3.* ]]; then
-            echo "✅ OACIS v4 is running on Ruby 3"
+            echo "OACIS is running on Ruby 3"
           else
-            echo "❌ Unexpected Ruby version: $ruby_version"
+            echo "Unexpected Ruby version: $ruby_version"
             exit 1
           fi
 
+      - name: Smoke test the OACIS MCP server
+        run: |
+          mcp_stdout=$(mktemp)
+          mcp_stderr=$(mktemp)
+          printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"ci","version":"1"}}}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+            | ./oacis_mcp.sh >"$mcp_stdout" 2>"$mcp_stderr"
+
+          python3 - "$mcp_stdout" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          lines = pathlib.Path(sys.argv[1]).read_text().splitlines()
+          assert len(lines) == 2, f"expected exactly 2 protocol lines, got {len(lines)}: {lines!r}"
+          responses = [json.loads(line) for line in lines]
+          assert responses[0]["jsonrpc"] == "2.0"
+          assert responses[0]["id"] == 1
+          assert responses[0]["result"]["serverInfo"]["name"] == "oacis"
+          assert responses[1]["jsonrpc"] == "2.0"
+          assert responses[1]["id"] == 2
+          assert responses[1]["result"]["tools"]
+          PY
+
+          echo "MCP stderr (diagnostic channel):"
+          cat "$mcp_stderr"
+
       - name: Cleanup containers
         if: always()
-        run: ./oacis_terminate.sh || true
-
+        run: ./oacis_terminate.sh --force || docker compose down --volumes
