@@ -47,12 +47,18 @@ jobs:
 
       - name: Verify MongoDB and Redis versions
         run: |
+          mongo_image=$(docker compose config --images mongo)
+          expected_mongo_version=${mongo_image##*:}
+          echo "MongoDB image: $mongo_image"
+          case "$expected_mongo_version" in
+            8.0.*-rc*) echo "MongoDB must not use an RC image: $mongo_image"; exit 1 ;;
+            8.0.*) ;;
+            *) echo "MongoDB must use a versioned stable 8.0 image: $mongo_image"; exit 1 ;;
+          esac
+
           mongo_version=$(docker compose exec -T mongo mongosh --quiet --eval 'db.version()' | tr -d '\r')
           echo "MongoDB version: $mongo_version"
-          test "$mongo_version" = "8.0.10"
-          case "$mongo_version" in
-            *-rc*) echo "MongoDB must not be an RC version"; exit 1 ;;
-          esac
+          test "$mongo_version" = "$expected_mongo_version"
 
           redis_version=$(docker compose exec -T redis redis-cli --raw INFO server \
             | sed -n 's/^redis_version://p' | tr -d '\r')
