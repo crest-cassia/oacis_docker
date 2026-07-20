@@ -196,6 +196,24 @@ Confirm that Codex has registered the server with `codex mcp list`. Start a new 
 The server speaks JSON-RPC over stdio; it opens no network port. OACIS must be running (`./oacis_boot.sh`) when the agent connects.
 See the [OACIS MCP documentation](http://crest-cassia.github.io/oacis/en/mcp.html) for the available tools and the security model.
 
+## Running multiple OACIS instances on one machine
+
+You can run several independent OACIS instances on a single machine by cloning `oacis_docker` into a separate directory for each instance. Each checkout gets its own docker compose project — its own containers, database, and `Result` directory.
+
+`oacis_boot.sh` chooses a collision-free compose project name automatically, so the checkouts do not have to have unique directory names: if the default name (derived from the directory basename) is already used by another checkout, a unique suffix derived from the directory path is appended. The chosen name is printed at boot and pinned in the generated `.env` file, so all the other scripts (`oacis_stop.sh`, `oacis_mcp.sh`, ...) address the same instance. To pick a name yourself, boot with `./oacis_boot.sh --name my_project`.
+
+Two things must be distinguished per instance by hand:
+
+- The web UI port: give each instance its own port with `./oacis_boot.sh -p <port>`.
+- The MCP server name: register each instance's `oacis_mcp.sh` under a distinct name, e.g.
+
+```shell
+claude mcp add oacis_proj_a -- /path/to/proj_a/oacis_docker/oacis_mcp.sh
+claude mcp add oacis_proj_b -- /path/to/proj_b/oacis_docker/oacis_mcp.sh
+```
+
+MCP itself opens no network port, so instances never conflict there; the registered name is what tells the agent which instance it is talking to.
+
 ## SSH agent setup
 
 On the container, you can use the SSH agent running on the **host OS**. (Hereafter, the host on which docker is running is called **host OS**). If environemnt varialbe `SSH_AUTH_SOCK` is set in the host OS so that you can connect to remote hosts from OACIS.

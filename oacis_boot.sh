@@ -10,6 +10,9 @@ usage() {
     echo "Options:"
     echo "  -h, --help : show this message"
     echo "  -p PORT (default: 3000) : port used for OACIS"
+    echo "  --name NAME : docker compose project name for this instance."
+    echo "                Usually unnecessary: a collision-free name is chosen automatically,"
+    echo "                so multiple checkouts (even with the same directory name) can coexist."
     echo "  --publish-port : publish OACIS port to external host"
     echo "  --no-ssh-agent : disable sharing ssh-agent of host OS"
     echo "  --image-tag OACIS_IMAGE_TAG (default: latest) : the tag name of OACIS image. Image 'oacis/oacis:<TAG>' is used."
@@ -32,6 +35,14 @@ do
         exit 1
       fi
       OACIS_PORT=$2
+      shift 2
+      ;;
+    --name)
+      if [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+        echo "$PROGNAME: option requires an argument -- $1" 1>&2
+        exit 1
+      fi
+      OACIS_PROJECT_NAME=$2
       shift 2
       ;;
     --publish-port)
@@ -68,6 +79,53 @@ done
 
 # save the original user in case it is called as sudo
 ORIG_USER=${SUDO_USER:-$USER}
+
+# ---- resolve the docker compose project name ----
+# Compose derives the project name from the directory basename by default,
+# so two checkouts with the same basename would silently share containers
+# and volumes (worst case: one instance attaches the other's mongo volume).
+# Resolve a collision-free name here and pin it via .env so that every
+# other management script (oacis_start.sh, oacis_mcp.sh, ...) sees the
+# same project.
+
+# compose project names must be lowercase [a-z0-9_-], starting with [a-z0-9]
+normalize_project_name() {
+  echo "$1" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9_-]/_/g' -e 's/^[_-]*//'
+}
+
+if [ -z "${OACIS_PROJECT_NAME:-}" ]; then
+  OACIS_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-}   # respect an explicitly set env var
+fi
+if [ -n "${OACIS_PROJECT_NAME}" ]; then
+  COMPOSE_PROJECT_NAME=$(normalize_project_name "${OACIS_PROJECT_NAME}")
+else
+  # 1. a stack whose containers were created from this directory keeps its name
+  #    (covers pre-existing default-named stacks and previously generated names)
+  OWNED_PROJECT=$(docker ps -a --filter "label=com.docker.compose.project.working_dir=$(pwd)" --format '{{ index .Labels "com.docker.compose.project" }}' | sort -u | head -1)
+  DEFAULT_PROJECT=$(normalize_project_name "$(basename "$(pwd)")")
+  if [ -n "${OWNED_PROJECT}" ]; then
+    COMPOSE_PROJECT_NAME=${OWNED_PROJECT}
+  elif [ -n "$(docker ps -aq --filter "label=com.docker.compose.project=${DEFAULT_PROJECT}" | head -1)" ]; then
+    # 2. the default name is taken by another checkout with the same basename:
+    #    derive a unique, deterministic name from this directory's path
+    COMPOSE_PROJECT_NAME="${DEFAULT_PROJECT}-$(pwd | cksum | cut -d ' ' -f 1)"
+  elif [ -n "$(docker volume ls -q --filter "label=com.docker.compose.project=${DEFAULT_PROJECT}" | head -1)" ]; then
+    # 3. no containers, but a volume with the default name exists. It may hold
+    #    this instance's data (after a manual 'docker compose down') or another
+    #    instance's — attaching the wrong one would mix databases, so stop here.
+    echo "[Error] a docker volume of compose project '${DEFAULT_PROJECT}' exists, but no containers do." 1>&2
+    echo "  If the volume holds this instance's data, boot with the project name pinned:" 1>&2
+    echo "      ./oacis_boot.sh --name ${DEFAULT_PROJECT}" 1>&2
+    echo "  If it is a leftover you no longer need, remove it first:" 1>&2
+    echo "      docker volume rm ${DEFAULT_PROJECT}_mongo_data" 1>&2
+    exit 1
+  else
+    # 4. the default name is free
+    COMPOSE_PROJECT_NAME=${DEFAULT_PROJECT}
+  fi
+fi
+export COMPOSE_PROJECT_NAME
+echo "===== compose project: ${COMPOSE_PROJECT_NAME} ====="
 
 # returns the state ("running", "exited", "created", ...) of a service's container
 service_state() {
