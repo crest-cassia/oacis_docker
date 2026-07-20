@@ -9,9 +9,24 @@ set -e
 MONGO_URL="mongodb://mongo:27017/?directConnection=true"
 db_name=oacis_development
 
+# Overall deadline for the whole script. Without it, a mongod that never
+# comes up (or never elects itself primary) would block this one-shot
+# container forever, and thereby `docker compose up -d` (which waits for
+# service_completed_successfully) and `docker compose wait mongo-init`
+# (which has no timeout option) in the management scripts.
+MONGO_INIT_TIMEOUT=${MONGO_INIT_TIMEOUT:-120}
+DEADLINE=$((SECONDS + MONGO_INIT_TIMEOUT))
+check_deadline() {
+  if [ ${SECONDS} -ge ${DEADLINE} ]; then
+    echo "mongo-init: timed out after ${MONGO_INIT_TIMEOUT}s $1" >&2
+    exit 1
+  fi
+}
+
 # wait for mongod to accept connections
 until mongosh "${MONGO_URL}" --quiet --eval 'db.adminCommand("ping").ok' >/dev/null 2>&1
 do
+  check_deadline "waiting for mongod to accept connections"
   sleep 1
 done
 
@@ -28,8 +43,9 @@ mongosh "${MONGO_URL}" --quiet --eval '
   }'
 
 # wait until the node has elected itself writable primary
-until [ "$(mongosh "${MONGO_URL}" --quiet --eval 'db.hello().isWritablePrimary')" = "true" ]
+until [ "$(mongosh "${MONGO_URL}" --quiet --eval 'db.hello().isWritablePrimary' 2>/dev/null)" = "true" ]
 do
+  check_deadline "waiting for the replica set to elect a writable primary"
   sleep 1
 done
 

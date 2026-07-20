@@ -19,11 +19,15 @@ services:
       start_period: 30s
   mongo-init:
     # one-shot: initiates the single-node replica set (no-op when already
-    # initiated) and seeds the default Host documents (idempotent)
+    # initiated) and seeds the default Host documents (idempotent).
+    # Gives up with a non-zero exit after MONGO_INIT_TIMEOUT (default 120s)
+    # so that the management scripts never block indefinitely.
     image: mongo:8.0.10
     depends_on:
       mongo:
         condition: service_started
+    environment:
+      - MONGO_INIT_TIMEOUT
     entrypoint: ["bash", "/docker-init/init_mongo_data.sh"]
     volumes:
       - ./init_mongo_data.sh:/docker-init/init_mongo_data.sh:ro
