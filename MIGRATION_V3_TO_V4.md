@@ -9,6 +9,7 @@ This guide describes how to upgrade an existing oacis_docker installation from O
 - **New: MCP server**: AI agents can create parameter sets, submit and monitor runs, and read results through `bin/oacis_mcp`. See the [MCP section of the README](README.md#mcp-server-for-ai-agents-oacis-v4).
 - **Session secret**: v4 generates a per-installation session secret on first boot. You will be logged out of the web UI once after the upgrade (and whenever the container is recreated). This is harmless.
 - **Service health**: the multi-container setup uses stable MongoDB 8.0 and healthchecks for MongoDB, Redis, and OACIS. OACIS starts only after MongoDB and Redis are healthy.
+- **MongoDB runs as a single-node replica set**: OACIS v4 uses MongoDB transactions when creating parameter sets, which requires replica-set mode. The Docker setup handles this automatically — a one-shot `mongo-init` service initiates the replica set on boot, and **an existing data volume is converted in place** (your data is preserved; no action needed).
 - **Unchanged**: the exposed port (3000), the `Result` directory layout, and the management-script command names (`oacis_boot.sh`, `oacis_dump_db.sh`, etc.) remain the same.
 
 ## 0. Back up your data first (required)
