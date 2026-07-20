@@ -200,7 +200,7 @@ See the [OACIS MCP documentation](http://crest-cassia.github.io/oacis/en/mcp.htm
 
 You can run several independent OACIS instances on a single machine by cloning `oacis_docker` into a separate directory for each instance. Each checkout gets its own docker compose project — its own containers, database, and `Result` directory.
 
-`oacis_boot.sh` chooses a collision-free compose project name automatically, so the checkouts do not have to have unique directory names: if the default name (derived from the directory basename) is already used by another checkout, a unique suffix derived from the directory path is appended. The chosen name is printed at boot and pinned in the generated `.env` file, so all the other scripts (`oacis_stop.sh`, `oacis_mcp.sh`, ...) address the same instance. To pick a name yourself, boot with `./oacis_boot.sh --name my_project`.
+`oacis_boot.sh` chooses a collision-free compose project name automatically, so the checkouts do not have to have unique directory names: if the default name (derived from the directory basename) is already used by another checkout, a unique suffix derived from the directory path is appended. The chosen name is printed at boot and pinned in the generated `.env` file, so all the other scripts (`oacis_stop.sh`, `oacis_mcp.sh`, ...) address the same instance, and later boots keep using the same name. To pick a name yourself, boot with `./oacis_boot.sh --name my_project`. If you copy a whole checkout (including its `.env`) to another directory to start a new instance, delete the copied `.env` first so that a fresh project name is chosen — `oacis_boot.sh` refuses to boot on a pinned name that another checkout's stack is using.
 
 Two things must be distinguished per instance by hand:
 
