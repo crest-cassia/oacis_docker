@@ -41,7 +41,7 @@ docker pull oacis/oacis   # get the v4 image
 
 The `Result` directory is not touched by `oacis_terminate.sh`, so your simulation output files stay in place; `oacis_restore_db.sh` restores the database that references them.
 
-**Shortcut (advanced)**: the MongoDB volume survives an image swap, so instead of terminate + restore you can run `docker compose down` (**without** `--volumes`), then `git pull`, `docker pull oacis/oacis`, and `./oacis_boot.sh`. The database schema is upgraded automatically at boot. Still take the dump in step 0 first.
+**Shortcut (advanced)**: the MongoDB volume survives an image swap, so instead of terminate + restore you can run `docker compose down` (**without** `--volumes`), then `git pull`, `docker pull oacis/oacis`, and `./oacis_boot.sh`. The database schema is upgraded automatically at boot. Still take the dump in step 0 first. (`oacis_boot.sh` recognizes the surviving data volume — via the `.env` file left by the previous setup — and reuses it; it prints `found the data volume of '...'; reusing it`.)
 
 ## 2B. Upgrade from the old single-container setup
 
