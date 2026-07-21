@@ -29,4 +29,8 @@ do
 done
 
 # -T: no TTY. stdout/stdin are used for the MCP stdio protocol.
-exec docker compose exec -T -u oacis oacis /home/oacis/oacis/bin/oacis_mcp
+# OACIS_MCP_DIR_MAP: the Result directory is bind-mounted (see docker-compose.yml),
+# so tools report host paths and the agent can read result files directly.
+exec docker compose exec -T -u oacis \
+  -e OACIS_MCP_DIR_MAP="/home/oacis/oacis/public/Result_development=$(pwd)/Result" \
+  oacis /home/oacis/oacis/bin/oacis_mcp
