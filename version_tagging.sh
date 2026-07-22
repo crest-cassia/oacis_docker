@@ -14,6 +14,9 @@ IMAGE="${IMAGE:-oacis/oacis}"
 OACIS_VERSION="${OACIS_VERSION:-v4.0.0}"
 PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64}"
 BUILDER_NAME="${BUILDER_NAME:-oacis-multi}"
+# QEMU version used for cross-arch emulation. Pin a known-good release:
+# recent qemu builds sporadically segfault gcc during amd64-under-arm64 builds.
+BINFMT_IMAGE="${BINFMT_IMAGE:-tonistiigi/binfmt:qemu-v8.1.5}"
 
 # ====== Helpers ======
 log() { printf '[%s] %s\n' "$(date +'%F %T')" "$*" >&2; }
@@ -33,7 +36,7 @@ fi
 # Do not fail if this step fails (may not be required in some environments)
 if docker info --format '{{.OSType}}' | grep -qi linux; then
   log "Setting up binfmt (QEMU) for Linux host - continuing even if it fails"
-  docker run --privileged --rm tonistiigi/binfmt --install all || true
+  docker run --privileged --rm "${BINFMT_IMAGE}" --install all || true
 fi
 
 # ====== Prepare buildx builder ======
