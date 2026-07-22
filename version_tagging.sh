@@ -24,7 +24,7 @@ if ! docker info >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! docker system info --format '{{json .}}' | grep -q '"Username"'; then
+if ! docker system info 2>/dev/null | grep -q 'Username:'; then
   log "Running docker login (skip if already logged in)"
   docker login
 fi
@@ -37,7 +37,7 @@ if docker info --format '{{.OSType}}' | grep -qi linux; then
 fi
 
 # ====== Prepare buildx builder ======
-if ! docker buildx ls | grep -q "^${BUILDER_NAME}\b"; then
+if ! docker buildx inspect "${BUILDER_NAME}" >/dev/null 2>&1; then
   log "Creating buildx builder '${BUILDER_NAME}'"
   docker buildx create --name "${BUILDER_NAME}" --driver docker-container
 fi
