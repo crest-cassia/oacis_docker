@@ -30,7 +30,7 @@ cd oacis_docker
 >    - [Docker](https://docs.docker.com/engine/install/ubuntu/#installation-methods)
 >    - Ruby
 >        - Using apt: `sudo apt install ruby`
->        - This Ruby is only used by `xsub` on the docker-host; the version installed by apt is sufficient. (OACIS itself requires Ruby 3.2 or later, but it is bundled inside the container, so you do not need it on the host.)
+>        - This Ruby is only used by `xsub` on the docker-host; the version installed by apt is sufficient. (OACIS itself requires Ruby 3.4 or later, but it is bundled inside the container, so you do not need it on the host.)
 >    - [xsub](https://github.com/crest-cassia/xsub)
 >        - clone directory and add paths to `~/.bash_profile`
 >- Install dependencies on Ubuntu machine, specific to Ubuntu:
@@ -342,7 +342,7 @@ Take the following steps to update the docker image of OACIS.
 
 # License
 oacis_docker is a part of OACIS. [OACIS](https://github.com/crest-cassia/oacis) is published under the term of the MIT License (MIT).
-Copyright (c) 2014-2025 RIKEN AICS, RIKEN R-CCS
+Copyright (c) 2014-2026 RIKEN R-CCS
 
 
 # Note for Developers
