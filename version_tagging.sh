@@ -51,18 +51,28 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "${SCRIPT_DIR}/oacis"
 
 # ====== Build & Push (create multi-arch manifest with the same tags) ======
+# Pre-releases (tags containing "-rc") are pushed under their own tag only,
+# so that "latest" keeps pointing to the newest stable release.
+TAG_ARGS=(-t "${IMAGE}:${OACIS_VERSION}")
+if [[ "${OACIS_VERSION}" != *-rc* ]]; then
+  TAG_ARGS+=(-t "${IMAGE}:latest")
+else
+  log "Pre-release version detected (${OACIS_VERSION}); skipping the 'latest' tag"
+fi
+
 log "Building and pushing ${IMAGE}:${OACIS_VERSION} (${PLATFORMS})"
 docker buildx build \
   --platform "${PLATFORMS}" \
-  -t "${IMAGE}:${OACIS_VERSION}" \
-  -t "${IMAGE}:latest" \
+  "${TAG_ARGS[@]}" \
   --build-arg "OACIS_VERSION=${OACIS_VERSION}" \
   --push .
 
 # ====== Inspect ======
 log "Inspecting pushed manifest:"
 docker buildx imagetools inspect "${IMAGE}:${OACIS_VERSION}" || true
-docker buildx imagetools inspect "${IMAGE}:latest" || true
+if [[ "${OACIS_VERSION}" != *-rc* ]]; then
+  docker buildx imagetools inspect "${IMAGE}:latest" || true
+fi
 
 log "Done. The pulled platform will automatically match the client's architecture (amd64/arm64)."
 
