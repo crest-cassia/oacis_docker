@@ -15,6 +15,8 @@ usage() {
     echo "                so multiple checkouts (even with the same directory name) can coexist."
     echo "  --publish-port : publish OACIS port to external host"
     echo "  --no-ssh-agent : disable sharing ssh-agent of host OS"
+    echo "                   (the socket path mounted into the container can be"
+    echo "                    overridden with the SSH_AUTH_SOCK_APP environment variable)"
     echo "  --image-tag OACIS_IMAGE_TAG (default: latest) : the tag name of OACIS image. Image 'oacis/oacis:<TAG>' is used."
     echo "  --build-image OACIS_VERSION: don't pull the image but build a new image from Dockerfile"
     echo "                               specify the branch/tag name of OACIS ('develop', 'v3.10.0')"
@@ -245,12 +247,16 @@ fi
 
 set -ex
 
-# set SSH_AUTH_SOCK_APP
+# set SSH_AUTH_SOCK_APP unless explicitly given via the environment.
+# On macOS the host agent socket cannot be mounted across the VM boundary;
+# /run/host-services/ssh-auth.sock is the path Docker Desktop provides
+# inside its VM, and colima (with 'colima start --ssh-agent') and OrbStack
+# expose the host agent at the same path for compatibility.
 if [ -n "${SSH_AUTH_SOCK}" ]; then
   if [ "$(uname)" == 'Darwin' ]; then  # Mac
-    SSH_AUTH_SOCK_APP=/run/host-services/ssh-auth.sock
+    SSH_AUTH_SOCK_APP=${SSH_AUTH_SOCK_APP:-/run/host-services/ssh-auth.sock}
   elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
-    SSH_AUTH_SOCK_APP=${SSH_AUTH_SOCK}
+    SSH_AUTH_SOCK_APP=${SSH_AUTH_SOCK_APP:-${SSH_AUTH_SOCK}}
   else
     echo "Your platform ($(uname -a)) is not supported."
     exit 1
@@ -276,6 +282,9 @@ fi
 
 set +x
 ./oacis_wait_healthy.sh oacis
+
+# warn (non-fatal) when the shared ssh-agent socket does not work
+./oacis_check_ssh_agent.sh
 
 # if dump file exists, prompt to run oacis_restore_db
 if [ -e "Result/db_dump" ]; then

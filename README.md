@@ -219,6 +219,14 @@ MCP itself opens no network port, so instances never conflict there; the registe
 On the container, you can use the SSH agent running on the **host OS**. (Hereafter, the host on which docker is running is called **host OS**). If environemnt varialbe `SSH_AUTH_SOCK` is set in the host OS so that you can connect to remote hosts from OACIS.
 Here is how to set up SSH agent.
 
+> **Note for macOS users**: on macOS the host agent socket cannot be mounted into containers directly, so the scripts mount `/run/host-services/ssh-auth.sock`, the path provided inside the Docker VM. Whether it exists depends on your Docker runtime:
+>
+> - **Docker Desktop**: works out of the box.
+> - **colima**: start the VM with agent forwarding enabled: `colima start --ssh-agent` (the flag is remembered for subsequent starts). Without it, the socket does not exist in the VM and SSH connections from the container (e.g. to `docker-host`) fail with public key authentication errors.
+> - **OrbStack**: works out of the box (it provides the same path for compatibility).
+>
+> `./oacis_boot.sh` and `./oacis_start.sh` verify the agent after startup and print a warning with a fix when the shared socket is not working. If your runtime provides the agent socket at a different path, override it with the `SSH_AUTH_SOCK_APP` environment variable when running `./oacis_boot.sh`.
+
 ### 1. Create a key pair and add it to authorized_keys.
 
 OACIS requires an authentication by SSH keys. If you haven't made a SSH key-pair, create one in order to use it for your use.

@@ -10,6 +10,7 @@ LABEL maintainer="OACIS developers <oacis-dev@googlegroups.com>"
 RUN apt-get update \
     && apt-get install -y \
         openssh-server \
+        openssh-client \
         rsync \
         supervisor \
         vim \

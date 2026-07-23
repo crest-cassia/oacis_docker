@@ -73,3 +73,9 @@ if ! docker compose start oacis; then
 fi
 
 ./oacis_wait_healthy.sh oacis
+
+# warn (non-fatal) when the shared ssh-agent socket does not work: the bind
+# mount source is re-resolved on every container start, so the agent can
+# break silently after a host reboot or a docker-VM restart even though the
+# stack booted fine before
+./oacis_check_ssh_agent.sh
