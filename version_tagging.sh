@@ -32,11 +32,30 @@ if ! docker system info 2>/dev/null | grep -q 'Username:'; then
   docker login
 fi
 
-# ====== QEMU/binfmt (needed on Linux hosts; usually not needed on Docker Desktop for macOS) ======
-# Do not fail if this step fails (may not be required in some environments)
+# ====== QEMU/binfmt (needed to build a foreign architecture) ======
+# '--install' skips architectures that already have a handler, and the VM behind
+# the Docker daemon normally registers its own QEMU at boot (colima ships 7.0.0,
+# which segfaults gcc while native gems are compiled for amd64). Removing the
+# handlers first is therefore what actually makes BINFMT_IMAGE take effect.
+# Do not fail the build here: the step is unnecessary in some environments.
 if docker info --format '{{.OSType}}' | grep -qi linux; then
-  log "Setting up binfmt (QEMU) for Linux host - continuing even if it fails"
-  docker run --privileged --rm "${BINFMT_IMAGE}" --install all || true
+  log "Registering binfmt handlers from ${BINFMT_IMAGE}, replacing any pre-installed QEMU"
+  docker run --privileged --rm "${BINFMT_IMAGE}" --uninstall 'qemu-*' >/dev/null \
+    || log "WARNING: could not remove the pre-installed QEMU; a stale emulator may crash the compiler"
+  docker run --privileged --rm "${BINFMT_IMAGE}" --install all >/dev/null \
+    || log "WARNING: 'binfmt --install all' failed; cross-architecture builds may not work"
+
+  # Cheap smoke check: run a container for every target platform, which
+  # exercises the handler that was just registered. A broken registration then
+  # shows up here instead of ten minutes into a build that dies with
+  # 'Segmentation fault (core dumped)'.
+  for platform in ${PLATFORMS//,/$'\n'}; do
+    if docker run --rm --platform "${platform}" "${BINFMT_IMAGE}" --version >/dev/null 2>&1; then
+      log "  ${platform}: OK"
+    else
+      log "  ${platform}: WARNING - cannot run a container for this platform"
+    fi
+  done
 fi
 
 # ====== Prepare buildx builder ======
