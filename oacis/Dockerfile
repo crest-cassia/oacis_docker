@@ -33,8 +33,7 @@ USER oacis
 WORKDIR /home/oacis
 ARG OACIS_VERSION
 
-# TODO: change the default back to "master" once OACIS v4 is merged into master
-RUN git clone -b ${OACIS_VERSION:-develop} https://github.com/crest-cassia/oacis.git \
+RUN git clone -b ${OACIS_VERSION:-master} https://github.com/crest-cassia/oacis.git \
     && cd oacis \
     && bundle install \
     && echo "---\nbinding_ip: '0.0.0.0'" > config/user_config.yml \

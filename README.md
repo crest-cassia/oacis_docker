@@ -360,7 +360,7 @@ Copyright (c) 2014-2026 RIKEN R-CCS
 - [oacis](oacis)
     - A base image, which consists of OACIS and its prerequisites.
 
-Note: the current Dockerfile is based on Ruby 3.4 and can only build OACIS v4 (the `develop` branch or `v4.x` tags). To build a v3 image, check out an older tag of oacis_docker (e.g. `v3.12.0`).
+Note: the current Dockerfile is based on Ruby 3.4 and can only build OACIS v4 (the `master` branch or `v4.x` tags). To build a v3 image, check out an older tag of oacis_docker (e.g. `v3.11.1`).
 
 ## running an image built from the source code
 
