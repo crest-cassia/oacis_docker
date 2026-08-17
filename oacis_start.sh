@@ -29,37 +29,53 @@ do
 done
 
 
+# returns the state ("running", "exited", "created", ...) of a service's container
+service_state() {
+  docker compose ps -a --format json "$1" 2>/dev/null | grep -o '"State":"[a-z]*"' | head -1 | cut -d'"' -f4
+}
+
 COMPOSE_PS_JSON=$(docker compose ps -a --format json)
 echo "${COMPOSE_PS_JSON}"
-if [ "${COMPOSE_PS_JSON}" == '[]' ]; then
+if [ -z "${COMPOSE_PS_JSON}" ] || [ "${COMPOSE_PS_JSON}" == '[]' ]; then
   echo "===== there is no container ============"
   exit 1
-elif echo "${COMPOSE_PS_JSON}" | grep -q '"State":"running"'; then
+fi
+if [ "$(service_state oacis)" == "running" ]; then
   echo "===== container is already running ====="
-  exit 1
-elif echo "${COMPOSE_PS_JSON}" | grep -q '"State":"exited"'; then
-  docker compose start
-else
-  echo "unexpected status"
   exit 1
 fi
 
-# show logs until OACIS is ready
-if [ -e temp.pipe ]; then
-  rm temp.pipe
+# `start` is a no-op for services which are already running, so a
+# partially running stack (e.g. after a failed boot) is handled too
+if ! docker compose start mongo redis; then
+  ./oacis_wait_healthy.sh mongo redis || true
+  exit 1
 fi
-mkfifo temp.pipe
-docker compose logs -f --since 0s > >(tee temp.pipe) 2> /dev/null &
-trap "kill -9 $!" 1 2 3 15
-# equivalent to `docker compose logs ... | tee temp.pipe`
-# but we use process substitution to get the PID of `docker compose logs`
-# in case we receive the signal, we kill `docker compose logs`
-set +x
-grep --line-buffered -m 1 "OACIS READY" > /dev/null < temp.pipe
-# to stop `docker compose logs -f`, multiple signals are needed
-# probably due to a bug in this command
-while kill -0 $! 2> /dev/null; do
-  kill -2 $!
-  sleep 0.1
-done
-rm temp.pipe
+
+# Re-run the idempotent one-shot init: it initiates the replica set when
+# necessary, and the mongo healthcheck (isWritablePrimary) cannot pass
+# before that. --no-recreate/--no-deps keep the existing containers
+# untouched.
+if ! docker compose up -d --no-recreate --no-deps mongo-init; then
+  echo "===== failed to start mongo-init ====="
+  exit 1
+fi
+if ! docker compose wait mongo-init; then
+  echo "===== mongo-init failed ====="
+  docker compose logs --tail 50 mongo-init >&2 || true
+  exit 1
+fi
+
+./oacis_wait_healthy.sh mongo redis
+if ! docker compose start oacis; then
+  ./oacis_wait_healthy.sh oacis || true
+  exit 1
+fi
+
+./oacis_wait_healthy.sh oacis
+
+# warn (non-fatal) when the shared ssh-agent socket does not work: the bind
+# mount source is re-resolved on every container start, so the agent can
+# break silently after a host reboot or a docker-VM restart even though the
+# stack booted fine before
+./oacis_check_ssh_agent.sh

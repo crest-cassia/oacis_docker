@@ -28,8 +28,9 @@ cd oacis_docker
 > 
 > - Install dependencies on Ubuntu machine, which are also required for other systems
 >    - [Docker](https://docs.docker.com/engine/install/ubuntu/#installation-methods)
->    - Ruby 2.0.0 or later
+>    - Ruby
 >        - Using apt: `sudo apt install ruby`
+>        - This Ruby is only used by `xsub` on the docker-host; the version installed by apt is sufficient. (OACIS itself requires Ruby 3.2 or later, but it is bundled inside the container, so you do not need it on the host.)
 >    - [xsub](https://github.com/crest-cassia/xsub)
 >        - clone directory and add paths to `~/.bash_profile`
 >- Install dependencies on Ubuntu machine, specific to Ubuntu:
@@ -53,12 +54,49 @@ $ ./oacis_boot.sh
 ```
 
 A container of OACIS launches. It takes some time until the launch completes.
+The Compose stack uses the stable MongoDB 8.0 series (currently `mongo:8.0.10`)
+and waits for MongoDB and Redis to become healthy before starting OACIS.
+`oacis_boot.sh` returns after the OACIS container's HTTP healthcheck succeeds.
 
 - Visit http://localhost:3000 to access OACIS like the following. You may change the port by specifying `-p` option.
 
 <img src="./fig/top.png" width="600" style="display: block; margin: auto;">
 
 See [OACIS documentation](http://crest-cassia.github.io/oacis/).
+
+### Checking container health
+
+Run the following command to inspect all three services:
+
+```shell
+$ docker compose ps
+```
+
+The `mongo`, `redis`, and `oacis` services should all show `healthy`. MongoDB is
+checked with an administrative ping after first-run initialization is complete,
+Redis must answer `PONG`, and OACIS must return a successful response from
+`http://localhost:3000/` inside its container.
+
+Both `oacis_boot.sh` and `oacis_start.sh` stop waiting and return a non-zero
+status if a service becomes unhealthy or OACIS does not become healthy within
+10 minutes. Override the limit in seconds with `OACIS_HEALTH_TIMEOUT`, for
+example:
+
+```shell
+$ OACIS_HEALTH_TIMEOUT=900 ./oacis_boot.sh
+```
+
+On failure, the scripts print `docker compose ps` and recent logs for OACIS,
+MongoDB, and Redis. To inspect them again, run:
+
+```shell
+$ docker compose logs oacis
+$ docker compose logs mongo
+$ docker compose logs redis
+```
+
+These Compose changes do not pin the OACIS image tag, the OACIS Git source
+reference used for local builds, the Ruby base image, or the xsub version.
 
 ### 3. stopping the container temporarily
 
@@ -136,10 +174,58 @@ $ exit     # to logout from the container
 
 The source code of this sample simulator can be found at [yohm/sim_ns_model](https://github.com/yohm/sim_ns_model).
 
+## MCP server for AI agents (OACIS v4)
+
+OACIS v4 ships an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server, which lets AI agents such as Claude and Codex create parameter sets, submit and monitor runs, read result files, and trigger analyzers.
+Use the `oacis_mcp.sh` wrapper script to launch it inside the running container. Register it with your AI agent as follows.
+
+### Claude Code
+
+```shell
+claude mcp add oacis -- /path/to/oacis_docker/oacis_mcp.sh
+```
+
+### Codex
+
+```shell
+codex mcp add oacis -- /path/to/oacis_docker/oacis_mcp.sh
+```
+
+Confirm that Codex has registered the server with `codex mcp list`. Start a new Codex session before using the OACIS tools.
+
+The server speaks JSON-RPC over stdio; it opens no network port. OACIS must be running (`./oacis_boot.sh`) when the agent connects.
+See the [OACIS MCP documentation](http://crest-cassia.github.io/oacis/en/mcp.html) for the available tools and the security model.
+
+## Running multiple OACIS instances on one machine
+
+You can run several independent OACIS instances on a single machine by cloning `oacis_docker` into a separate directory for each instance. Each checkout gets its own docker compose project — its own containers, database, and `Result` directory.
+
+`oacis_boot.sh` chooses a collision-free compose project name automatically, so the checkouts do not have to have unique directory names: if the default name (derived from the directory basename) is already used by another checkout, a unique suffix derived from the directory path is appended. The chosen name is printed at boot and pinned in the generated `.env` file, so all the other scripts (`oacis_stop.sh`, `oacis_mcp.sh`, ...) address the same instance, and later boots keep using the same name. To pick a name yourself, boot with `./oacis_boot.sh --name my_project`. If you copy a whole checkout (including its `.env`) to another directory to start a new instance, delete the copied `.env` first so that a fresh project name is chosen — `oacis_boot.sh` refuses to boot on a pinned name that another checkout's stack is using.
+
+Two things must be distinguished per instance by hand:
+
+- The web UI port: give each instance its own port with `./oacis_boot.sh -p <port>`.
+- The MCP server name: register each instance's `oacis_mcp.sh` under a distinct name, e.g.
+
+```shell
+claude mcp add oacis_proj_a -- /path/to/proj_a/oacis_docker/oacis_mcp.sh
+claude mcp add oacis_proj_b -- /path/to/proj_b/oacis_docker/oacis_mcp.sh
+```
+
+MCP itself opens no network port, so instances never conflict there; the registered name is what tells the agent which instance it is talking to.
+
 ## SSH agent setup
 
 On the container, you can use the SSH agent running on the **host OS**. (Hereafter, the host on which docker is running is called **host OS**). If environemnt varialbe `SSH_AUTH_SOCK` is set in the host OS so that you can connect to remote hosts from OACIS.
 Here is how to set up SSH agent.
+
+> **Note for macOS users**: on macOS the host agent socket cannot be mounted into containers directly, so the scripts mount `/run/host-services/ssh-auth.sock`, the path provided inside the Docker VM. Whether it exists depends on your Docker runtime:
+>
+> - **Docker Desktop**: works out of the box.
+> - **colima**: start the VM with agent forwarding enabled: `colima start --ssh-agent` (the flag is remembered for subsequent starts). Without it, the socket does not exist in the VM and SSH connections from the container (e.g. to `docker-host`) fail with public key authentication errors.
+> - **OrbStack**: works out of the box (it provides the same path for compatibility).
+>
+> `./oacis_boot.sh` and `./oacis_start.sh` verify the agent after startup and print a warning with a fix when the shared socket is not working. If your runtime provides the agent socket at a different path, override it with the `SSH_AUTH_SOCK_APP` environment variable when running `./oacis_boot.sh`.
 
 ### 1. Create a key pair and add it to authorized_keys.
 
@@ -251,6 +337,9 @@ ssh your_remote_host '~/oacis_docker/oacis_restore_db.sh'
 
 ## updating OACIS image
 
+> [!IMPORTANT]
+> If you are upgrading from OACIS v3 to v4, read [MIGRATION_V3_TO_V4.md](MIGRATION_V3_TO_V4.md) first.
+
 Take the following steps to update the docker image of OACIS.
 
 1. `./oacis_dump_db.sh`
@@ -261,7 +350,7 @@ Take the following steps to update the docker image of OACIS.
 
 # License
 oacis_docker is a part of OACIS. [OACIS](https://github.com/crest-cassia/oacis) is published under the term of the MIT License (MIT).
-Copyright (c) 2014-2025 RIKEN AICS, RIKEN R-CCS
+Copyright (c) 2014-2026 RIKEN R-CCS
 
 
 # Note for Developers
@@ -270,6 +359,8 @@ Copyright (c) 2014-2025 RIKEN AICS, RIKEN R-CCS
 
 - [oacis](oacis)
     - A base image, which consists of OACIS and its prerequisites.
+
+Note: the current Dockerfile is based on Ruby 3.4 and can only build OACIS v4 (the `master` branch or `v4.x` tags). To build a v3 image, check out an older tag of oacis_docker (e.g. `v3.11.1`).
 
 ## running an image built from the source code
 
